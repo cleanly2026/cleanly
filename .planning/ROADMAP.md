@@ -1,4 +1,4 @@
-# Roadmap: Cleanly
+# Roadmap: ROFAN
 
 ## Overview
 
@@ -29,7 +29,21 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. A company admin can log in with email/password and complete TOTP MFA challenge
   4. A platform admin can log in via Google Workspace SSO only
   5. Switching the app to Arabic renders the full layout in RTL with Cairo font — no hardcoded English strings visible
-**Plans**: TBD
+**Plans**: 12 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Turborepo monorepo scaffold: 6 apps + 6 packages
+- [ ] 01-02-PLAN.md — Shared type contracts, bilingual i18n locale files, Tailwind config
+- [ ] 01-03-PLAN.md — GitHub Actions CI pipeline + Sentry scaffolds
+- [ ] 01-04-PLAN.md — Complete Prisma schema (15 tables) + Neon deploy + PostGIS indexes
+- [ ] 01-05-PLAN.md — Fastify API skeleton + Redis singleton + BullMQ worker
+- [ ] 01-06-PLAN.md — Customer OTP auth + washer OTP+PIN auth routes
+- [ ] 01-07-PLAN.md — Company admin TOTP MFA + admin Google SSO routes
+- [ ] 01-08-PLAN.md — next-intl RTL setup for web apps + Expo i18next setup
+- [ ] 01-09-PLAN.md — Cloudflare R2 storage client scaffold
+- [ ] 01-10-PLAN.md — Custom auth UI components (OtpInput, PinInput, PhoneInput, LanguageToggle, AuthCard)
+- [ ] 01-11-PLAN.md — Auth screens wired to API (customer, company, admin)
+- [ ] 01-12-PLAN.md — Human verification: all 5 Phase 1 success criteria
 **UI hint**: yes
 
 ### Phase 2: Core Business Flow
@@ -78,7 +92,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/TBD | Not started | - |
+| 1. Foundation | 0/12 | Not started | - |
 | 2. Core Business Flow | 0/TBD | Not started | - |
 | 3. Real-Time & Washer App | 0/TBD | Not started | - |
 | 4. Supporting Systems & Admin | 0/TBD | Not started | - |
