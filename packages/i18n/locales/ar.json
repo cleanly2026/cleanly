@@ -1,0 +1,55 @@
+{
+  "auth": {
+    "otp": {
+      "send_cta": "إرسال رمز التحقق",
+      "verify_cta": "تحقق من الرمز",
+      "subtitle": "لقد أرسلنا رمزاً مكوناً من 6 أرقام إلى {phone}",
+      "resend_link": "إعادة إرسال الرمز",
+      "resend_countdown": "إعادة الإرسال خلال {seconds} ثانية",
+      "title": "أدخل الرمز المكون من 6 أرقام",
+      "phone_label": "رقم الهاتف",
+      "phone_placeholder": "50 XXX XXXX"
+    },
+    "washer": {
+      "pin_title": "أدخل رمز PIN الخاص بك",
+      "pin_cta": "تأكيد رمز PIN",
+      "pin_placeholder": "●"
+    },
+    "company": {
+      "signin_cta": "تسجيل الدخول",
+      "email_label": "البريد الإلكتروني",
+      "password_label": "كلمة المرور",
+      "mfa_title": "التحقق بخطوتين",
+      "mfa_subtitle": "أدخل الرمز المكون من 6 أرقام من تطبيق المصادقة الخاص بك"
+    },
+    "admin": {
+      "google_cta": "المتابعة مع Google",
+      "title": "تسجيل دخول المشرف",
+      "subtitle": "سجل الدخول باستخدام حساب Cleanly Workspace الخاص بك"
+    },
+    "empty": {
+      "no_session": "سجل الدخول للمتابعة",
+      "session_expired": "انتهت صلاحية جلستك. سجل الدخول مرة أخرى للوصول إلى حسابك."
+    },
+    "error": {
+      "invalid_otp": "الرمز غير صحيح. {remaining} محاولات متبقية.",
+      "otp_expired": "انتهت صلاحية الرمز. اضغط على إعادة الإرسال للحصول على رمز جديد.",
+      "rate_limited": "محاولات كثيرة. حاول مرة أخرى خلال {minutes} دقيقة.",
+      "network": "خطأ في الاتصال. تحقق من الإنترنت وحاول مرة أخرى.",
+      "wrong_credentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+      "invalid_totp": "الرمز غير صحيح. حاول مرة أخرى.",
+      "invalid_phone": "الرجاء إدخال رقم هاتف إماراتي صحيح (05X-XXX-XXXX)"
+    },
+    "terms_copy": "بالمتابعة، أنت توافق على شروط الخدمة وسياسة الخصوصية.",
+    "lang_toggle": {
+      "to_arabic": "العربية",
+      "to_english": "English"
+    }
+  },
+  "common": {
+    "loading": "جارٍ التحميل...",
+    "retry": "حاول مرة أخرى",
+    "back": "رجوع",
+    "continue": "متابعة"
+  }
+}

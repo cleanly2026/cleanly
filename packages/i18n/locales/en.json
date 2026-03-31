@@ -1,0 +1,55 @@
+{
+  "auth": {
+    "otp": {
+      "send_cta": "Send Verification Code",
+      "verify_cta": "Verify Code",
+      "subtitle": "We sent a 6-digit code to {phone}",
+      "resend_link": "Resend code",
+      "resend_countdown": "Resend in {seconds}s",
+      "title": "Enter the 6-digit code",
+      "phone_label": "Phone Number",
+      "phone_placeholder": "50 XXX XXXX"
+    },
+    "washer": {
+      "pin_title": "Enter your PIN",
+      "pin_cta": "Confirm PIN",
+      "pin_placeholder": "●"
+    },
+    "company": {
+      "signin_cta": "Sign In",
+      "email_label": "Email",
+      "password_label": "Password",
+      "mfa_title": "Two-Factor Authentication",
+      "mfa_subtitle": "Enter the 6-digit code from your authenticator app"
+    },
+    "admin": {
+      "google_cta": "Continue with Google",
+      "title": "Admin Sign In",
+      "subtitle": "Sign in with your Cleanly Workspace account"
+    },
+    "empty": {
+      "no_session": "Sign in to continue",
+      "session_expired": "Your session has expired. Sign in again to access your account."
+    },
+    "error": {
+      "invalid_otp": "Incorrect code. {remaining} attempts remaining.",
+      "otp_expired": "Code expired. Tap Resend to get a new code.",
+      "rate_limited": "Too many attempts. Try again in {minutes} minutes.",
+      "network": "Connection error. Check your internet and try again.",
+      "wrong_credentials": "Incorrect email or password.",
+      "invalid_totp": "Incorrect code. Try again.",
+      "invalid_phone": "Please enter a valid UAE phone number (05X-XXX-XXXX)"
+    },
+    "terms_copy": "By continuing, you agree to our Terms of Service and Privacy Policy.",
+    "lang_toggle": {
+      "to_arabic": "العربية",
+      "to_english": "English"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "retry": "Try again",
+    "back": "Back",
+    "continue": "Continue"
+  }
+}
