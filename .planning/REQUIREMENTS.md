@@ -124,14 +124,14 @@ Requirements for private beta launch. Each maps to roadmap phases.
 
 - [x] **INFRA-01**: Turborepo monorepo with 6 apps and shared packages
 - [ ] **INFRA-02**: Prisma schema with all tables including both order lifecycle models
-- [ ] **INFRA-03**: Fastify API server on persistent host (Railway/Fly.io) with Socket.io
+- [x] **INFRA-03**: Fastify API server on persistent host (Railway/Fly.io) with Socket.io
 - [ ] **INFRA-04**: Neon PostgreSQL (Bahrain region) with connection pooling
-- [ ] **INFRA-05**: Upstash Redis (Fixed Plan) for caching, rate limiting, and Socket.io adapter
-- [ ] **INFRA-06**: BullMQ workers with graceful shutdown and idempotent job handlers
+- [x] **INFRA-05**: Upstash Redis (Fixed Plan) for caching, rate limiting, and Socket.io adapter
+- [x] **INFRA-06**: BullMQ workers with graceful shutdown and idempotent job handlers
 - [ ] **INFRA-07**: Cloudflare R2 for photo storage with signed URLs only
 - [x] **INFRA-08**: GitHub Actions CI pipeline (lint + typecheck + test per PR)
 - [x] **INFRA-09**: Sentry error tracking on all 5 app surfaces
-- [ ] **INFRA-10**: Zod validation on every API endpoint
+- [x] **INFRA-10**: Zod validation on every API endpoint
 
 ## v2 Requirements
 
@@ -199,14 +199,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | I18N-06 | Phase 1 | Pending |
 | INFRA-01 | Phase 1 | Complete |
 | INFRA-02 | Phase 1 | Pending |
-| INFRA-03 | Phase 1 | Pending |
+| INFRA-03 | Phase 1 | Complete |
 | INFRA-04 | Phase 1 | Pending |
-| INFRA-05 | Phase 1 | Pending |
-| INFRA-06 | Phase 1 | Pending |
+| INFRA-05 | Phase 1 | Complete |
+| INFRA-06 | Phase 1 | Complete |
 | INFRA-07 | Phase 1 | Pending |
 | INFRA-08 | Phase 1 | Complete |
 | INFRA-09 | Phase 1 | Complete |
-| INFRA-10 | Phase 1 | Pending |
+| INFRA-10 | Phase 1 | Complete |
 | DISC-01 | Phase 2 | Pending |
 | DISC-02 | Phase 2 | Pending |
 | DISC-03 | Phase 2 | Pending |
