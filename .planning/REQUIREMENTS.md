@@ -123,9 +123,9 @@ Requirements for private beta launch. Each maps to roadmap phases.
 ### Infrastructure
 
 - [x] **INFRA-01**: Turborepo monorepo with 6 apps and shared packages
-- [ ] **INFRA-02**: Prisma schema with all tables including both order lifecycle models
+- [x] **INFRA-02**: Prisma schema with all tables including both order lifecycle models
 - [ ] **INFRA-03**: Fastify API server on persistent host (Railway/Fly.io) with Socket.io
-- [ ] **INFRA-04**: Neon PostgreSQL (Bahrain region) with connection pooling
+- [x] **INFRA-04**: Neon PostgreSQL (Bahrain region) with connection pooling
 - [ ] **INFRA-05**: Upstash Redis (Fixed Plan) for caching, rate limiting, and Socket.io adapter
 - [ ] **INFRA-06**: BullMQ workers with graceful shutdown and idempotent job handlers
 - [ ] **INFRA-07**: Cloudflare R2 for photo storage with signed URLs only
@@ -198,9 +198,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | I18N-05 | Phase 1 | Pending |
 | I18N-06 | Phase 1 | Pending |
 | INFRA-01 | Phase 1 | Complete |
-| INFRA-02 | Phase 1 | Pending |
+| INFRA-02 | Phase 1 | Complete |
 | INFRA-03 | Phase 1 | Pending |
-| INFRA-04 | Phase 1 | Pending |
+| INFRA-04 | Phase 1 | Complete |
 | INFRA-05 | Phase 1 | Pending |
 | INFRA-06 | Phase 1 | Pending |
 | INFRA-07 | Phase 1 | Pending |

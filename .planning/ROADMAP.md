@@ -33,9 +33,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 - [x] 01-01-PLAN.md — Turborepo monorepo scaffold: 6 apps + 6 packages
-- [ ] 01-02-PLAN.md — Shared type contracts, bilingual i18n locale files, Tailwind config
+- [x] 01-02-PLAN.md — Shared type contracts, bilingual i18n locale files, Tailwind config
 - [x] 01-03-PLAN.md — GitHub Actions CI pipeline + Sentry scaffolds
-- [ ] 01-04-PLAN.md — Complete Prisma schema (15 tables) + Neon deploy + PostGIS indexes
+- [x] 01-04-PLAN.md — Complete Prisma schema (15 tables) + Neon deploy + PostGIS indexes
 - [ ] 01-05-PLAN.md — Fastify API skeleton + Redis singleton + BullMQ worker
 - [ ] 01-06-PLAN.md — Customer OTP auth + washer OTP+PIN auth routes
 - [ ] 01-07-PLAN.md — Company admin TOTP MFA + admin Google SSO routes

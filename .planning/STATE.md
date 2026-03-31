@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-foundation/01-03-PLAN.md
-last_updated: "2026-03-31T15:16:22.171Z"
+stopped_at: Completed 01-foundation/01-04-PLAN.md
+last_updated: "2026-03-31T16:59:28.532Z"
 last_activity: 2026-03-31
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 12
-  completed_plans: 2
+  completed_plans: 4
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-03-30)
 ## Current Position
 
 Phase: 01 (foundation) — EXECUTING
-Plan: 3 of 12
+Plan: 4 of 12
 Status: Ready to execute
 Last activity: 2026-03-31
 
@@ -54,6 +54,7 @@ Progress: [░░░░░░░░░░] 0%
 *Updated after each plan completion*
 | Phase 01-foundation P01 | 5 | 2 tasks | 23 files |
 | Phase 01 P03 | 120 | 2 tasks | 9 files |
+| Phase 01-foundation P04 | 2min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,8 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: apps/company-web uses Vite (not Next.js) — authenticated SPA with no SEO need, 10x faster HMR for ops dashboard
 - [Phase 01]: Sentry DSN conditional init: warn + return (never crash) if DSN missing — allows CI to pass without Sentry account configured
 - [Phase 01]: TURBO_TOKEN/TURBO_TEAM are optional CI secrets — CI works without them (local cache only), remote cache enabled when Vercel account configured
+- [Phase 01-foundation]: Prisma client output to generated/client directory for monorepo isolation
+- [Phase 01-foundation]: PostGIS GIST indexes managed via idempotent SQL postmigrate script, not Prisma migrations (Prisma drops custom indexes)
 
 ### Pending Todos
 
@@ -84,6 +87,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-31T15:16:22.167Z
-Stopped at: Completed 01-foundation/01-03-PLAN.md
+Last session: 2026-03-31T16:59:28.519Z
+Stopped at: Completed 01-foundation/01-04-PLAN.md
 Resume file: None
