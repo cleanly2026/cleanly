@@ -1,0 +1,15 @@
+{
+  "name": "@cleanly/config",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "typecheck": "echo 'config has no ts to check'"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "eslint": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "tailwindcss": "^4.0.0"
+  }
+}
