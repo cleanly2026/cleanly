@@ -8,7 +8,10 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "db:postmigrate": "psql $DIRECT_URL -f migrations/0002_postgis_indexes.sql",
+    "db:deploy": "prisma migrate deploy && pnpm db:postmigrate",
+    "db:seed": "tsx seed.ts"
   },
   "devDependencies": {
     "typescript": "^5.7.0",
