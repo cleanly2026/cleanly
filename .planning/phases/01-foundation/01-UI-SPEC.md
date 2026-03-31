@@ -177,13 +177,13 @@ Exceptions:
 | Role | Size | Weight | Line Height | Font | Notes |
 |------|------|--------|-------------|------|-------|
 | Body | 16px | 400 (regular) | 1.5 | Cairo (AR) / Inter (EN) | Input helper text, terms copy |
-| Label | 14px | 500 (medium) | 1.4 | Cairo (AR) / Inter (EN) | Form field labels, nav items |
+| Label | 14px | 600 (semibold) | 1.4 | Cairo (AR) / Inter (EN) | Form field labels, nav items |
 | Heading | 20px | 600 (semibold) | 1.3 | Cairo (AR) / Inter (EN) | Auth screen titles |
-| Display | 28px | 700 (bold) | 1.2 | Cairo (AR) / Inter (EN) | App name / brand lockup on auth screens |
+| Display | 28px | 600 (semibold) | 1.2 | Cairo (AR) / Inter (EN) | App name / brand lockup on auth screens |
 
 Rules:
 - Exactly 4 sizes: 14, 16, 20, 28
-- Exactly 2 weights for body content: 400 + 600 (500 for labels only, not body)
+- Exactly 2 weights: 400 (regular) for body text + 600 (semibold) for all labels, headings, and display
 - Arabic text at same px sizes — Cairo renders slightly larger optically; no size compensation
 - No italic in Arabic (poor rendering for most Arabic fonts including Cairo)
 - Minimum body size: 16px on mobile (never scale below 16px to prevent iOS zoom-on-focus)
@@ -203,7 +203,7 @@ The ROFAN brand targets a premium, trustworthy feeling for Gulf customers. The p
 | Destructive | `#DC2626` | `0 72% 51%` | Error states, invalid OTP, failed auth |
 
 Accent (`#C9A84C` — warm gold) reserved exclusively for:
-1. Primary CTA buttons (Send Code, Verify, Sign In, Continue with Google)
+1. Primary CTA buttons (Send Verification Code, Verify Code, Sign In, Continue with Google, Confirm PIN)
 2. Active/focus ring on OTP and PIN digit input boxes
 3. Language toggle active indicator underline
 4. Brand wordmark accent element (if used on auth screens)
@@ -222,20 +222,28 @@ the card background to provide contrast depth — this is NOT a dark mode, it is
 
 ## Auth Screen Layouts
 
+### Focal Point Declaration
+
+The primary focal point on every auth screen is the gold CTA button (`#C9A84C`) centered in the lower
+third of the auth card. All surrounding elements (title, subtitle, input fields) are sized and spaced
+to draw the eye downward toward this button. The ROFAN brand wordmark at Display size (28px, semibold)
+serves as the secondary focal point at the top of the card, anchoring brand identity before the user
+reads the form. No competing high-contrast elements exist between the wordmark and the CTA.
+
 ### Screen 1: Customer OTP — Phone Entry
 
 ```
 ┌────────────────────────────────┐
 │  [LANG TOGGLE]          [Logo] │  ← top bar, 64px height
 │                                │
-│      ROFAN                     │  ← Display (28px, bold)
+│      ROFAN                     │  ← Display (28px, semibold) — secondary focal point
 │      Book your clean.          │  ← Heading (20px, semibold)
 │                                │
 │  ┌──────────────────────────┐  │
 │  │ Phone Number             │  │  ← Card (secondary bg #1A2744)
 │  │ [+971] [______________]  │  │  ← country code selector + input
 │  │                          │  │
-│  │ [ Send Verification Code ]│ │  ← Accent CTA button
+│  │ [ Send Verification Code ]│ │  ← Accent CTA button — PRIMARY FOCAL POINT
 │  │                          │  │
 │  │ By continuing you agree  │  │  ← 14px, muted
 │  │ to Terms and Privacy     │  │
@@ -273,7 +281,7 @@ Same OTP flow as customer, then additional step:
 │  │● │ │● │ │  │ │  │          │
 │  └──┘ └──┘ └──┘ └──┘          │
 │                                │
-│  [ Continue ]                  │  ← Accent CTA
+│  [ Confirm PIN ]               │  ← Accent CTA
 └────────────────────────────────┘
 ```
 
@@ -380,7 +388,7 @@ All copy is bilingual. English shown here; Arabic keys stored in `packages/i18n/
 | Primary CTA — OTP verify | "Verify Code" | `auth.otp.verify_cta` |
 | Primary CTA — company login | "Sign In" | `auth.company.signin_cta` |
 | Primary CTA — admin SSO | "Continue with Google" | `auth.admin.google_cta` |
-| Primary CTA — washer PIN | "Continue" | `auth.washer.pin_cta` |
+| Primary CTA — washer PIN | "Confirm PIN" | `auth.washer.pin_cta` |
 | OTP screen subtitle | "We sent a 6-digit code to {phone}" | `auth.otp.subtitle` |
 | OTP resend link | "Resend code" | `auth.otp.resend_link` |
 | OTP resend countdown | "Resend in {seconds}s" | `auth.otp.resend_countdown` |
@@ -404,19 +412,20 @@ Destructive actions in Phase 1: none. (Session logout exists but is not on auth 
 
 | Registry | Blocks Used | Safety Gate | Date |
 |----------|-------------|-------------|------|
-| shadcn official | button, input, card, label, select, separator, sonner, badge, skeleton | Not required | — |
-| glassmorphism registry | TBD — executor to list and vet before use | `npx shadcn view {block} --registry {url}` required before install | TBD |
-| Motion Primitives | TBD — executor to list animations needed (shake, fade, slide) | `npx shadcn view {block} --registry {motion_url}` required before install | TBD |
+| shadcn official | button, input, card, label, select, separator, sonner, badge, skeleton | Not required — official registry | — |
+| glassmorphism registry | `glass-card`, `glass-panel`, `glass-button` | PENDING first-use vetting — executor must run `npx shadcn view {block} --registry {glassmorphism_url}` before installing each block. Scan for: `fetch(`, `XMLHttpRequest`, `navigator.sendBeacon`, `eval(`, `process.env`, dynamic external imports. | Not yet vetted |
+| Motion Primitives | `fade-in`, `slide-in`, `shake` | PENDING first-use vetting — executor must run `npx shadcn view {block} --registry {motion_primitives_url}` before installing each block. Scan for same patterns as above. | Not yet vetted |
 
-**Registry vetting procedure for executor:**
+**Vetting procedure for executor (required before any third-party block install):**
 
-For each glassmorphism and Motion Primitives block:
+For each glassmorphism block (`glass-card`, `glass-panel`, `glass-button`) and each Motion Primitives block (`fade-in`, `slide-in`, `shake`):
+
 1. Run: `npx shadcn view {block} --registry {registry_url}`
-2. Scan output for: `fetch(`, `XMLHttpRequest`, `navigator.sendBeacon`, `eval(`, `process.env`, external dynamic imports
-3. If flags found: do not install. Document finding. Use shadcn official equivalent instead.
-4. If clean: install and note "view passed — no flags — {date}" in this table.
+2. Scan output for: `fetch(`, `XMLHttpRequest`, `navigator.sendBeacon`, `eval(`, `process.env`, external dynamic imports, obfuscated variable names
+3. If any flag found: do NOT install. Document the flagged lines. Use shadcn official equivalent or implement the animation manually.
+4. If clean: install and update this table with "view passed — no flags — {date}"
 
-Until vetting is complete, these registries are PENDING — not blocked.
+Until vetting is complete and this table is updated with timestamped evidence, these blocks are PENDING — not approved for installation.
 
 ---
 
@@ -450,6 +459,10 @@ export default {
         'body':  ['16px', { lineHeight: '1.5' }],
         'heading': ['20px', { lineHeight: '1.3' }],
         'display': ['28px', { lineHeight: '1.2' }],
+      },
+      fontWeight: {
+        regular:  '400',
+        semibold: '600',
       },
     },
   },
@@ -491,13 +504,18 @@ No plugin required. Use them instead of `ml-*`/`mr-*`/`pl-*`/`pr-*` everywhere.
 | CSS logical properties throughout | REQUIREMENTS.md I18N-02 + STACK.md |
 | Separate `_en`/`_ar` columns | CONTEXT.md D-03 (locked) |
 | 8-point spacing scale | Default (sensible standard) |
-| 4 type sizes, 2 weights | Default (design contract rule) |
+| 4 type sizes, 2 weights (400 + 600) | Default (design contract rule) — checker revision 2026-03-31 |
 | Brand colors (navy/gold/warm white) | Designer discretion — Gulf premium positioning |
 | 44px minimum touch targets | WCAG 2.5.5 AA (Gulf mobile-first audience) |
 | OTP box: 48×56px | Gulf mobile-first + WCAG enhanced |
+| "Confirm PIN" CTA (was "Continue") | Checker revision 2026-03-31 — verb+noun requirement |
+| Focal point declaration added | Checker revision 2026-03-31 — Dimension 2 requirement |
+| Typography weights reduced to 2 (400 + 600) | Checker revision 2026-03-31 — Dimension 4 block fix |
+| Registry blocks named (not TBD) | Checker revision 2026-03-31 — Dimension 6 block fix |
 
 ---
 
 *Phase: 01-foundation*
 *UI-SPEC created: 2026-03-31*
+*UI-SPEC revised: 2026-03-31 (checker fixes)*
 *Next step: gsd-ui-checker validates this contract*
