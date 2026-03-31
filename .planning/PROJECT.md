@@ -2,7 +2,7 @@
 
 ## What This Is
 
-On-demand mobile cleaning services marketplace for the Gulf region (UAE, Saudi Arabia, Egypt). Customers book car wash, carpet cleaning, or sofa/furniture cleaning — the washer always comes to the client. Customers choose from verified companies, pay through the app, and track their washer in real-time. Built as a bilingual Arabic (RTL) + English platform across 5 app surfaces: customer web, customer mobile, company dashboard, washer mobile app, and admin panel.
+On-demand mobile cleaning services marketplace for the Gulf region (UAE, Saudi Arabia, Egypt). Three service types with two delivery models: **Car wash** and **sofa cleaning** — the washer comes to the client and cleans on-site. **Carpet cleaning** — the washer collects the carpet from the client, cleans it at the company's facility, and returns it on a pre-agreed date (pickup → clean → return model). Customers choose from verified companies, pay through the app, and track service progress. Built as a bilingual Arabic (RTL) + English platform across 5 app surfaces: customer web, customer mobile, company dashboard, washer mobile app, and admin panel.
 
 ## Core Value
 
@@ -76,7 +76,8 @@ A customer can book a cleaning service, pay securely, and track their washer arr
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
 | Marketplace model (customer picks company) | Gulf customers trust brand names; faster to launch than gig-dispatch | — Pending |
-| Washer travels to client (not drop-off) | Maximum convenience — car/home/office service anywhere | — Pending |
+| Washer travels to client for car wash + sofa | Maximum convenience — car/home/office service anywhere | — Pending |
+| Carpet = pickup → facility clean → return | Carpets need deep cleaning equipment only available at facility; return date agreed at booking | — Pending |
 | Bilingual from day 1 (not retrofit) | UAE/KSA/Egypt markets require Arabic; retrofitting RTL is extremely painful | — Pending |
 | Separate _en/_ar DB columns (not JSON) | Queryable, indexable, enforces both translations exist | — Pending |
 | UAE first, then KSA + Egypt | Concentrate supply/demand in one market first | — Pending |
