@@ -246,6 +246,31 @@ Use these entry points:
 - `/gsd:execute-phase` for planned phase work
 
 Do not make direct repo edits outside a GSD workflow unless the user explicitly asks to bypass it.
+
+## Adversarial Evaluation (Anthropic Harness Integration)
+
+After executing a phase with UI output (`UI hint: yes` in ROADMAP.md), run `/evaluate {phase}` to trigger adversarial live-app testing via Playwright.
+
+**Workflow position:** execute-phase -> `/evaluate` -> /gsd:verify-work -> complete
+
+**What it does:**
+- Spawns gsd-evaluator agent (Opus, Playwright MCP)
+- Interacts with all running app surfaces as a real user
+- Scores against 5 criteria rubrics in `criteria/` directory
+- Tests Arabic RTL by switching language mid-flow
+- Produces EVALUATION.md with GSD-compatible gaps
+
+**When to use:**
+- After any UI-producing phase completes and dev servers are running
+- NOT on infrastructure phases (01-01 through 01-05 have no UI)
+- Maximum 3 evaluate-fix-reevaluate rounds
+
+**Criteria rubrics** (in `criteria/` directory):
+1. Frontend / UI Design — Design quality, originality, craft, RTL/i18n, multi-surface consistency
+2. Backend API & Data Layer — Prisma schema, API design, error handling, data integrity
+3. Code Architecture — Monorepo structure, maintainability, patterns, type safety
+4. Performance & Accessibility — Load/runtime performance, semantic HTML, responsive, RTL accessibility
+5. UX & User Flows — Task completion, info architecture, product depth, bilingual UX
 <!-- GSD:workflow-end -->
 
 <!-- GSD:profile-start -->

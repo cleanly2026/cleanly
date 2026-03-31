@@ -27,6 +27,11 @@
     "discuss_mode": "discuss",
     "skip_discuss": false
   },
+  "evaluator": {
+    "enabled": true,
+    "max_rounds": 3,
+    "model": "opus"
+  },
   "hooks": {
     "context_warnings": true
   },
