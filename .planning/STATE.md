@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-foundation/01-01-PLAN.md
-last_updated: "2026-03-31T15:11:27.980Z"
+stopped_at: Completed 01-foundation/01-03-PLAN.md
+last_updated: "2026-03-31T15:16:22.171Z"
 last_activity: 2026-03-31
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 12
-  completed_plans: 1
+  completed_plans: 2
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-03-30)
 ## Current Position
 
 Phase: 01 (foundation) — EXECUTING
-Plan: 2 of 12
+Plan: 3 of 12
 Status: Ready to execute
 Last activity: 2026-03-31
 
@@ -53,6 +53,7 @@ Progress: [░░░░░░░░░░] 0%
 
 *Updated after each plan completion*
 | Phase 01-foundation P01 | 5 | 2 tasks | 23 files |
+| Phase 01 P03 | 120 | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -67,6 +68,8 @@ Recent decisions affecting current work:
 - Pre-Phase 1: Two separate order state machines from day one — 7-state on-site and 10-state carpet; do not merge
 - [Phase 01-foundation]: node-linker=hoisted in .npmrc required for Expo SDK 55 + pnpm native module resolution
 - [Phase 01-foundation]: apps/company-web uses Vite (not Next.js) — authenticated SPA with no SEO need, 10x faster HMR for ops dashboard
+- [Phase 01]: Sentry DSN conditional init: warn + return (never crash) if DSN missing — allows CI to pass without Sentry account configured
+- [Phase 01]: TURBO_TOKEN/TURBO_TEAM are optional CI secrets — CI works without them (local cache only), remote cache enabled when Vercel account configured
 
 ### Pending Todos
 
@@ -81,6 +84,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-31T15:11:27.975Z
-Stopped at: Completed 01-foundation/01-01-PLAN.md
+Last session: 2026-03-31T15:16:22.167Z
+Stopped at: Completed 01-foundation/01-03-PLAN.md
 Resume file: None
