@@ -129,8 +129,8 @@ Requirements for private beta launch. Each maps to roadmap phases.
 - [ ] **INFRA-05**: Upstash Redis (Fixed Plan) for caching, rate limiting, and Socket.io adapter
 - [ ] **INFRA-06**: BullMQ workers with graceful shutdown and idempotent job handlers
 - [ ] **INFRA-07**: Cloudflare R2 for photo storage with signed URLs only
-- [ ] **INFRA-08**: GitHub Actions CI pipeline (lint + typecheck + test per PR)
-- [ ] **INFRA-09**: Sentry error tracking on all 5 app surfaces
+- [x] **INFRA-08**: GitHub Actions CI pipeline (lint + typecheck + test per PR)
+- [x] **INFRA-09**: Sentry error tracking on all 5 app surfaces
 - [ ] **INFRA-10**: Zod validation on every API endpoint
 
 ## v2 Requirements
@@ -204,8 +204,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INFRA-05 | Phase 1 | Pending |
 | INFRA-06 | Phase 1 | Pending |
 | INFRA-07 | Phase 1 | Pending |
-| INFRA-08 | Phase 1 | Pending |
-| INFRA-09 | Phase 1 | Pending |
+| INFRA-08 | Phase 1 | Complete |
+| INFRA-09 | Phase 1 | Complete |
 | INFRA-10 | Phase 1 | Pending |
 | DISC-01 | Phase 2 | Pending |
 | DISC-02 | Phase 2 | Pending |
