@@ -36,7 +36,7 @@ Plans:
 - [x] 01-02-PLAN.md — Shared type contracts, bilingual i18n locale files, Tailwind config
 - [x] 01-03-PLAN.md — GitHub Actions CI pipeline + Sentry scaffolds
 - [x] 01-04-PLAN.md — Complete Prisma schema (15 tables) + Neon deploy + PostGIS indexes
-- [ ] 01-05-PLAN.md — Fastify API skeleton + Redis singleton + BullMQ worker
+- [x] 01-05-PLAN.md — Fastify API skeleton + Redis singleton + BullMQ worker
 - [ ] 01-06-PLAN.md — Customer OTP auth + washer OTP+PIN auth routes
 - [ ] 01-07-PLAN.md — Company admin TOTP MFA + admin Google SSO routes
 - [ ] 01-08-PLAN.md — next-intl RTL setup for web apps + Expo i18next setup

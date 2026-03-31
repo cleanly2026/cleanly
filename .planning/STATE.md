@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-foundation/01-04-PLAN.md
-last_updated: "2026-03-31T16:59:28.532Z"
+stopped_at: Completed 01-foundation/01-05-PLAN.md
+last_updated: "2026-03-31T17:08:33.914Z"
 last_activity: 2026-03-31
 progress:
   total_phases: 4
@@ -55,6 +55,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01-foundation P01 | 5 | 2 tasks | 23 files |
 | Phase 01 P03 | 120 | 2 tasks | 9 files |
 | Phase 01-foundation P04 | 2min | 2 tasks | 5 files |
+| Phase 01-foundation P05 | 11min | 2 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -73,6 +74,8 @@ Recent decisions affecting current work:
 - [Phase 01]: TURBO_TOKEN/TURBO_TEAM are optional CI secrets — CI works without them (local cache only), remote cache enabled when Vercel account configured
 - [Phase 01-foundation]: Prisma client output to generated/client directory for monorepo isolation
 - [Phase 01-foundation]: PostGIS GIST indexes managed via idempotent SQL postmigrate script, not Prisma migrations (Prisma drops custom indexes)
+- [Phase 01-foundation]: Used fastify-type-provider-zod (community package) — @fastify/type-provider-zod does not exist on npm
+- [Phase 01-foundation]: ioredis default import pattern for ESM compatibility in Fastify server
 
 ### Pending Todos
 
@@ -87,6 +90,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-31T16:59:28.519Z
-Stopped at: Completed 01-foundation/01-04-PLAN.md
+Last session: 2026-03-31T17:08:33.909Z
+Stopped at: Completed 01-foundation/01-05-PLAN.md
 Resume file: None
