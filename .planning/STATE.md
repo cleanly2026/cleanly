@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-stopped_at: Phase 1 planned — 12 plans in 7 waves, verified
-last_updated: "2026-03-31T15:02:20.744Z"
-last_activity: 2026-03-31 — Roadmap created, 84 v1 requirements mapped across 4 phases
+status: executing
+stopped_at: Completed 01-foundation/01-01-PLAN.md
+last_updated: "2026-03-31T15:11:27.980Z"
+last_activity: 2026-03-31
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 12
-  completed_plans: 0
+  completed_plans: 1
   percent: 0
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-30)
 
 **Core value:** A customer can book a cleaning service, pay securely, and track their washer arriving in real-time — the full end-to-end booking-to-completion flow must work flawlessly.
-**Current focus:** Phase 1 — Foundation
+**Current focus:** Phase 01 — foundation
 
 ## Current Position
 
-Phase: 1 of 4 (Foundation)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-03-31 — Roadmap created, 84 v1 requirements mapped across 4 phases
+Phase: 01 (foundation) — EXECUTING
+Plan: 2 of 12
+Status: Ready to execute
+Last activity: 2026-03-31
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -52,6 +52,7 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 01-foundation P01 | 5 | 2 tasks | 23 files |
 
 ## Accumulated Context
 
@@ -64,6 +65,8 @@ Recent decisions affecting current work:
 - Pre-Phase 1: Confirm Stripe Connect UAE manual onboarding flow with Stripe support before writing any payout code in Phase 2
 - Pre-Phase 1: Upstash Redis must use Fixed Plan ($10/mo) — Pay-As-You-Go causes BullMQ polling cost blowout
 - Pre-Phase 1: Two separate order state machines from day one — 7-state on-site and 10-state carpet; do not merge
+- [Phase 01-foundation]: node-linker=hoisted in .npmrc required for Expo SDK 55 + pnpm native module resolution
+- [Phase 01-foundation]: apps/company-web uses Vite (not Next.js) — authenticated SPA with no SEO need, 10x faster HMR for ops dashboard
 
 ### Pending Todos
 
@@ -78,6 +81,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-31T15:02:20.739Z
-Stopped at: Phase 1 planned — 12 plans in 7 waves, verified
-Resume file: .planning/phases/01-foundation/01-01-PLAN.md
+Last session: 2026-03-31T15:11:27.975Z
+Stopped at: Completed 01-foundation/01-01-PLAN.md
+Resume file: None

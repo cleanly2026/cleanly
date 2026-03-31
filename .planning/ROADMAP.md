@@ -32,7 +32,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 12 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Turborepo monorepo scaffold: 6 apps + 6 packages
+- [x] 01-01-PLAN.md — Turborepo monorepo scaffold: 6 apps + 6 packages
 - [ ] 01-02-PLAN.md — Shared type contracts, bilingual i18n locale files, Tailwind config
 - [ ] 01-03-PLAN.md — GitHub Actions CI pipeline + Sentry scaffolds
 - [ ] 01-04-PLAN.md — Complete Prisma schema (15 tables) + Neon deploy + PostGIS indexes
@@ -92,7 +92,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/12 | Not started | - |
+| 1. Foundation | 1/12 | In Progress|  |
 | 2. Core Business Flow | 0/TBD | Not started | - |
 | 3. Real-Time & Washer App | 0/TBD | Not started | - |
 | 4. Supporting Systems & Admin | 0/TBD | Not started | - |

@@ -1,4 +1,4 @@
-# Requirements: Cleanly
+# Requirements: ROFAN
 
 **Defined:** 2026-03-31
 **Core Value:** A customer can book a cleaning service, pay securely, and track their washer arriving in real-time — the full end-to-end booking-to-completion flow must work flawlessly.
@@ -122,7 +122,7 @@ Requirements for private beta launch. Each maps to roadmap phases.
 
 ### Infrastructure
 
-- [ ] **INFRA-01**: Turborepo monorepo with 6 apps and shared packages
+- [x] **INFRA-01**: Turborepo monorepo with 6 apps and shared packages
 - [ ] **INFRA-02**: Prisma schema with all tables including both order lifecycle models
 - [ ] **INFRA-03**: Fastify API server on persistent host (Railway/Fly.io) with Socket.io
 - [ ] **INFRA-04**: Neon PostgreSQL (Bahrain region) with connection pooling
@@ -197,7 +197,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | I18N-04 | Phase 1 | Pending |
 | I18N-05 | Phase 1 | Pending |
 | I18N-06 | Phase 1 | Pending |
-| INFRA-01 | Phase 1 | Pending |
+| INFRA-01 | Phase 1 | Complete |
 | INFRA-02 | Phase 1 | Pending |
 | INFRA-03 | Phase 1 | Pending |
 | INFRA-04 | Phase 1 | Pending |
