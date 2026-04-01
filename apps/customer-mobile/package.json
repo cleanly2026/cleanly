@@ -10,12 +10,17 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^3.0.2",
     "expo": "~55.0.0",
+    "expo-localization": "^55.0.9",
+    "expo-router": "~5.0.0",
+    "i18next": "^26.0.3",
     "react": "19.0.0",
+    "react-i18next": "^17.0.2",
     "react-native": "0.79.0"
   },
   "devDependencies": {
-    "typescript": "^5.7.0",
-    "@types/react": "^19.0.0"
+    "@types/react": "^19.0.0",
+    "typescript": "^5.7.0"
   }
 }
