@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-foundation/01-05-PLAN.md
-last_updated: "2026-03-31T17:08:33.914Z"
-last_activity: 2026-03-31
+stopped_at: Completed 01-foundation/01-06-PLAN.md
+last_updated: "2026-04-01T05:31:32.478Z"
+last_activity: 2026-04-01
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 12
-  completed_plans: 4
+  completed_plans: 6
   percent: 0
 ---
 
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-03-30)
 ## Current Position
 
 Phase: 01 (foundation) — EXECUTING
-Plan: 4 of 12
+Plan: 2 of 12
 Status: Ready to execute
-Last activity: 2026-03-31
+Last activity: 2026-04-01
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -56,6 +56,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P03 | 120 | 2 tasks | 9 files |
 | Phase 01-foundation P04 | 2min | 2 tasks | 5 files |
 | Phase 01-foundation P05 | 11min | 2 tasks | 12 files |
+| Phase 01-foundation P06 | 5min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -76,6 +77,9 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: PostGIS GIST indexes managed via idempotent SQL postmigrate script, not Prisma migrations (Prisma drops custom indexes)
 - [Phase 01-foundation]: Used fastify-type-provider-zod (community package) — @fastify/type-provider-zod does not exist on npm
 - [Phase 01-foundation]: ioredis default import pattern for ESM compatibility in Fastify server
+- [Phase 01-foundation]: Refresh token stored as bcrypt hash in Redis at rt:{userId} — single token per user, enables instant revocation
+- [Phase 01-foundation]: Rate limit keyGenerator uses req.body.phone not req.ip — prevents distributed OTP attacks while allowing shared IPs
+- [Phase 01-foundation]: washer.ts uses findFirst not findUnique — role is not part of phone unique constraint
 
 ### Pending Todos
 
@@ -90,6 +94,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-31T17:08:33.909Z
-Stopped at: Completed 01-foundation/01-05-PLAN.md
+Last session: 2026-04-01T05:31:32.473Z
+Stopped at: Completed 01-foundation/01-06-PLAN.md
 Resume file: None
