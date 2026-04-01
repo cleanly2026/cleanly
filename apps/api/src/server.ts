@@ -6,6 +6,8 @@ import rateLimitPlugin from './plugins/rate-limit.js'
 import zodPlugin from './plugins/zod-provider.js'
 import { otpRoutes } from './routes/auth/otp.js'
 import { washerRoutes } from './routes/auth/washer.js'
+import { companyRoutes } from './routes/auth/company.js'
+import { adminRoutes } from './routes/auth/admin.js'
 
 // Initialize Sentry before anything else
 initSentry()
@@ -34,6 +36,9 @@ server.get('/health', async () => ({
 // Auth routes — Plan 06: phone OTP (customers) and OTP+PIN (washers)
 await server.register(otpRoutes, { prefix: '/auth/otp' })
 await server.register(washerRoutes, { prefix: '/auth/washer' })
+// Auth routes — Plan 07: company admin email+TOTP MFA and platform admin Google SSO exchange
+await server.register(companyRoutes, { prefix: '/auth/company' })
+await server.register(adminRoutes, { prefix: '/auth/admin' })
 
 const port = parseInt(process.env.PORT ?? '3000', 10)
 const host = process.env.HOST ?? '0.0.0.0'
