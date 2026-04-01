@@ -4,6 +4,8 @@ import authPlugin from './plugins/auth.js'
 import corsPlugin from './plugins/cors.js'
 import rateLimitPlugin from './plugins/rate-limit.js'
 import zodPlugin from './plugins/zod-provider.js'
+import { otpRoutes } from './routes/auth/otp.js'
+import { washerRoutes } from './routes/auth/washer.js'
 
 // Initialize Sentry before anything else
 initSentry()
@@ -29,8 +31,9 @@ server.get('/health', async () => ({
   timestamp: new Date().toISOString(),
 }))
 
-// Auth routes registered in Plans 06 and 07
-// server.register(authRoutes, { prefix: '/auth' })
+// Auth routes — Plan 06: phone OTP (customers) and OTP+PIN (washers)
+await server.register(otpRoutes, { prefix: '/auth/otp' })
+await server.register(washerRoutes, { prefix: '/auth/washer' })
 
 const port = parseInt(process.env.PORT ?? '3000', 10)
 const host = process.env.HOST ?? '0.0.0.0'
