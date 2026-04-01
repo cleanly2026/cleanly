@@ -9,13 +9,13 @@ Requirements for private beta launch. Each maps to roadmap phases.
 
 ### Authentication
 
-- [ ] **AUTH-01**: Customer can sign up and log in via phone OTP (Twilio Verify)
-- [ ] **AUTH-02**: Customer session persists across app restart (JWT access + refresh tokens)
-- [ ] **AUTH-03**: Company admin can log in with email and bcrypt password
-- [ ] **AUTH-04**: Company admin account requires TOTP MFA for payout access
-- [ ] **AUTH-05**: Washer can log in via phone OTP + 4-digit PIN
-- [ ] **AUTH-06**: Platform admin can log in via Google Workspace SSO only
-- [ ] **AUTH-07**: Rate limiting enforced on OTP endpoints (3/phone/15min)
+- [x] **AUTH-01**: Customer can sign up and log in via phone OTP (Twilio Verify)
+- [x] **AUTH-02**: Customer session persists across app restart (JWT access + refresh tokens)
+- [x] **AUTH-03**: Company admin can log in with email and bcrypt password
+- [x] **AUTH-04**: Company admin account requires TOTP MFA for payout access
+- [x] **AUTH-05**: Washer can log in via phone OTP + 4-digit PIN
+- [x] **AUTH-06**: Platform admin can log in via Google Workspace SSO only
+- [x] **AUTH-07**: Rate limiting enforced on OTP endpoints (3/phone/15min)
 
 ### Discovery
 
@@ -184,13 +184,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 1 | Pending |
-| AUTH-02 | Phase 1 | Pending |
-| AUTH-03 | Phase 1 | Pending |
-| AUTH-04 | Phase 1 | Pending |
-| AUTH-05 | Phase 1 | Pending |
-| AUTH-06 | Phase 1 | Pending |
-| AUTH-07 | Phase 1 | Pending |
+| AUTH-01 | Phase 1 | Complete |
+| AUTH-02 | Phase 1 | Complete |
+| AUTH-03 | Phase 1 | Complete |
+| AUTH-04 | Phase 1 | Complete |
+| AUTH-05 | Phase 1 | Complete |
+| AUTH-06 | Phase 1 | Complete |
+| AUTH-07 | Phase 1 | Complete |
 | I18N-01 | Phase 1 | Complete |
 | I18N-02 | Phase 1 | Pending |
 | I18N-03 | Phase 1 | Complete |

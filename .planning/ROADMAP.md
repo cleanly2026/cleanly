@@ -38,7 +38,7 @@ Plans:
 - [x] 01-04-PLAN.md — Complete Prisma schema (15 tables) + Neon deploy + PostGIS indexes
 - [x] 01-05-PLAN.md — Fastify API skeleton + Redis singleton + BullMQ worker
 - [x] 01-06-PLAN.md — Customer OTP auth + washer OTP+PIN auth routes
-- [ ] 01-07-PLAN.md — Company admin TOTP MFA + admin Google SSO routes
+- [x] 01-07-PLAN.md — Company admin TOTP MFA + admin Google SSO routes
 - [ ] 01-08-PLAN.md — next-intl RTL setup for web apps + Expo i18next setup
 - [ ] 01-09-PLAN.md — Cloudflare R2 storage client scaffold
 - [ ] 01-10-PLAN.md — Custom auth UI components (OtpInput, PinInput, PhoneInput, LanguageToggle, AuthCard)
@@ -92,7 +92,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 6/12 | In Progress|  |
+| 1. Foundation | 7/12 | In Progress|  |
 | 2. Core Business Flow | 0/TBD | Not started | - |
 | 3. Real-Time & Washer App | 0/TBD | Not started | - |
 | 4. Supporting Systems & Admin | 0/TBD | Not started | - |
