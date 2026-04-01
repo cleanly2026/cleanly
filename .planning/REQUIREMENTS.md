@@ -106,11 +106,11 @@ Requirements for private beta launch. Each maps to roadmap phases.
 ### Bilingual (AR/EN)
 
 - [x] **I18N-01**: All UI strings use i18n keys — no hardcoded English
-- [ ] **I18N-02**: Arabic mode uses RTL layout with CSS logical properties throughout
+- [x] **I18N-02**: Arabic mode uses RTL layout with CSS logical properties throughout
 - [x] **I18N-03**: Database content fields have _en and _ar columns (not JSON)
-- [ ] **I18N-04**: Customer can switch language; preference persists to profile
-- [ ] **I18N-05**: Arabic font (Cairo) loaded with zero CLS
-- [ ] **I18N-06**: Map labels switch to Arabic when AR mode is active
+- [x] **I18N-04**: Customer can switch language; preference persists to profile
+- [x] **I18N-05**: Arabic font (Cairo) loaded with zero CLS
+- [x] **I18N-06**: Map labels switch to Arabic when AR mode is active
 
 ### Notifications
 
@@ -192,11 +192,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-06 | Phase 1 | Complete |
 | AUTH-07 | Phase 1 | Complete |
 | I18N-01 | Phase 1 | Complete |
-| I18N-02 | Phase 1 | Pending |
+| I18N-02 | Phase 1 | Complete |
 | I18N-03 | Phase 1 | Complete |
-| I18N-04 | Phase 1 | Pending |
-| I18N-05 | Phase 1 | Pending |
-| I18N-06 | Phase 1 | Pending |
+| I18N-04 | Phase 1 | Complete |
+| I18N-05 | Phase 1 | Complete |
+| I18N-06 | Phase 1 | Complete |
 | INFRA-01 | Phase 1 | Complete |
 | INFRA-02 | Phase 1 | Complete |
 | INFRA-03 | Phase 1 | Complete |
