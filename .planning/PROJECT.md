@@ -12,13 +12,12 @@ A customer can book a cleaning service, pay securely, and track their washer arr
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] Phone OTP authentication for customers and washers — Validated in Phase 1: Foundation
+- [x] Company email/password authentication with MFA — Validated in Phase 1: Foundation
+- [x] Platform admin Google SSO authentication — Validated in Phase 1: Foundation
+- [x] Bilingual Arabic (RTL) + English throughout — Validated in Phase 1: Foundation (infrastructure + auth screens)
 
 ### Active
-
-- [ ] Phone OTP authentication for customers and washers
-- [ ] Company email/password authentication with MFA
-- [ ] Platform admin Google SSO authentication
 - [ ] Service category browsing (car wash, carpet, sofa)
 - [ ] GPS-based city detection and company filtering
 - [ ] Company listing with ratings, pricing, and ETA
@@ -33,7 +32,6 @@ A customer can book a cleaning service, pay securely, and track their washer arr
 - [ ] Company onboarding (profile, cities, categories, packages)
 - [ ] Washer mobile app (GPS, camera, job management)
 - [ ] Admin panel for platform oversight
-- [ ] Bilingual Arabic (RTL) + English throughout
 - [ ] Push notifications (Expo), SMS (Twilio), Email (Resend)
 - [ ] Stripe Connect for company payouts
 - [ ] Loyalty points and wallet system
@@ -102,4 +100,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-30 after initialization*
+*Last updated: 2026-04-02 after Phase 1 completion*
