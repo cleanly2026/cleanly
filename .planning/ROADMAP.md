@@ -42,7 +42,7 @@ Plans:
 - [x] 01-08-PLAN.md — next-intl RTL setup for web apps + Expo i18next setup
 - [x] 01-09-PLAN.md — Cloudflare R2 storage client scaffold
 - [x] 01-10-PLAN.md — Custom auth UI components (OtpInput, PinInput, PhoneInput, LanguageToggle, AuthCard)
-- [ ] 01-11-PLAN.md — Auth screens wired to API (customer, company, admin)
+- [x] 01-11-PLAN.md — Auth screens wired to API (customer, company, admin)
 - [ ] 01-12-PLAN.md — Human verification: all 5 Phase 1 success criteria
 **UI hint**: yes
 
