@@ -128,7 +128,7 @@ Requirements for private beta launch. Each maps to roadmap phases.
 - [x] **INFRA-04**: Neon PostgreSQL (Bahrain region) with connection pooling
 - [x] **INFRA-05**: Upstash Redis (Fixed Plan) for caching, rate limiting, and Socket.io adapter
 - [x] **INFRA-06**: BullMQ workers with graceful shutdown and idempotent job handlers
-- [ ] **INFRA-07**: Cloudflare R2 for photo storage with signed URLs only
+- [x] **INFRA-07**: Cloudflare R2 for photo storage with signed URLs only
 - [x] **INFRA-08**: GitHub Actions CI pipeline (lint + typecheck + test per PR)
 - [x] **INFRA-09**: Sentry error tracking on all 5 app surfaces
 - [x] **INFRA-10**: Zod validation on every API endpoint
@@ -203,7 +203,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INFRA-04 | Phase 1 | Complete |
 | INFRA-05 | Phase 1 | Complete |
 | INFRA-06 | Phase 1 | Complete |
-| INFRA-07 | Phase 1 | Pending |
+| INFRA-07 | Phase 1 | Complete |
 | INFRA-08 | Phase 1 | Complete |
 | INFRA-09 | Phase 1 | Complete |
 | INFRA-10 | Phase 1 | Complete |

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-foundation/01-07-PLAN.md
-last_updated: "2026-04-01T05:33:40.457Z"
+stopped_at: Completed 01-foundation/01-09-PLAN.md
+last_updated: "2026-04-01T06:09:54.303Z"
 last_activity: 2026-04-01
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 12
-  completed_plans: 7
+  completed_plans: 8
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-03-30)
 ## Current Position
 
 Phase: 01 (foundation) — EXECUTING
-Plan: 3 of 12
+Plan: 2 of 12
 Status: Ready to execute
 Last activity: 2026-04-01
 
@@ -58,6 +58,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01-foundation P05 | 11min | 2 tasks | 12 files |
 | Phase 01-foundation P06 | 5min | 2 tasks | 8 files |
 | Phase 01-foundation P07 | 10min | 2 tasks | 8 files |
+| Phase 01-foundation P09 | 5 | 1 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -84,6 +85,8 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: otplib v13.4.0 used for TOTP instead of speakeasy (unmaintained since 2019)
 - [Phase 01-foundation]: HMAC-SHA256 exchange pattern bridges Auth.js Google session to Fastify JWT without leaking session tokens
 - [Phase 01-foundation]: Pre-MFA session token (5min TTL, single-use Redis key) prevents TOTP replay attacks for company admin login
+- [Phase 01-foundation]: R2 client uses PutObjectCommand presigned URLs (not proxied): client uploads directly to R2 per PHO-05, 60s TTL prevents abuse
+- [Phase 01-foundation]: buildPhotoKey pattern orders/{orderId}/{photoType}/{timestamp}.{ext} covers all 4 Phase 3 photo types (before/after/pickup/return for carpet model)
 
 ### Pending Todos
 
@@ -98,6 +101,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-01T05:33:40.453Z
-Stopped at: Completed 01-foundation/01-07-PLAN.md
+Last session: 2026-04-01T06:09:54.298Z
+Stopped at: Completed 01-foundation/01-09-PLAN.md
 Resume file: None
