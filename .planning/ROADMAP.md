@@ -57,7 +57,18 @@ Plans:
   4. Company admin sees the new order in their dashboard in real time and can assign a washer
   5. On-site order advances through all 7 states to completion; carpet order advances through all 10 states to completion
   6. Company receives a Stripe Connect payout (with platform commission deducted) after order completion
-**Plans**: TBD
+**Plans**: 9 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Schema migration + shared type contracts (Zod schemas, i18n keys)
+- [ ] 02-02-PLAN.md — Client infrastructure (TanStack Query, Socket.io, company-web i18n/router)
+- [ ] 02-03-PLAN.md — Discovery API + customer-web UI (home, company listing, company profile)
+- [ ] 02-04-PLAN.md — Booking API (on-site + carpet order creation, Stripe PaymentIntent, order service)
+- [ ] 02-05-PLAN.md — Company management API (profile, services, packages, washers, Stripe Connect)
+- [ ] 02-06-PLAN.md — Customer booking UI (on-site, carpet, payment, confirmation screens)
+- [ ] 02-07-PLAN.md — Order lifecycle API (state transitions, washer assignment, cancellation)
+- [ ] 02-08-PLAN.md — Stripe webhooks + BullMQ order worker (payment confirm, payouts, refunds)
+- [ ] 02-09-PLAN.md — Company dashboard order feed UI (data table, real-time updates, washer assignment)
 **UI hint**: yes
 
 ### Phase 3: Real-Time & Washer App
@@ -93,6 +104,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 9/12 | In Progress|  |
-| 2. Core Business Flow | 0/TBD | Not started | - |
+| 2. Core Business Flow | 0/9 | Not started | - |
 | 3. Real-Time & Washer App | 0/TBD | Not started | - |
 | 4. Supporting Systems & Admin | 0/TBD | Not started | - |
