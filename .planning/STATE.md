@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-04-02T21:28:33.179Z"
+stopped_at: Completed 02-09-PLAN.md
+last_updated: "2026-04-02T21:28:37Z"
 last_activity: 2026-04-02
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 21
-  completed_plans: 13
+  completed_plans: 14
   percent: 0
 ---
 
@@ -26,8 +26,8 @@ See: .planning/PROJECT.md (updated 2026-03-30)
 ## Current Position
 
 Phase: 02 (core-business-flow) — EXECUTING
-Plan: 2 of 9
-Status: Ready to execute
+Plan: 9 of 9 (COMPLETE)
+Status: Phase 2 complete
 Last activity: 2026-04-02
 
 Progress: [░░░░░░░░░░] 0%
@@ -63,6 +63,8 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01-foundation P10 | 7min | 2 tasks | 13 files |
 | Phase 01-foundation P11 | 2min | 2 tasks | 8 files |
 | Phase 02 P01 | 10min | 2 tasks | 8 files |
+| Phase 02 P09 | 4min | 2 tasks | 14 files |
+| Phase 02 P02 | 15min | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -99,6 +101,12 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: Company web uses hardcoded English strings for Phase 1 scaffold -- i18next wired in Phase 2
 - [Phase 02]: carpet_lead_time_days stored on Company model (not global config) — per-company configurability required by CARP-03
 - [Phase 02]: Zod schemas organized by domain (discovery, booking, company) not by HTTP method — matches downstream plan naming conventions
+- [Phase 02-09]: order_number derived as CLN-{id.slice(0,8)} — Order model has no order_number column in schema
+- [Phase 02-09]: Washers queried as User.role='washer' (no separate Washer model) — company_id links washers to company
+- [Phase 02-09]: amount_total field name (not total_amount) — aligned to actual Prisma schema
+- [Phase 02-02]: fastify-raw-body v5 used (not @fastify/rawbody — that package does not exist on npm)
+- [Phase 02-02]: Socket autoConnect=false in company-web — connectSocket() called explicitly after auth
+- [Phase 02-02]: Socket rooms pattern: company:{id} and order:{id} — established for all downstream plans
 
 ### Pending Todos
 
@@ -113,6 +121,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-02T21:28:33.170Z
-Stopped at: Completed 02-01-PLAN.md
+Last session: 2026-04-02T21:38:52Z
+Stopped at: Completed 02-02-PLAN.md
 Resume file: None
