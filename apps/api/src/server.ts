@@ -10,6 +10,12 @@ import { washerRoutes } from './routes/auth/washer.js'
 import { companyRoutes } from './routes/auth/company.js'
 import { adminRoutes } from './routes/auth/admin.js'
 import { companyOrdersRoute } from './routes/company/orders.js'
+import { companyProfileRoutes } from './routes/company/profile.js'
+import { companyServicesRoutes } from './routes/company/services.js'
+import { stripeConnectRoutes } from './routes/company/stripe-connect.js'
+import { bookingRoutes } from './routes/booking/orders.js'
+import { cityRoutes } from './routes/discovery/cities.js'
+import { discoveryRoutes } from './routes/discovery/companies.js'
 import { setupSocketHandlers } from './lib/socket.js'
 
 // Initialize Sentry before anything else
@@ -47,6 +53,18 @@ await server.register(adminRoutes, { prefix: '/auth/admin' })
 
 // Company routes — Plan 09: company dashboard order feed (COMP-05, COMP-06)
 await server.register(companyOrdersRoute, { prefix: '/company/orders' })
+
+// Company management routes — Plan 05: profile, services, packages, washers, Stripe Connect
+await server.register(companyProfileRoutes, { prefix: '/company/profile' })
+await server.register(companyServicesRoutes, { prefix: '/company/services' })
+await server.register(stripeConnectRoutes, { prefix: '/company/stripe-connect' })
+
+// Discovery routes — Plan 03: company listing + profiles (DISC-01 through DISC-05)
+await server.register(cityRoutes, { prefix: '/cities' })
+await server.register(discoveryRoutes, { prefix: '/companies' })
+
+// Booking routes — Plan 04: order creation for on-site and carpet bookings (BOOK-01 through BOOK-04, CARP-01 through CARP-03)
+await server.register(bookingRoutes, { prefix: '/orders' })
 
 const port = parseInt(process.env.PORT ?? '3000', 10)
 const host = process.env.HOST ?? '0.0.0.0'
