@@ -1,8 +1,10 @@
+import '../globals.css'
 import type { Metadata } from 'next'
 import { Cairo } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { routing } from '@/src/i18n/routing'
+import { QueryProvider } from '@/src/providers/query-provider'
 
 // I18N-05: display: 'swap' is mandatory for zero CLS
 const cairo = Cairo({
@@ -33,7 +35,9 @@ export default async function LocaleLayout({
     <html lang={locale} dir={dir} className={cairo.variable}>
       <body className="bg-brand-surface font-sans antialiased">
         <NextIntlClientProvider messages={messages}>
-          {children}
+          <QueryProvider>
+            {children}
+          </QueryProvider>
         </NextIntlClientProvider>
       </body>
     </html>
