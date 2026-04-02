@@ -61,14 +61,14 @@ Plans:
 
 Plans:
 - [x] 02-01-PLAN.md — Schema migration + shared type contracts (Zod schemas, i18n keys)
-- [ ] 02-02-PLAN.md — Client infrastructure (TanStack Query, Socket.io, company-web i18n/router)
+- [x] 02-02-PLAN.md — Client infrastructure (TanStack Query, Socket.io, company-web i18n/router) [DONE: 2026-04-02, 15min, 2 tasks, 11 files]
 - [ ] 02-03-PLAN.md — Discovery API + customer-web UI (home, company listing, company profile)
 - [ ] 02-04-PLAN.md — Booking API (on-site + carpet order creation, Stripe PaymentIntent, order service)
 - [ ] 02-05-PLAN.md — Company management API (profile, services, packages, washers, Stripe Connect)
 - [ ] 02-06-PLAN.md — Customer booking UI (on-site, carpet, payment, confirmation screens)
 - [ ] 02-07-PLAN.md — Order lifecycle API (state transitions, washer assignment, cancellation)
 - [ ] 02-08-PLAN.md — Stripe webhooks + BullMQ order worker (payment confirm, payouts, refunds)
-- [ ] 02-09-PLAN.md — Company dashboard order feed UI (data table, real-time updates, washer assignment)
+- [x] 02-09-PLAN.md — Company dashboard order feed UI (data table, real-time updates, washer assignment) [DONE: 2026-04-02, 4min, 2 tasks, 14 files]
 **UI hint**: yes
 
 ### Phase 3: Real-Time & Washer App
