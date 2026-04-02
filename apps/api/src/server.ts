@@ -14,9 +14,12 @@ import { companyProfileRoutes } from './routes/company/profile.js'
 import { companyServicesRoutes } from './routes/company/services.js'
 import { stripeConnectRoutes } from './routes/company/stripe-connect.js'
 import { bookingRoutes } from './routes/booking/orders.js'
+import { orderLifecycleRoutes } from './routes/orders/lifecycle.js'
+import { customerOrderRoutes } from './routes/orders/customer-orders.js'
 import { cityRoutes } from './routes/discovery/cities.js'
 import { discoveryRoutes } from './routes/discovery/companies.js'
 import { setupSocketHandlers } from './lib/socket.js'
+import { stripeWebhookRoutes } from './routes/payments/webhook.js'
 
 // Initialize Sentry before anything else
 initSentry()
@@ -65,6 +68,16 @@ await server.register(discoveryRoutes, { prefix: '/companies' })
 
 // Booking routes — Plan 04: order creation for on-site and carpet bookings (BOOK-01 through BOOK-04, CARP-01 through CARP-03)
 await server.register(bookingRoutes, { prefix: '/orders' })
+
+// Order lifecycle routes — Plan 07: state transitions, washer assignment, cancellation (ORD-01 through ORD-06, CARP-05)
+await server.register(orderLifecycleRoutes, { prefix: '/orders' })
+
+// Customer order read routes — Plan 07: GET /customer/orders and /customer/orders/:id
+await server.register(customerOrderRoutes, { prefix: '/customer/orders' })
+
+// Stripe webhook — Plan 08: payment confirmation, dispute handling (PAY-05)
+// IMPORTANT: Must NOT be behind fastify.authenticate — Stripe sends the webhook, not an authenticated user
+await server.register(stripeWebhookRoutes, { prefix: '/webhooks/stripe' })
 
 const port = parseInt(process.env.PORT ?? '3000', 10)
 const host = process.env.HOST ?? '0.0.0.0'
