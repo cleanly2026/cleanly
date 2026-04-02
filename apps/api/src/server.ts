@@ -8,6 +8,7 @@ import { otpRoutes } from './routes/auth/otp.js'
 import { washerRoutes } from './routes/auth/washer.js'
 import { companyRoutes } from './routes/auth/company.js'
 import { adminRoutes } from './routes/auth/admin.js'
+import { companyOrdersRoute } from './routes/company/orders.js'
 
 // Initialize Sentry before anything else
 initSentry()
@@ -39,6 +40,9 @@ await server.register(washerRoutes, { prefix: '/auth/washer' })
 // Auth routes — Plan 07: company admin email+TOTP MFA and platform admin Google SSO exchange
 await server.register(companyRoutes, { prefix: '/auth/company' })
 await server.register(adminRoutes, { prefix: '/auth/admin' })
+
+// Company routes — Plan 09: company dashboard order feed (COMP-05, COMP-06)
+await server.register(companyOrdersRoute, { prefix: '/company/orders' })
 
 const port = parseInt(process.env.PORT ?? '3000', 10)
 const host = process.env.HOST ?? '0.0.0.0'
