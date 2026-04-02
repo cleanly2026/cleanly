@@ -2,7 +2,10 @@ import type { Config } from 'tailwindcss'
 
 // Brand colors from UI-SPEC (package/config not available at build time in lib context)
 const config: Config = {
-  content: ['./src/**/*.{ts,tsx}'],
+  content: [
+    './src/**/*.{ts,tsx}',
+    '../i18n/src/**/*.{ts,tsx}',
+  ],
   theme: {
     extend: {
       colors: {

@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-03-30)
 ## Current Position
 
 Phase: 02 (core-business-flow) — EXECUTING
-Plan: 9 of 9 (COMPLETE)
-Status: Phase 2 complete
-Last activity: 2026-04-02
+Plan: 5 of 9 (complete - 02-05)
+Status: executing
+Last activity: 2026-04-03
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -107,6 +107,11 @@ Recent decisions affecting current work:
 - [Phase 02-02]: fastify-raw-body v5 used (not @fastify/rawbody — that package does not exist on npm)
 - [Phase 02-02]: Socket autoConnect=false in company-web — connectSocket() called explicitly after auth
 - [Phase 02-02]: Socket rooms pattern: company:{id} and order:{id} — established for all downstream plans
+- [Phase 02-05]: bcryptjs used for washer PIN hashing (bcryptjs is installed package, not bare bcrypt)
+- [Phase 02-05]: stripe.service.ts created with all Plan 04 functions (createPaymentIntent, createRefund, createAccountLink, createConnectAccount) — Plan 04 had not yet executed when 02-05 ran
+- [Phase 02-05]: Stripe Connect UAE returns pending_activation — UAE Express accounts require manual Stripe verification; company features NOT blocked on Connect status
+- [Phase 02-05]: Washer deactivation sets company_id to null — removes from company roster without deleting user account/history
+- [Phase 02-05]: Company services update uses delete-then-recreate transaction — simpler than diffing for category list replacement
 
 ### Pending Todos
 
@@ -121,6 +126,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-02T21:38:52Z
-Stopped at: Completed 02-02-PLAN.md
+Last session: 2026-04-03T00:25:00Z
+Stopped at: Completed 02-05-PLAN.md
 Resume file: None

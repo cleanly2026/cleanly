@@ -1,14 +1,15 @@
 import { getRequestConfig } from 'next-intl/server'
 import { routing } from './routing'
+import en from '@cleanly/i18n/locales/en.json'
+import ar from '@cleanly/i18n/locales/ar.json'
+
+const messages: Record<string, typeof en> = { en, ar }
 
 export default getRequestConfig(async ({ requestLocale }) => {
   const locale = (await requestLocale) ?? routing.defaultLocale
 
-  // Import locale messages from shared @cleanly/i18n package
-  const messages = (await import(`@cleanly/i18n/locales/${locale}.json`)).default
-
   return {
     locale,
-    messages,
+    messages: messages[locale] ?? messages[routing.defaultLocale],
   }
 })
