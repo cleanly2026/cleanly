@@ -2,7 +2,6 @@
 
 generator client {
   provider        = "prisma-client-js"
-  output          = "../generated/client"
   previewFeatures = ["postgresqlExtensions"]
 }
 
@@ -138,6 +137,9 @@ model Company {
   location        Unsupported("geography(Point, 4326)")?
   stripe_account_id String?       // Stripe Connect — PAY-04
   commission_rate Int             @default(15)  // percentage, 15-20%
+  avg_rating        Decimal       @default(0)   @db.Decimal(3, 2)  // 0.00 to 5.00 — DISC-04
+  review_count      Int           @default(0)                       // DISC-04
+  carpet_lead_time_days Int       @default(5)                       // days until carpet return — CARP-03
   created_at      DateTime        @default(now())
   updated_at      DateTime        @updatedAt
 
