@@ -136,6 +136,23 @@
     "delete_package_cta": "حذف الباقة",
     "add_washer": "إضافة غسّال",
     "deactivate_washer_confirm": "تعطيل {{name}}؟ لن يتلقى مهام جديدة.",
-    "deactivate_washer_cta": "تعطيل"
+    "deactivate_washer_cta": "تعطيل",
+    "orderFeed": "الطلبات",
+    "assignWasher": "تعيين غسّال",
+    "selectWasher": "اختر غسّال...",
+    "confirm": "تأكيد",
+    "noOrdersHeading": "لا توجد طلبات بعد",
+    "noOrdersBody": "ستظهر الحجوزات الجديدة هنا في الوقت الفعلي.",
+    "orderNumber": "رقم الطلب",
+    "customer": "العميل",
+    "service": "الخدمة",
+    "status": "الحالة",
+    "time": "الوقت",
+    "amount": "المبلغ",
+    "actions": "الإجراءات",
+    "filterAll": "الكل",
+    "filterPending": "قيد الانتظار",
+    "filterActive": "نشط",
+    "filterCompleted": "مكتمل"
   }
 }
