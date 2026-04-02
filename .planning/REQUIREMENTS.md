@@ -22,7 +22,7 @@ Requirements for private beta launch. Each maps to roadmap phases.
 - [ ] **DISC-01**: Customer can browse three service categories (car wash, carpet, sofa)
 - [ ] **DISC-02**: Customer's city is auto-detected via GPS with manual fallback
 - [ ] **DISC-03**: Customer can view company listings filtered by city and category
-- [ ] **DISC-04**: Company listings show name, rating, price range, review count, and logo
+- [x] **DISC-04**: Company listings show name, rating, price range, review count, and logo
 - [ ] **DISC-05**: Customer can view a company profile with packages, add-ons, and reviews
 
 ### Booking (On-Site — Car Wash + Sofa)
@@ -36,14 +36,14 @@ Requirements for private beta launch. Each maps to roadmap phases.
 
 - [ ] **CARP-01**: Customer can select carpet cleaning package with quantity (number of carpets/rooms)
 - [ ] **CARP-02**: Customer can select a pickup time slot for carpet collection
-- [ ] **CARP-03**: Customer can see and agree to an estimated return date at booking time
+- [x] **CARP-03**: Customer can see and agree to an estimated return date at booking time
 - [ ] **CARP-04**: Customer can reschedule the return date before carpet is out for delivery
 - [ ] **CARP-05**: Carpet order follows 10-state lifecycle (pending → accepted → pickup_scheduled → picked_up → in_cleaning → ready_for_return → return_scheduled → out_for_return → returned → completed)
 
 ### Payments
 
 - [ ] **PAY-01**: Customer can pay via Stripe (card, Apple Pay, Google Pay)
-- [ ] **PAY-02**: Customer can pay using wallet balance (topped up via Stripe)
+- [x] **PAY-02**: Customer can pay using wallet balance (topped up via Stripe)
 - [ ] **PAY-03**: Platform commission (15-20%) is auto-deducted before company payout
 - [ ] **PAY-04**: Company receives payout via Stripe Connect with 7-14 day delay after completion
 - [ ] **PAY-05**: Stripe webhook handles payment capture, refunds, and disputes
@@ -210,7 +210,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DISC-01 | Phase 2 | Pending |
 | DISC-02 | Phase 2 | Pending |
 | DISC-03 | Phase 2 | Pending |
-| DISC-04 | Phase 2 | Pending |
+| DISC-04 | Phase 2 | Complete |
 | DISC-05 | Phase 2 | Pending |
 | BOOK-01 | Phase 2 | Pending |
 | BOOK-02 | Phase 2 | Pending |
@@ -218,11 +218,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BOOK-04 | Phase 2 | Pending |
 | CARP-01 | Phase 2 | Pending |
 | CARP-02 | Phase 2 | Pending |
-| CARP-03 | Phase 2 | Pending |
+| CARP-03 | Phase 2 | Complete |
 | CARP-04 | Phase 2 | Pending |
 | CARP-05 | Phase 2 | Pending |
 | PAY-01 | Phase 2 | Pending |
-| PAY-02 | Phase 2 | Pending |
+| PAY-02 | Phase 2 | Complete |
 | PAY-03 | Phase 2 | Pending |
 | PAY-04 | Phase 2 | Pending |
 | PAY-05 | Phase 2 | Pending |

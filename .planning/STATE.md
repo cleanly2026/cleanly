@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 2 context gathered
-last_updated: "2026-04-02T12:48:00.434Z"
-last_activity: 2026-04-01
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-04-02T21:28:33.179Z"
+last_activity: 2026-04-02
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 12
-  completed_plans: 12
+  total_plans: 21
+  completed_plans: 13
   percent: 0
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-30)
 
 **Core value:** A customer can book a cleaning service, pay securely, and track their washer arriving in real-time — the full end-to-end booking-to-completion flow must work flawlessly.
-**Current focus:** Phase 01 — foundation
+**Current focus:** Phase 02 — core-business-flow
 
 ## Current Position
 
-Phase: 2
-Plan: Not started
+Phase: 02 (core-business-flow) — EXECUTING
+Plan: 2 of 9
 Status: Ready to execute
-Last activity: 2026-04-01
+Last activity: 2026-04-02
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -62,6 +62,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01-foundation P08 | 7min | 2 tasks | 18 files |
 | Phase 01-foundation P10 | 7min | 2 tasks | 13 files |
 | Phase 01-foundation P11 | 2min | 2 tasks | 8 files |
+| Phase 02 P01 | 10min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -96,6 +97,8 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: dir=ltr on OtpInput container: digit boxes always LTR even in Arabic RTL mode per UI-SPEC
 - [Phase 01-foundation]: PinInput is a 3-line wrapper over OtpInput with masked=true — avoids duplicating OTP logic
 - [Phase 01-foundation]: Company web uses hardcoded English strings for Phase 1 scaffold -- i18next wired in Phase 2
+- [Phase 02]: carpet_lead_time_days stored on Company model (not global config) — per-company configurability required by CARP-03
+- [Phase 02]: Zod schemas organized by domain (discovery, booking, company) not by HTTP method — matches downstream plan naming conventions
 
 ### Pending Todos
 
@@ -110,6 +113,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-02T12:48:00.423Z
-Stopped at: Phase 2 context gathered
-Resume file: .planning/phases/02-core-business-flow/02-CONTEXT.md
+Last session: 2026-04-02T21:28:33.170Z
+Stopped at: Completed 02-01-PLAN.md
+Resume file: None

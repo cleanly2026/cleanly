@@ -60,7 +60,7 @@ Plans:
 **Plans**: 9 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Schema migration + shared type contracts (Zod schemas, i18n keys)
+- [x] 02-01-PLAN.md — Schema migration + shared type contracts (Zod schemas, i18n keys)
 - [ ] 02-02-PLAN.md — Client infrastructure (TanStack Query, Socket.io, company-web i18n/router)
 - [ ] 02-03-PLAN.md — Discovery API + customer-web UI (home, company listing, company profile)
 - [ ] 02-04-PLAN.md — Booking API (on-site + carpet order creation, Stripe PaymentIntent, order service)
@@ -104,6 +104,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 9/12 | In Progress|  |
-| 2. Core Business Flow | 0/9 | Not started | - |
+| 2. Core Business Flow | 1/9 | In Progress|  |
 | 3. Real-Time & Washer App | 0/TBD | Not started | - |
 | 4. Supporting Systems & Admin | 0/TBD | Not started | - |
