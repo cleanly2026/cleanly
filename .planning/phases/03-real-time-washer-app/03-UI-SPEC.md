@@ -1,7 +1,8 @@
 ---
 phase: 3
 slug: real-time-washer-app
-status: draft
+status: approved
+reviewed_at: 2026-04-03
 shadcn_initialized: false
 preset: none
 created: 2026-04-03
