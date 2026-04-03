@@ -22,6 +22,9 @@ import { cityRoutes } from './routes/discovery/cities.js'
 import { discoveryRoutes } from './routes/discovery/companies.js'
 import { setupSocketHandlers } from './lib/socket.js'
 import { stripeWebhookRoutes } from './routes/payments/webhook.js'
+import washerStatusRoutes from './routes/washers/status.js'
+import photoUploadUrlRoutes from './routes/photos/upload-url.js'
+import orderPhotosRoutes from './routes/orders/photos.js'
 
 // Initialize Sentry before anything else
 initSentry()
@@ -78,6 +81,15 @@ await server.register(orderLifecycleRoutes, { prefix: '/orders' })
 
 // Customer order read routes — Plan 07: GET /customer/orders and /customer/orders/:id
 await server.register(customerOrderRoutes, { prefix: '/customer/orders' })
+
+// Washer routes — Plan 03-01: washer status toggle (WASH-01)
+await server.register(washerStatusRoutes, { prefix: '/api/washers' })
+
+// Photo upload URL routes — Plan 03-01: presigned R2 URL for washer photo upload (PHO-05)
+await server.register(photoUploadUrlRoutes, { prefix: '/api/photos' })
+
+// Order photo confirm routes — Plan 03-01: save photo URL to DB after R2 upload
+await server.register(orderPhotosRoutes, { prefix: '/api/orders' })
 
 // Stripe webhook — Plan 08: payment confirmation, dispute handling (PAY-05)
 // IMPORTANT: Must NOT be behind fastify.authenticate — Stripe sends the webhook, not an authenticated user
