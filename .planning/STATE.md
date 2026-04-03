@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-09-PLAN.md
-last_updated: "2026-04-02T21:28:37Z"
-last_activity: 2026-04-02
+stopped_at: Completed 02-12-PLAN.md
+last_updated: "2026-04-03T05:38:48.196Z"
+last_activity: 2026-04-03
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 21
-  completed_plans: 14
+  total_plans: 24
+  completed_plans: 22
   percent: 0
 ---
 
@@ -26,8 +26,8 @@ See: .planning/PROJECT.md (updated 2026-03-30)
 ## Current Position
 
 Phase: 02 (core-business-flow) — EXECUTING
-Plan: 5 of 9 (complete - 02-05)
-Status: executing
+Plan: 2 of 12
+Status: Ready to execute
 Last activity: 2026-04-03
 
 Progress: [░░░░░░░░░░] 0%
@@ -65,6 +65,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02 P01 | 10min | 2 tasks | 8 files |
 | Phase 02 P09 | 4min | 2 tasks | 14 files |
 | Phase 02 P02 | 15min | 2 tasks | 11 files |
+| Phase 02-core-business-flow P12 | 3min | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -112,6 +113,7 @@ Recent decisions affecting current work:
 - [Phase 02-05]: Stripe Connect UAE returns pending_activation — UAE Express accounts require manual Stripe verification; company features NOT blocked on Connect status
 - [Phase 02-05]: Washer deactivation sets company_id to null — removes from company roster without deleting user account/history
 - [Phase 02-05]: Company services update uses delete-then-recreate transaction — simpler than diffing for category list replacement
+- [Phase 02-core-business-flow]: router.tsx uses companyId = 'TODO_FROM_AUTH' placeholder — auth context wiring is a separate concern; OrderFeed is reachable so COMP-05/COMP-06 are closed
 
 ### Pending Todos
 
@@ -126,6 +128,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-03T00:25:00Z
-Stopped at: Completed 02-05-PLAN.md
+Last session: 2026-04-03T05:38:48.189Z
+Stopped at: Completed 02-12-PLAN.md
 Resume file: None

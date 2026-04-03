@@ -90,8 +90,8 @@ Requirements for private beta launch. Each maps to roadmap phases.
 - [ ] **COMP-02**: Company can manage city coverage and service categories
 - [ ] **COMP-03**: Company can create/edit/delete packages and add-ons with bilingual names
 - [ ] **COMP-04**: Company can manage washer staff accounts
-- [ ] **COMP-05**: Company sees live order feed with real-time updates
-- [ ] **COMP-06**: Company can assign washers to incoming orders
+- [x] **COMP-05**: Company sees live order feed with real-time updates
+- [x] **COMP-06**: Company can assign washers to incoming orders
 - [ ] **COMP-07**: Company can complete Stripe Connect onboarding for payouts
 
 ### Admin Panel
@@ -237,8 +237,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | COMP-02 | Phase 2 | Pending |
 | COMP-03 | Phase 2 | Pending |
 | COMP-04 | Phase 2 | Pending |
-| COMP-05 | Phase 2 | Pending |
-| COMP-06 | Phase 2 | Pending |
+| COMP-05 | Phase 2 | Complete |
+| COMP-06 | Phase 2 | Complete |
 | COMP-07 | Phase 2 | Pending |
 | RT-01 | Phase 3 | Pending |
 | RT-02 | Phase 3 | Pending |
