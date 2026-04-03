@@ -88,7 +88,7 @@ Plans:
 Plans:
 - [ ] 03-01-PLAN.md — Prisma migration (photo columns) + Socket.io Redis adapter + GPS handlers + API routes
 - [ ] 03-02-PLAN.md — Washer mobile foundation: packages, GPS task, socket, hooks, home dashboard
-- [ ] 03-03-PLAN.md — Customer mobile foundation: packages, socket, tracking + ETA hooks
+- [x] 03-03-PLAN.md — Customer mobile foundation: packages, socket, tracking + ETA hooks
 - [ ] 03-04-PLAN.md — Washer job alert (30s countdown takeover) + en route (map + navigation)
 - [ ] 03-05-PLAN.md — Washer active job (checklist) + photo upload + job completion flow
 - [ ] 03-06-PLAN.md — Customer live tracking map + order complete with photos

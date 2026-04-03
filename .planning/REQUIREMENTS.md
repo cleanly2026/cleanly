@@ -45,24 +45,24 @@ Requirements for private beta launch. Each maps to roadmap phases.
 - [ ] **PAY-01**: Customer can pay via Stripe (card, Apple Pay, Google Pay)
 - [x] **PAY-02**: Customer can pay using wallet balance (topped up via Stripe)
 - [ ] **PAY-03**: Platform commission (15-20%) is auto-deducted before company payout
-- [ ] **PAY-04**: Company receives payout via Stripe Connect with 7-14 day delay after completion
+- [x] **PAY-04**: Company receives payout via Stripe Connect with 7-14 day delay after completion
 - [ ] **PAY-05**: Stripe webhook handles payment capture, refunds, and disputes
-- [ ] **PAY-06**: Refund flow reverses transfer before issuing customer refund
+- [x] **PAY-06**: Refund flow reverses transfer before issuing customer refund
 
 ### Order Lifecycle (On-Site)
 
 - [ ] **ORD-01**: On-site order follows 7-state lifecycle (pending → accepted → washer_assigned → washer_en_route → in_progress → completed + cancelled)
 - [ ] **ORD-02**: Company receives real-time notification when new order is placed
 - [ ] **ORD-03**: Company can assign a washer to an accepted order
-- [ ] **ORD-04**: Washer can accept or decline job assignment (30s timer)
+- [x] **ORD-04**: Washer can accept or decline job assignment (30s timer)
 - [ ] **ORD-05**: Order state transitions use database-level locking to prevent race conditions
 - [ ] **ORD-06**: Customer can cancel order with policy enforcement (free before arrival, fee after)
 
 ### Real-Time Tracking
 
 - [ ] **RT-01**: Washer location broadcasts every 5-10s via Socket.io during en_route and in_progress
-- [ ] **RT-02**: Customer sees live washer dot on map during on-site service
-- [ ] **RT-03**: Customer sees live washer dot during carpet pickup and carpet return delivery
+- [x] **RT-02**: Customer sees live washer dot on map during on-site service
+- [x] **RT-03**: Customer sees live washer dot during carpet pickup and carpet return delivery
 - [ ] **RT-04**: Socket.io uses Redis adapter from first deployment for horizontal scaling
 - [ ] **RT-05**: Washer location cached in Redis (not written to DB per GPS ping)
 
@@ -88,8 +88,8 @@ Requirements for private beta launch. Each maps to roadmap phases.
 
 - [ ] **COMP-01**: Company can set up profile with bilingual fields (name, description in EN + AR)
 - [ ] **COMP-02**: Company can manage city coverage and service categories
-- [ ] **COMP-03**: Company can create/edit/delete packages and add-ons with bilingual names
-- [ ] **COMP-04**: Company can manage washer staff accounts
+- [x] **COMP-03**: Company can create/edit/delete packages and add-ons with bilingual names
+- [x] **COMP-04**: Company can manage washer staff accounts
 - [x] **COMP-05**: Company sees live order feed with real-time updates
 - [x] **COMP-06**: Company can assign washers to incoming orders
 - [ ] **COMP-07**: Company can complete Stripe Connect onboarding for payouts
@@ -224,25 +224,25 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PAY-01 | Phase 2 | Pending |
 | PAY-02 | Phase 2 | Complete |
 | PAY-03 | Phase 2 | Pending |
-| PAY-04 | Phase 2 | Pending |
+| PAY-04 | Phase 2 | Complete |
 | PAY-05 | Phase 2 | Pending |
-| PAY-06 | Phase 2 | Pending |
+| PAY-06 | Phase 2 | Complete |
 | ORD-01 | Phase 2 | Pending |
 | ORD-02 | Phase 2 | Pending |
 | ORD-03 | Phase 2 | Pending |
-| ORD-04 | Phase 2 | Pending |
+| ORD-04 | Phase 2 | Complete |
 | ORD-05 | Phase 2 | Pending |
 | ORD-06 | Phase 2 | Pending |
 | COMP-01 | Phase 2 | Pending |
 | COMP-02 | Phase 2 | Pending |
-| COMP-03 | Phase 2 | Pending |
-| COMP-04 | Phase 2 | Pending |
+| COMP-03 | Phase 2 | Complete |
+| COMP-04 | Phase 2 | Complete |
 | COMP-05 | Phase 2 | Complete |
 | COMP-06 | Phase 2 | Complete |
 | COMP-07 | Phase 2 | Pending |
 | RT-01 | Phase 3 | Pending |
-| RT-02 | Phase 3 | Pending |
-| RT-03 | Phase 3 | Pending |
+| RT-02 | Phase 3 | Complete |
+| RT-03 | Phase 3 | Complete |
 | RT-04 | Phase 3 | Pending |
 | RT-05 | Phase 3 | Pending |
 | PHO-01 | Phase 3 | Pending |
