@@ -32,7 +32,7 @@ function getR2Client(): S3Client {
 
 const BUCKET = process.env.R2_BUCKET_NAME ?? 'cleanly-photos'
 const PUBLIC_URL = process.env.R2_PUBLIC_URL ?? ''
-const UPLOAD_URL_TTL = 60  // seconds — presigned PUT URL expires in 60s
+const UPLOAD_URL_TTL = 300  // seconds — presigned PUT URL expires in 300s (5 min for poor mobile connections)
 
 // Generate a presigned PUT URL for direct client upload.
 // Client uploads directly to R2 — file never proxied through our API.

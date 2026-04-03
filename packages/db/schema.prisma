@@ -222,6 +222,10 @@ model Order {
   updated_at        DateTime    @updatedAt
   completed_at      DateTime?
 
+  // PHO-01/PHO-02: on-site before/after photo R2 keys
+  before_photo_url  String?   // PHO-01: on-site before photo R2 key
+  after_photo_url   String?   // PHO-02: on-site after photo R2 key
+
   customer          User        @relation("CustomerOrders", fields: [customer_id], references: [id])
   company           Company     @relation(fields: [company_id], references: [id])
   washer            User?       @relation("WasherOrders", fields: [washer_id], references: [id])
