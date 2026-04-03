@@ -83,7 +83,16 @@ Plans:
   2. Washer can accept a job with the 30-second countdown timer, launch Google Maps navigation, and go online/offline
   3. Washer uploads before and after photos via presigned R2 URL with retry on poor connection — photos appear in the customer's order view
   4. GPS continues broadcasting when the washer app is backgrounded on Android (Foreground Service confirmed working on real Samsung device with battery saver)
-**Plans**: TBD
+**Plans**: 7 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Prisma migration (photo columns) + Socket.io Redis adapter + GPS handlers + API routes
+- [ ] 03-02-PLAN.md — Washer mobile foundation: packages, GPS task, socket, hooks, home dashboard
+- [ ] 03-03-PLAN.md — Customer mobile foundation: packages, socket, tracking + ETA hooks
+- [ ] 03-04-PLAN.md — Washer job alert (30s countdown takeover) + en route (map + navigation)
+- [ ] 03-05-PLAN.md — Washer active job (checklist) + photo upload + job completion flow
+- [ ] 03-06-PLAN.md — Customer live tracking map + order complete with photos
+- [ ] 03-07-PLAN.md — Human verification: all 4 Phase 3 success criteria
 **UI hint**: yes
 
 ### Phase 4: Supporting Systems & Admin
@@ -108,5 +117,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Foundation | 9/12 | In Progress|  |
 | 2. Core Business Flow | 3/12 | In Progress|  |
-| 3. Real-Time & Washer App | 0/TBD | Not started | - |
+| 3. Real-Time & Washer App | 0/7 | Not started | - |
 | 4. Supporting Systems & Admin | 0/TBD | Not started | - |
