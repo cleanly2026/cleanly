@@ -1,0 +1,54 @@
+{
+  "expo": {
+    "name": "Cleanly Washer",
+    "slug": "cleanly-washer",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1A2744"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.cleanly.washer"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1A2744"
+      },
+      "package": "com.cleanly.washer",
+      "config": {
+        "googleMaps": {
+          "apiKey": "GOOGLE_MAPS_API_KEY_PLACEHOLDER"
+        }
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Cleanly needs your location to share it with customers during a job.",
+          "isAndroidBackgroundLocationEnabled": true,
+          "isAndroidForegroundServiceEnabled": true
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Cleanly needs access to your photos for job evidence.",
+          "cameraPermission": "Cleanly needs your camera to take before/after photos of service jobs."
+        }
+      ]
+    ],
+    "scheme": "cleanly-washer",
+    "newArchEnabled": true
+  }
+}
