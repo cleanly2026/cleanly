@@ -154,5 +154,78 @@
     "filterPending": "Pending",
     "filterActive": "Active",
     "filterCompleted": "Completed"
+  },
+  "washer": {
+    "toggle": { "online": "Online", "offline": "Offline" },
+    "status": {
+      "waiting": "You are online — waiting for jobs",
+      "offline": "You are offline"
+    },
+    "home": {
+      "earnings": "Today's earnings",
+      "jobsCompleted": "Jobs completed today",
+      "emptyHeading": "No jobs completed today",
+      "emptyBody": "Go online to start receiving assignments.",
+      "navigate": "Navigate"
+    },
+    "jobAlert": {
+      "newJob": "New Job",
+      "accept": "Accept Job",
+      "decline": "Decline",
+      "autoDeclined": "Job auto-declined — you're now offline."
+    },
+    "enRoute": {
+      "navigate": "Navigate",
+      "arrived": "I've Arrived",
+      "callCustomer": "Call Customer"
+    },
+    "photo": {
+      "beforeOnSite": "Take a before photo",
+      "beforeCarpet": "Photograph carpets for pickup",
+      "afterOnSite": "Take an after photo",
+      "afterCarpet": "Photograph returned carpets",
+      "bodyInstruction": "Show the {{serviceType}} in full view before cleaning begins.",
+      "openCamera": "Open Camera",
+      "upload": "Upload Photo",
+      "retake": "Retake",
+      "uploading": "Uploading… {{progress}}%",
+      "saved": "Photo saved",
+      "failed": "Upload failed — tap to retry",
+      "skipPoorSignal": "Poor signal — will upload later",
+      "skipNotNeeded": "No photo needed",
+      "skipForNow": "Skip for now"
+    },
+    "checklist": {
+      "heading": "Service Checklist",
+      "progress": "{{checked}} of {{total}} items checked",
+      "incompleteWarning": "Please complete at least {{count}} more checklist item(s) before finishing."
+    },
+    "completion": {
+      "completeJob": "Complete Job",
+      "markComplete": "Mark Job Complete?",
+      "jobDone": "Job Done",
+      "backToHome": "Back to Home",
+      "back": "Back"
+    },
+    "offline": {
+      "goOfflineHeading": "Go Offline?",
+      "goOfflineBody": "You have an active job. Going offline won't cancel it, but you won't receive new jobs until you go back online.",
+      "goOffline": "Go Offline",
+      "stayOnline": "Stay Online"
+    }
+  },
+  "tracking": {
+    "onTheWay": "On the way",
+    "pickingUp": "Picking up your carpet",
+    "delivering": "Delivering your carpet",
+    "eta": "Arriving in ~{{minutes}} min",
+    "etaImminent": "Arriving now",
+    "inProgress": "Cleaning in progress · {{minutes}} min",
+    "reassurance": "Service in progress — sit back and relax",
+    "completeCar": "Your car is clean!",
+    "completeSofa": "Your sofa is clean!",
+    "completeCarpet": "Your carpets are clean and returned!",
+    "rateService": "Rate your service",
+    "backToHome": "Back to Home"
   }
 }

@@ -154,5 +154,78 @@
     "filterPending": "قيد الانتظار",
     "filterActive": "نشط",
     "filterCompleted": "مكتمل"
+  },
+  "washer": {
+    "toggle": { "online": "متاح", "offline": "غير متاح" },
+    "status": {
+      "waiting": "أنت متاح — في انتظار المهام",
+      "offline": "أنت غير متاح"
+    },
+    "home": {
+      "earnings": "أرباح اليوم",
+      "jobsCompleted": "المهام المنجزة اليوم",
+      "emptyHeading": "لا توجد مهام منجزة اليوم",
+      "emptyBody": "تفعّل الحالة المتاحة لبدء استقبال المهام.",
+      "navigate": "التنقل"
+    },
+    "jobAlert": {
+      "newJob": "مهمة جديدة",
+      "accept": "قبول المهمة",
+      "decline": "رفض",
+      "autoDeclined": "تم رفض المهمة تلقائياً — أنت الآن غير متاح."
+    },
+    "enRoute": {
+      "navigate": "التنقل",
+      "arrived": "وصلت",
+      "callCustomer": "اتصل بالعميل"
+    },
+    "photo": {
+      "beforeOnSite": "التقط صورة قبل البدء",
+      "beforeCarpet": "التقط صورة للسجاد قبل الاستلام",
+      "afterOnSite": "التقط صورة بعد الانتهاء",
+      "afterCarpet": "التقط صورة للسجاد بعد الإعادة",
+      "bodyInstruction": "أظهر {{serviceType}} بالكامل قبل بدء التنظيف.",
+      "openCamera": "فتح الكاميرا",
+      "upload": "رفع الصورة",
+      "retake": "إعادة التصوير",
+      "uploading": "جارٍ الرفع… {{progress}}٪",
+      "saved": "تم حفظ الصورة",
+      "failed": "فشل الرفع — انقر للمحاولة مرة أخرى",
+      "skipPoorSignal": "إشارة ضعيفة — سيتم الرفع لاحقاً",
+      "skipNotNeeded": "لا حاجة لصورة",
+      "skipForNow": "تخطي الآن"
+    },
+    "checklist": {
+      "heading": "قائمة الخدمة",
+      "progress": "{{checked}} من {{total}} بنود مكتملة",
+      "incompleteWarning": "يرجى إكمال {{count}} بند إضافي على الأقل قبل الإنهاء."
+    },
+    "completion": {
+      "completeJob": "إنهاء المهمة",
+      "markComplete": "إنهاء المهمة؟",
+      "jobDone": "تمت المهمة",
+      "backToHome": "العودة للرئيسية",
+      "back": "رجوع"
+    },
+    "offline": {
+      "goOfflineHeading": "تغيير الحالة إلى غير متاح؟",
+      "goOfflineBody": "لديك مهمة نشطة. لن يؤدي تغيير حالتك إلى إلغاء المهمة، لكنك لن تتلقى مهاماً جديدة حتى تعود متاحاً.",
+      "goOffline": "تغيير إلى غير متاح",
+      "stayOnline": "البقاء متاحاً"
+    }
+  },
+  "tracking": {
+    "onTheWay": "في الطريق إليك",
+    "pickingUp": "في طريقه لاستلام السجادة",
+    "delivering": "في طريقه لإعادة السجادة",
+    "eta": "الوصول خلال ~{{minutes}} دقيقة",
+    "etaImminent": "يصل الآن",
+    "inProgress": "جارٍ التنظيف · {{minutes}} دقيقة",
+    "reassurance": "الخدمة جارية — استرخِ",
+    "completeCar": "سيارتك نظيفة!",
+    "completeSofa": "أريكتك نظيفة!",
+    "completeCarpet": "سجادك نظيف وتم إعادته!",
+    "rateService": "قيّم الخدمة",
+    "backToHome": "العودة للرئيسية"
   }
 }
