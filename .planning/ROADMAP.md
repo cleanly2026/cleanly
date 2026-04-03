@@ -69,8 +69,8 @@ Plans:
 - [x] 02-07-PLAN.md — Order lifecycle API (state transitions, washer assignment, cancellation)
 - [x] 02-08-PLAN.md — Stripe webhooks + BullMQ order worker (payment confirm, payouts, refunds)
 - [x] 02-09-PLAN.md — Company dashboard order feed UI (data table, real-time updates, washer assignment) [DONE: 2026-04-02, 4min, 2 tasks, 14 files]
-- [ ] 02-10-PLAN.md — [GAP CLOSURE] Package CRUD + washer management API (COMP-03, COMP-04)
-- [ ] 02-11-PLAN.md — [GAP CLOSURE] BullMQ order worker: payouts, timeouts, refunds (PAY-04, PAY-06, ORD-04)
+- [x] 02-10-PLAN.md — [GAP CLOSURE] Package CRUD + washer management API (COMP-03, COMP-04)
+- [x] 02-11-PLAN.md — [GAP CLOSURE] BullMQ order worker: payouts, timeouts, refunds (PAY-04, PAY-06, ORD-04)
 - [x] 02-12-PLAN.md — [GAP CLOSURE] Wire OrderFeed into company-web router (COMP-05, COMP-06)
 **UI hint**: yes
 
