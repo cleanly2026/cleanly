@@ -13,6 +13,8 @@ import { companyOrdersRoute } from './routes/company/orders.js'
 import { companyProfileRoutes } from './routes/company/profile.js'
 import { companyServicesRoutes } from './routes/company/services.js'
 import { stripeConnectRoutes } from './routes/company/stripe-connect.js'
+import { companyPackageRoutes } from './routes/company/packages.js'
+import { companyWasherRoutes } from './routes/company/washers.js'
 import { bookingRoutes } from './routes/booking/orders.js'
 import { orderLifecycleRoutes } from './routes/orders/lifecycle.js'
 import { customerOrderRoutes } from './routes/orders/customer-orders.js'
@@ -61,6 +63,8 @@ await server.register(companyOrdersRoute, { prefix: '/company/orders' })
 await server.register(companyProfileRoutes, { prefix: '/company/profile' })
 await server.register(companyServicesRoutes, { prefix: '/company/services' })
 await server.register(stripeConnectRoutes, { prefix: '/company/stripe-connect' })
+await server.register(companyPackageRoutes, { prefix: '/company/packages' })
+await server.register(companyWasherRoutes, { prefix: '/company/washers' })
 
 // Discovery routes — Plan 03: company listing + profiles (DISC-01 through DISC-05)
 await server.register(cityRoutes, { prefix: '/cities' })
