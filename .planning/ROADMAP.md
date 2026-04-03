@@ -57,7 +57,7 @@ Plans:
   4. Company admin sees the new order in their dashboard in real time and can assign a washer
   5. On-site order advances through all 7 states to completion; carpet order advances through all 10 states to completion
   6. Company receives a Stripe Connect payout (with platform commission deducted) after order completion
-**Plans**: 9 plans
+**Plans**: 12 plans
 
 Plans:
 - [x] 02-01-PLAN.md — Schema migration + shared type contracts (Zod schemas, i18n keys)
@@ -69,6 +69,9 @@ Plans:
 - [ ] 02-07-PLAN.md — Order lifecycle API (state transitions, washer assignment, cancellation)
 - [ ] 02-08-PLAN.md — Stripe webhooks + BullMQ order worker (payment confirm, payouts, refunds)
 - [x] 02-09-PLAN.md — Company dashboard order feed UI (data table, real-time updates, washer assignment) [DONE: 2026-04-02, 4min, 2 tasks, 14 files]
+- [ ] 02-10-PLAN.md — [GAP CLOSURE] Package CRUD + washer management API (COMP-03, COMP-04)
+- [ ] 02-11-PLAN.md — [GAP CLOSURE] BullMQ order worker: payouts, timeouts, refunds (PAY-04, PAY-06, ORD-04)
+- [ ] 02-12-PLAN.md — [GAP CLOSURE] Wire OrderFeed into company-web router (COMP-05, COMP-06)
 **UI hint**: yes
 
 ### Phase 3: Real-Time & Washer App
@@ -104,6 +107,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 9/12 | In Progress|  |
-| 2. Core Business Flow | 3/9 | In Progress|  |
+| 2. Core Business Flow | 3/12 | In Progress|  |
 | 3. Real-Time & Washer App | 0/TBD | Not started | - |
 | 4. Supporting Systems & Admin | 0/TBD | Not started | - |
