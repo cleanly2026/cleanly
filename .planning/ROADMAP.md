@@ -94,7 +94,7 @@ Plans:
 - [x] 03-06-PLAN.md — Customer live tracking map + order complete with photos
 - [ ] 03-07-PLAN.md — Human verification: all 4 Phase 3 success criteria
 - [x] 03-08-PLAN.md — [GAP CLOSURE] AuthContext for washer-mobile + GPS userId fix (RT-01, WASH-01, WASH-02, WASH-06)
-- [ ] 03-09-PLAN.md — [GAP CLOSURE] Wire photo URLs to customer tracking screen (PHO-01, PHO-02)
+- [x] 03-09-PLAN.md — [GAP CLOSURE] Wire photo URLs to customer tracking screen (PHO-01, PHO-02)
 **UI hint**: yes
 
 ### Phase 4: Supporting Systems & Admin
@@ -119,5 +119,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Foundation | 9/12 | In Progress|  |
 | 2. Core Business Flow | 3/12 | In Progress|  |
-| 3. Real-Time & Washer App | 0/9 | Not started | - |
+| 3. Real-Time & Washer App | 8/9 | In Progress|  |
 | 4. Supporting Systems & Admin | 0/TBD | Not started | - |

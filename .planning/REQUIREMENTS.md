@@ -63,7 +63,7 @@ Requirements for private beta launch. Each maps to roadmap phases.
 - [x] **RT-01**: Washer location broadcasts every 5-10s via Socket.io during en_route and in_progress
 - [x] **RT-02**: Customer sees live washer dot on map during on-site service
 - [x] **RT-03**: Customer sees live washer dot during carpet pickup and carpet return delivery
-- [ ] **RT-04**: Socket.io uses Redis adapter from first deployment for horizontal scaling
+- [x] **RT-04**: Socket.io uses Redis adapter from first deployment for horizontal scaling
 - [x] **RT-05**: Washer location cached in Redis (not written to DB per GPS ping)
 
 ### Photo Evidence
@@ -72,16 +72,16 @@ Requirements for private beta launch. Each maps to roadmap phases.
 - [x] **PHO-02**: Washer uploads after photo when completing on-site job
 - [x] **PHO-03**: Washer uploads pickup photo when collecting carpet (condition + quantity)
 - [x] **PHO-04**: Washer uploads return photo when delivering cleaned carpet
-- [ ] **PHO-05**: Photos uploaded via presigned R2 URLs (not proxied through API)
-- [ ] **PHO-06**: Photo upload has retry logic for poor mobile connections
+- [x] **PHO-05**: Photos uploaded via presigned R2 URLs (not proxied through API)
+- [x] **PHO-06**: Photo upload has retry logic for poor mobile connections
 
 ### Washer App
 
 - [x] **WASH-01**: Washer can go online/offline to receive job assignments
 - [x] **WASH-02**: Washer sees new job alert with accept/decline and countdown timer
-- [ ] **WASH-03**: Washer can launch Google Maps navigation to customer location
-- [ ] **WASH-04**: Washer app tracks GPS in background using Android Foreground Service
-- [ ] **WASH-05**: Washer can complete per-category service checklist during job
+- [x] **WASH-03**: Washer can launch Google Maps navigation to customer location
+- [x] **WASH-04**: Washer app tracks GPS in background using Android Foreground Service
+- [x] **WASH-05**: Washer can complete per-category service checklist during job
 - [x] **WASH-06**: Washer can mark job as complete (triggers after photo + payout queue)
 
 ### Company Dashboard
@@ -243,19 +243,19 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RT-01 | Phase 3 | Complete |
 | RT-02 | Phase 3 | Complete |
 | RT-03 | Phase 3 | Complete |
-| RT-04 | Phase 3 | Pending |
+| RT-04 | Phase 3 | Complete |
 | RT-05 | Phase 3 | Complete |
 | PHO-01 | Phase 3 | Complete |
 | PHO-02 | Phase 3 | Complete |
 | PHO-03 | Phase 3 | Complete |
 | PHO-04 | Phase 3 | Complete |
-| PHO-05 | Phase 3 | Pending |
-| PHO-06 | Phase 3 | Pending |
+| PHO-05 | Phase 3 | Complete |
+| PHO-06 | Phase 3 | Complete |
 | WASH-01 | Phase 3 | Complete |
 | WASH-02 | Phase 3 | Complete |
-| WASH-03 | Phase 3 | Pending |
-| WASH-04 | Phase 3 | Pending |
-| WASH-05 | Phase 3 | Pending |
+| WASH-03 | Phase 3 | Complete |
+| WASH-04 | Phase 3 | Complete |
+| WASH-05 | Phase 3 | Complete |
 | WASH-06 | Phase 3 | Complete |
 | NOTF-01 | Phase 4 | Pending |
 | NOTF-02 | Phase 4 | Pending |
