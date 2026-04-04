@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState, useEffect } from 'react'
+import React, { useCallback, useRef, useEffect } from 'react'
 import {
   View,
   Text,
@@ -127,14 +127,10 @@ export default function TrackingScreen() {
   const mapRef = useRef<MapViewRef>(null)
   const hasAutoFitted = useRef(false)
 
-  // Photo URLs received via socket
-  const [beforePhotoUrl, setBeforePhotoUrl] = useState<string | null>(null)
-  const [afterPhotoUrl, setAfterPhotoUrl] = useState<string | null>(null)
-
   const custLat = parseFloat(customerLat ?? '0')
   const custLng = parseFloat(customerLng ?? '0')
 
-  const { washerLocation, washerInfo, orderStatus, connected } = useOrderTracking(
+  const { washerLocation, washerInfo, orderStatus, connected, beforePhotoUrl, afterPhotoUrl } = useOrderTracking(
     orderId ?? '',
     token ?? ''
   )

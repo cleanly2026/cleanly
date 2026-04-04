@@ -9,6 +9,8 @@ type TrackingState = {
   washerInfo: { name: string; photoUrl: string | null } | null
   orderStatus: string
   connected: boolean
+  beforePhotoUrl: string | null
+  afterPhotoUrl: string | null
 }
 
 export function useOrderTracking(orderId: string, token: string): TrackingState {
@@ -18,6 +20,8 @@ export function useOrderTracking(orderId: string, token: string): TrackingState 
     washerInfo: null,
     orderStatus: '',
     connected: false,
+    beforePhotoUrl: null,
+    afterPhotoUrl: null,
   })
 
   useEffect(() => {
@@ -49,8 +53,16 @@ export function useOrderTracking(orderId: string, token: string): TrackingState 
       }
     )
 
-    socket.on('order:photo-uploaded', (_data: { photoType: string; photoUrl: string }) => {
-      // Will be consumed by order complete screen in Plan 06
+    socket.on('order:photo-uploaded', (data: { photoType: string; photoUrl: string }) => {
+      setState(s => {
+        if (data.photoType === 'before' || data.photoType === 'pickup') {
+          return { ...s, beforePhotoUrl: data.photoUrl }
+        }
+        if (data.photoType === 'after' || data.photoType === 'return') {
+          return { ...s, afterPhotoUrl: data.photoUrl }
+        }
+        return s
+      })
     })
 
     socket.on('disconnect', () => {
