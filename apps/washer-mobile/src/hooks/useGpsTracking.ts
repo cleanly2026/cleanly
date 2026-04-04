@@ -2,7 +2,7 @@ import * as Location from 'expo-location'
 import { LOCATION_TASK_NAME, setCurrentOrderId } from '../lib/gps-task'
 import { getSocket } from '../lib/socket'
 
-export function useGpsTracking() {
+export function useGpsTracking(userId: string | null = null) {
   const startTracking = async (orderId: string) => {
     setCurrentOrderId(orderId)
 
@@ -12,9 +12,9 @@ export function useGpsTracking() {
     const { status: bg } = await Location.requestBackgroundPermissionsAsync()
     if (bg !== 'granted') throw new Error('Background location permission denied')
 
-    // Join order room first — wait for ack before starting GPS
+    // Join order room first — sends userId so server stores it on socket for downstream GPS events
     const socket = getSocket()
-    socket.emit('washer:join-order', { orderId })
+    socket.emit('washer:join-order', { orderId, userId })
 
     await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
       accuracy: Location.Accuracy.High,

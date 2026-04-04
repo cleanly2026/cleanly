@@ -3,6 +3,7 @@ import { View, Text, ScrollView, Pressable, ActivityIndicator, StyleSheet } from
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useGpsTracking } from '../../src/hooks/useGpsTracking'
+import { useAuth } from '../../src/contexts/AuthContext'
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000'
 
@@ -11,7 +12,8 @@ type Step = 'summary' | 'confirm' | 'done'
 export default function CompleteJobScreen() {
   const router = useRouter()
   const insets = useSafeAreaInsets()
-  const { stopTracking } = useGpsTracking()
+  const { token, userId } = useAuth()
+  const { stopTracking } = useGpsTracking(userId)
   const params = useLocalSearchParams<{
     orderId: string
     serviceType: string
@@ -24,9 +26,6 @@ export default function CompleteJobScreen() {
   const [step, setStep] = useState<Step>('summary')
   const [completing, setCompleting] = useState(false)
   const [error, setError] = useState<string | null>(null)
-
-  // TODO: get token from auth context
-  const token = ''
 
   const handleConfirmComplete = async () => {
     setCompleting(true)

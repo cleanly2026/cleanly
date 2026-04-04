@@ -2,6 +2,7 @@ import { View, StyleSheet } from 'react-native'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { PhotoUploader } from '../../src/components/PhotoUploader'
+import { useAuth } from '../../src/contexts/AuthContext'
 
 const INSTRUCTION_MAP: Record<string, Record<string, string>> = {
   before: {
@@ -43,8 +44,7 @@ export default function PhotoUploadScreen() {
   const instruction = INSTRUCTION_MAP[photoType]?.[orderType] || 'Take a photo'
   const bodyText = BODY_MAP[photoType] || ''
 
-  // TODO: get token from auth context
-  const token = ''
+  const { token } = useAuth()
 
   const handleComplete = () => {
     if (nextRoute) {

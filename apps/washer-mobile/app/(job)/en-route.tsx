@@ -15,11 +15,9 @@ import * as Location from 'expo-location'
 import { useTranslation } from 'react-i18next'
 import { Phone } from 'lucide-react-native'
 import { useGpsTracking } from '../../src/hooks/useGpsTracking'
+import { useAuth } from '../../src/contexts/AuthContext'
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000'
-
-// TODO: Replace with real auth context
-const MOCK_TOKEN: string | null = null
 
 /**
  * Haversine formula: returns distance in meters between two GPS coordinates.
@@ -79,8 +77,10 @@ export default function EnRouteScreen() {
   // Pulsing animation for washer dot
   const pulseAnim = useRef(new Animated.Value(1)).current
 
+  const { token, userId } = useAuth()
+
   // GPS tracking hook (handles Socket.io broadcast + background task)
-  const { startTracking } = useGpsTracking()
+  const { startTracking } = useGpsTracking(userId)
 
   // ETA calculation
   const distanceMeters = washerLocation
@@ -200,12 +200,12 @@ export default function EnRouteScreen() {
   // "I've Arrived" — transition order to in_progress
   const handleArrived = async () => {
     try {
-      if (MOCK_TOKEN && orderId) {
+      if (token && orderId) {
         await fetch(`${API_URL}/api/orders/${orderId}/status`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${MOCK_TOKEN}`,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ status: 'in_progress' }),
         })
@@ -215,8 +215,8 @@ export default function EnRouteScreen() {
     }
     // NOTE: GPS tracking is NOT stopped here — continues during in_progress state
     router.replace({
-      pathname: '/(job)/before-photo',
-      params: { orderId, serviceType },
+      pathname: '/(photo)/upload',
+      params: { orderId, serviceType, photoType: 'before', nextRoute: '/(job)/active' },
     })
   }
 

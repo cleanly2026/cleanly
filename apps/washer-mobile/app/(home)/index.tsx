@@ -12,12 +12,10 @@ import { useTranslation } from 'react-i18next'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { OnlineToggle } from '../../src/components/OnlineToggle'
 import { useWasherSocket } from '../../src/hooks/useWasherSocket'
+import { useAuth } from '../../src/contexts/AuthContext'
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000'
 const ONLINE_STATUS_KEY = 'washer_online_status'
-
-// TODO: Replace with real auth context in Phase 3 auth wiring
-const MOCK_TOKEN: string | null = null
 
 type CompletedJob = {
   id: string
@@ -50,6 +48,7 @@ const MOCK_STATS: WasherStats = {
 export default function WasherHomeScreen() {
   const { t } = useTranslation()
   const insets = useSafeAreaInsets()
+  const { token } = useAuth()
 
   const [isOnline, setIsOnline] = useState(false)
   const [stats, setStats] = useState<WasherStats | null>(null)
@@ -67,13 +66,12 @@ export default function WasherHomeScreen() {
     const fetchStats = async () => {
       setLoading(true)
       try {
-        if (!MOCK_TOKEN) {
-          // TODO: Wire real token from auth context
+        if (!token) {
           setStats(MOCK_STATS)
           return
         }
         const res = await fetch(`${API_URL}/api/washers/me/stats`, {
-          headers: { Authorization: `Bearer ${MOCK_TOKEN}` },
+          headers: { Authorization: `Bearer ${token}` },
         })
         if (res.ok) {
           setStats(await res.json())
@@ -87,14 +85,14 @@ export default function WasherHomeScreen() {
       }
     }
     fetchStats()
-  }, [])
+  }, [token])
 
   const handleJobAlert = useCallback(() => {
     // TODO: Navigate to job alert screen in Phase 3 plan 03
     // router.push('/job-alert')
   }, [])
 
-  useWasherSocket(MOCK_TOKEN, handleJobAlert)
+  useWasherSocket(token, handleJobAlert)
 
   const renderJobRow = ({ item }: { item: CompletedJob }) => (
     <View style={styles.jobRow}>
@@ -119,7 +117,7 @@ export default function WasherHomeScreen() {
             isOnline={isOnline}
             onToggle={setIsOnline}
             hasActiveJob={false}
-            token={MOCK_TOKEN ?? undefined}
+            token={token ?? undefined}
           />
         </View>
 

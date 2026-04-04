@@ -15,12 +15,10 @@ import { useTranslation } from 'react-i18next'
 import { Car, Sofa, Layers } from 'lucide-react-native'
 import { CountdownRing } from '../../src/components/CountdownRing'
 import { useWasherSocket } from '../../src/hooks/useWasherSocket'
+import { useAuth } from '../../src/contexts/AuthContext'
 
 const COUNTDOWN_DURATION = 30
 const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000'
-
-// TODO: Replace with real auth context
-const MOCK_TOKEN: string | null = null
 
 function ServiceIcon({ serviceType, size }: { serviceType: string; size: number }) {
   const color = '#FFFFFF'
@@ -38,6 +36,7 @@ export default function JobAlertScreen() {
   const { t } = useTranslation()
   const router = useRouter()
   const insets = useSafeAreaInsets()
+  const { token } = useAuth()
   const params = useLocalSearchParams<{
     orderId: string
     serviceType: string
@@ -70,17 +69,17 @@ export default function JobAlertScreen() {
     // Already on the alert screen — no-op
   }, [])
 
-  const { acceptJob, declineJob } = useWasherSocket(MOCK_TOKEN, onJobAlert)
+  const { acceptJob, declineJob } = useWasherSocket(token, onJobAlert)
 
   // Set washer offline via API
   const setWasherOffline = async () => {
     try {
-      if (!MOCK_TOKEN) return
+      if (!token) return
       await fetch(`${API_URL}/api/washers/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${MOCK_TOKEN}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ online: false }),
       })
