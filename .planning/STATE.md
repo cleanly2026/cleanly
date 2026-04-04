@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-03-PLAN.md
-last_updated: "2026-04-03T11:19:06.501Z"
-last_activity: 2026-04-03
+stopped_at: Completed 03-08-PLAN.md
+last_updated: "2026-04-04T20:15:38.203Z"
+last_activity: 2026-04-04
 progress:
   total_phases: 4
   completed_phases: 2
-  total_plans: 31
-  completed_plans: 25
+  total_plans: 33
+  completed_plans: 31
   percent: 0
 ---
 
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-03-30)
 ## Current Position
 
 Phase: 03 (real-time-washer-app) — EXECUTING
-Plan: 2 of 7
+Plan: 2 of 9
 Status: Ready to execute
-Last activity: 2026-04-03
+Last activity: 2026-04-04
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -69,6 +69,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-core-business-flow P11 | 5 | 1 tasks | 1 files |
 | Phase 02 P10 | 3min | 1 tasks | 3 files |
 | Phase 03-real-time-washer-app P03 | 2 | 2 tasks | 6 files |
+| Phase 03 P08 | 3min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -123,6 +124,8 @@ Recent decisions affecting current work:
 - [Phase 03-real-time-washer-app]: customer-mobile socket.ts uses autoConnect=false singleton — explicit connectSocket(token) from screen
 - [Phase 03-real-time-washer-app]: useOrderTracking tracks previousLocation alongside washerLocation for marker interpolation animation in Plan 06
 - [Phase 03-real-time-washer-app]: useEta returns distanceMeters alongside etaMinutes — i18n text formatting delegated to consuming component
+- [Phase 03]: AuthContext reads from AsyncStorage on mount without token refresh — refresh logic is a separate future concern
+- [Phase 03]: useGpsTracking accepts userId as optional param (default null) and emits it in washer:join-order so server can store userId on socket for GPS broadcast routing
 
 ### Pending Todos
 
@@ -137,6 +140,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-03T11:19:06.496Z
-Stopped at: Completed 03-03-PLAN.md
+Last session: 2026-04-04T20:15:38.196Z
+Stopped at: Completed 03-08-PLAN.md
 Resume file: None
