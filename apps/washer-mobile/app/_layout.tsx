@@ -3,6 +3,7 @@ import { Stack } from 'expo-router'
 import '../src/i18n/expo-i18n' // Initialize i18n on app start
 import { useFonts } from 'expo-font'
 import { View, ActivityIndicator } from 'react-native'
+import { AuthProvider } from '../src/contexts/AuthContext'
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -15,10 +16,12 @@ export default function RootLayout() {
   void fontsLoaded
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-      }}
-    />
+    <AuthProvider>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      />
+    </AuthProvider>
   )
 }
