@@ -260,7 +260,7 @@ Admin panel English-only strings are acceptable for private beta (D-14 permits r
 | RefundModal: reason placeholder | "Describe the issue and why a refund is being issued" |
 | RefundModal: warning | "This action cannot be undone. The refund will be issued within 5-10 business days." |
 | RefundModal: confirm CTA | "Confirm Refund" |
-| RefundModal: cancel | "Cancel" |
+| RefundModal: cancel | "Keep Dispute Open" |
 | Empty state: no disputes | "No disputes reported. Resolved disputes appear in Orders history." |
 | Error: refund failed | "Refund could not be processed. Check Stripe dashboard and try again." |
 
