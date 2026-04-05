@@ -113,7 +113,7 @@ Plans:
 - [x] 04-01-PLAN.md — Schema migration (Dispute + push token) + notification service files + bilingual copy
 - [x] 04-02-PLAN.md — Admin guard plugin + all admin API routes (companies, orders, disputes, cities, audit log, refunds)
 - [ ] 04-03-PLAN.md — Notification worker dispatch + lifecycle route integration + push token registration
-- [ ] 04-04-PLAN.md — Admin-web sidebar + dashboard + company review pages
+- [x] 04-04-PLAN.md — Admin-web sidebar + dashboard + company review pages
 - [ ] 04-05-PLAN.md — Admin-web disputes/refund + orders + cities/categories + audit log pages
 - [x] 04-06-PLAN.md — Customer dispute initiation (API + web UI) + Report Issue flow
 - [ ] 04-07-PLAN.md — Seed script + error boundaries + manual verification checkpoint
@@ -129,4 +129,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Foundation | 9/12 | In Progress|  |
 | 2. Core Business Flow | 3/12 | In Progress|  |
 | 3. Real-Time & Washer App | 8/9 | In Progress|  |
-| 4. Supporting Systems & Admin | 2/7 | In Progress|  |
+| 4. Supporting Systems & Admin | 4/7 | In Progress|  |
