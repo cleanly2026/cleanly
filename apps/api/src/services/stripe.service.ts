@@ -44,6 +44,21 @@ export async function createRefund(paymentIntentId: string): Promise<Stripe.Refu
   })
 }
 
+// Create partial refund for admin dispute resolution (ADM-05, D-12)
+export async function createPartialRefund(
+  paymentIntentId: string,
+  amountFils: number,
+  reason?: string
+): Promise<Stripe.Refund> {
+  return stripe.refunds.create({
+    payment_intent: paymentIntentId,
+    amount: amountFils,
+    reason: (reason as Stripe.RefundCreateParams.Reason) ?? 'requested_by_customer',
+    reverse_transfer: true,
+    refund_application_fee: false,
+  })
+}
+
 // Create Stripe Connect AccountLink for company onboarding (COMP-07)
 export async function createAccountLink(
   accountId: string,

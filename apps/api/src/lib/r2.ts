@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 // Cloudflare R2 uses S3-compatible API at:
@@ -61,6 +61,15 @@ export function buildPhotoKey(
 ): string {
   const timestamp = Date.now()
   return `orders/${orderId}/${photoType}/${timestamp}.${extension}`
+}
+
+// Generate a presigned GET URL for reading a private object.
+// Fallback utility for when public R2 URLs are disabled or for time-limited access.
+// Photo URLs stored as public URLs (getPublicUrl) are preferred — use this only as needed.
+export async function getSignedReadUrl(key: string, expiresIn = 900): Promise<string> {
+  const client = getR2Client()
+  const command = new GetObjectCommand({ Bucket: BUCKET, Key: key })
+  return getSignedUrl(client, command, { expiresIn })
 }
 
 // Return public URL for a stored object.

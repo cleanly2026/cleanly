@@ -42,6 +42,7 @@ const server = Fastify({
 await server.register(corsPlugin)
 await server.register(rateLimitPlugin)
 await server.register(authPlugin)
+await server.register(import('./plugins/admin-guard.js'))
 await server.register(zodPlugin)
 // rawBody needed by Stripe webhook route (Plan 08) — global: false means opt-in per route
 await server.register(rawBody, { field: 'rawBody', global: false, runFirst: true })
@@ -90,6 +91,14 @@ await server.register(photoUploadUrlRoutes, { prefix: '/api/photos' })
 
 // Order photo confirm routes — Plan 03-01: save photo URL to DB after R2 upload
 await server.register(orderPhotosRoutes, { prefix: '/api/orders' })
+
+// Admin routes — Plan 04-02: admin guard, company review, orders, disputes, refunds, cities, audit log
+await server.register(import('./routes/admin/companies.js'), { prefix: '/api/admin/companies' })
+await server.register(import('./routes/admin/orders.js'), { prefix: '/api/admin/orders' })
+await server.register(import('./routes/admin/disputes.js'), { prefix: '/api/admin/disputes' })
+await server.register(import('./routes/admin/cities.js'), { prefix: '/api/admin/cities' })
+await server.register(import('./routes/admin/audit-log.js'), { prefix: '/api/admin/audit-log' })
+await server.register(import('./routes/admin/refunds.js'), { prefix: '/api/admin/refunds' })
 
 // Stripe webhook — Plan 08: payment confirmation, dispute handling (PAY-05)
 // IMPORTANT: Must NOT be behind fastify.authenticate — Stripe sends the webhook, not an authenticated user
