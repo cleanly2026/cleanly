@@ -107,7 +107,7 @@ Plans:
   3. Platform admin can review a company application, approve or reject it, and the company status updates immediately
   4. Platform admin can view a disputed order's before/after photos and issue a manual refund
   5. All 5 app surfaces (customer web, customer mobile, company dashboard, washer mobile, admin panel) are functional end-to-end for private beta invitations
-**Plans**: 7 plans
+**Plans**: 8 plans
 
 Plans:
 - [x] 04-01-PLAN.md — Schema migration (Dispute + push token) + notification service files + bilingual copy
@@ -117,6 +117,7 @@ Plans:
 - [x] 04-05-PLAN.md — Admin-web disputes/refund + orders + cities/categories + audit log pages
 - [x] 04-06-PLAN.md — Customer dispute initiation (API + web UI) + Report Issue flow
 - [x] 04-07-PLAN.md — Seed script + error boundaries + manual verification checkpoint
+- [ ] 04-08-PLAN.md — [GAP CLOSURE] Company rejection email handler + dashboard stats wiring
 **UI hint**: yes
 
 ## Progress
@@ -129,4 +130,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Foundation | 9/12 | In Progress|  |
 | 2. Core Business Flow | 3/12 | In Progress|  |
 | 3. Real-Time & Washer App | 8/9 | In Progress|  |
-| 4. Supporting Systems & Admin | 6/7 | In Progress|  |
+| 4. Supporting Systems & Admin | 7/8 | In Progress|  |
