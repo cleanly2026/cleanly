@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-03-PLAN.md — notification pipeline wiring
-last_updated: "2026-04-05T02:52:42.869Z"
+stopped_at: Completed 04-05-PLAN.md — remaining admin pages (disputes, orders, cities, audit log)
+last_updated: "2026-04-05T03:01:11.894Z"
 last_activity: 2026-04-05
 progress:
   total_phases: 4
   completed_phases: 2
   total_plans: 40
-  completed_plans: 37
+  completed_plans: 38
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-03-30)
 ## Current Position
 
 Phase: 04 (supporting-systems-admin) — EXECUTING
-Plan: 6 of 7
+Plan: 7 of 7
 Status: Ready to execute
 Last activity: 2026-04-05
 
@@ -76,6 +76,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 04 P06 | 5min | 2 tasks | 5 files |
 | Phase 04-supporting-systems-admin P04 | 25min | 2 tasks | 12 files |
 | Phase 04-supporting-systems-admin P03 | 7min | 2 tasks | 9 files |
+| Phase 04-supporting-systems-admin P05 | 6min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -144,6 +145,8 @@ Recent decisions affecting current work:
 - [Phase 04-supporting-systems-admin]: Active Washers and Open Disputes stub 0 on dashboard — API endpoints are Plan 05 scope
 - [Phase 04-supporting-systems-admin]: CRITICAL_EVENTS = [order_confirmed, washer_en_route, completed, refund_issued] per D-02 tier matrix — SMS+WhatsApp only on these 4 events, push on all
 - [Phase 04-supporting-systems-admin]: expo-notifications ~55.0.14 added to mobile apps — Expo SDK 55 compatible version from bundledNativeModules.json
+- [Phase 04-supporting-systems-admin]: DisputePhotoViewer uses plain img with onError fallback — photos are full public URLs from R2 getPublicUrl, no presigned URL needed in client components
+- [Phase 04-supporting-systems-admin]: Flatten-row pattern (DisputeRow/OrderRow/AuditEntryRow): intermediate types extend Record<string,unknown> to satisfy DataTable generic without unsafe casts
 
 ### Pending Todos
 
@@ -158,6 +161,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-05T02:52:42.861Z
-Stopped at: Completed 04-03-PLAN.md — notification pipeline wiring
+Last session: 2026-04-05T03:01:11.887Z
+Stopped at: Completed 04-05-PLAN.md — remaining admin pages (disputes, orders, cities, audit log)
 Resume file: None
