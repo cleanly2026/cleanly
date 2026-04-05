@@ -16,28 +16,28 @@ A customer can book a cleaning service, pay securely, and track their washer arr
 - [x] Company email/password authentication with MFA — Validated in Phase 1: Foundation
 - [x] Platform admin Google SSO authentication — Validated in Phase 1: Foundation
 - [x] Bilingual Arabic (RTL) + English throughout — Validated in Phase 1: Foundation (infrastructure + auth screens)
+- [x] Service category browsing (car wash, carpet, sofa) — Validated in Phase 2: Core Business Flow
+- [x] GPS-based city detection and company filtering — Validated in Phase 2: Core Business Flow
+- [x] Company listing with ratings, pricing, and ETA — Validated in Phase 2: Core Business Flow
+- [x] Package and add-on selection with quantity support — Validated in Phase 2: Core Business Flow
+- [x] Stripe payment (card, Apple Pay, Google Pay, wallet) — Validated in Phase 2: Core Business Flow
+- [x] Order lifecycle management (7 statuses) — Validated in Phase 2: Core Business Flow
+- [x] Customer reviews and ratings — Validated in Phase 2: Core Business Flow
+- [x] Company dashboard with order management — Validated in Phase 2: Core Business Flow
+- [x] Company onboarding (profile, cities, categories, packages) — Validated in Phase 2: Core Business Flow
+- [x] Stripe Connect for company payouts — Validated in Phase 2: Core Business Flow
+- [x] Real-time washer GPS tracking via Socket.io — Validated in Phase 3: Real-Time & Washer App
+- [x] Before/after photo evidence system — Validated in Phase 3: Real-Time & Washer App
+- [x] Per-category service checklists for washers — Validated in Phase 3: Real-Time & Washer App
+- [x] Washer mobile app (GPS, camera, job management) — Validated in Phase 3: Real-Time & Washer App
+- [x] Push notifications (Expo), SMS (Twilio), Email (Resend) — Validated in Phase 4: Supporting Systems & Admin
+- [x] WhatsApp notifications (360dialog) — Validated in Phase 4: Supporting Systems & Admin
+- [x] Admin panel for platform oversight — Validated in Phase 4: Supporting Systems & Admin
 
 ### Active
-- [ ] Service category browsing (car wash, carpet, sofa)
-- [ ] GPS-based city detection and company filtering
-- [ ] Company listing with ratings, pricing, and ETA
-- [ ] Package and add-on selection with quantity support
-- [ ] Stripe payment (card, Apple Pay, Google Pay, wallet)
-- [ ] Real-time washer GPS tracking via Socket.io
-- [ ] Before/after photo evidence system
-- [ ] Per-category service checklists for washers
-- [ ] Order lifecycle management (7 statuses)
-- [ ] Customer reviews and ratings
-- [ ] Company dashboard with order management
-- [ ] Company onboarding (profile, cities, categories, packages)
-- [ ] Washer mobile app (GPS, camera, job management)
-- [ ] Admin panel for platform oversight
-- [ ] Push notifications (Expo), SMS (Twilio), Email (Resend)
-- [ ] Stripe Connect for company payouts
 - [ ] Loyalty points and wallet system
 - [ ] Promo codes and discount engine
 - [ ] Analytics dashboards for companies
-- [ ] WhatsApp notifications (360dialog)
 
 ### Out of Scope
 
@@ -100,4 +100,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-02 after Phase 1 completion*
+*Last updated: 2026-04-05 after Phase 4 completion — all 4 milestone phases complete*
