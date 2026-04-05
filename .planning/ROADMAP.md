@@ -116,7 +116,7 @@ Plans:
 - [x] 04-04-PLAN.md — Admin-web sidebar + dashboard + company review pages
 - [x] 04-05-PLAN.md — Admin-web disputes/refund + orders + cities/categories + audit log pages
 - [x] 04-06-PLAN.md — Customer dispute initiation (API + web UI) + Report Issue flow
-- [ ] 04-07-PLAN.md — Seed script + error boundaries + manual verification checkpoint
+- [x] 04-07-PLAN.md — Seed script + error boundaries + manual verification checkpoint
 **UI hint**: yes
 
 ## Progress
