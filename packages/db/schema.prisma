@@ -68,6 +68,7 @@ model User {
   google_id           String?   @unique  // admin SSO (Auth.js)
   company_id          String?            // company_member only
   wallet_balance      Int       @default(0)  // in fils — PAY-02
+  expo_push_token     String?              // NOTF-01: Expo push token for mobile notifications
   created_at          DateTime  @default(now())
   updated_at          DateTime  @updatedAt
 
@@ -76,6 +77,7 @@ model User {
   orders_as_customer  Order[]   @relation("CustomerOrders")
   orders_as_washer    Order[]   @relation("WasherOrders")
   refresh_tokens      RefreshToken[]
+  disputes            Dispute[]  @relation("CustomerDisputes")
 
   @@index([phone])
   @@index([email])
@@ -231,6 +233,7 @@ model Order {
   washer            User?       @relation("WasherOrders", fields: [washer_id], references: [id])
   items             OrderItem[]
   carpet_details    CarpetOrderDetails?
+  dispute           Dispute?
 
   @@index([customer_id])
   @@index([company_id])
@@ -279,6 +282,27 @@ model Review {
   created_at DateTime @default(now())
 
   @@index([company_id])
+}
+
+// ─── Disputes ────────────────────────────────────────────────────────────────
+
+model Dispute {
+  id            String   @id @default(cuid())
+  order_id      String   @unique
+  customer_id   String
+  reason        String   // 'quality_issue' | 'photo_mismatch' | 'wrong_items' | 'unprofessional' | 'other'
+  note          String?  @db.Text
+  status        String   @default("open")  // 'open' | 'resolved'
+  resolution    String?  @db.Text
+  refund_amount Int?     // in fils, null if no refund issued
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  order         Order    @relation(fields: [order_id], references: [id])
+  customer      User     @relation("CustomerDisputes", fields: [customer_id], references: [id])
+
+  @@index([status])
+  @@index([customer_id])
 }
 
 // ─── Platform Config ─────────────────────────────────────────────────────────
