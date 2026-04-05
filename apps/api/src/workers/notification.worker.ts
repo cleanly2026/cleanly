@@ -3,7 +3,7 @@ import { redis } from '../lib/redis.js'
 import { sendPushNotification } from '../services/push.service.js'
 import { sendSms } from '../services/sms.service.js'
 import { sendWhatsAppTemplate } from '../services/whatsapp.service.js'
-import { sendOrderReceipt } from '../services/email.service.js'
+import { sendOrderReceipt, sendCompanyRejectionEmail } from '../services/email.service.js'
 import { getNotificationCopy, WHATSAPP_TEMPLATE_MAP, SMS_COPY } from '../services/notification-copy.js'
 
 // Idempotency key TTL — 7 days prevents double-sends on BullMQ retry
@@ -111,6 +111,14 @@ const worker = new Worker(
         break
       }
 
+      case 'send-company-rejection-email': {
+        const { email, companyName, reason, language: lang } = job.data as {
+          email: string; companyName: string; reason: string; language: 'en' | 'ar'
+        }
+        await sendCompanyRejectionEmail({ to: email, companyName, reason, language: lang ?? 'en' })
+        break
+      }
+
       default:
         console.warn(`[Notification] Unknown job name: ${job.name}`)
     }
@@ -143,4 +151,4 @@ async function shutdown(signal: string) {
 process.on('SIGTERM', () => shutdown('SIGTERM'))
 process.on('SIGINT', () => shutdown('SIGINT'))
 
-console.log('[Notification] Worker started -- listening for send-push, send-sms, send-whatsapp, send-email-receipt')
+console.log('[Notification] Worker started -- listening for send-push, send-sms, send-whatsapp, send-email-receipt, send-company-rejection-email')
