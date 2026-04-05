@@ -4,6 +4,20 @@ import '../src/i18n/expo-i18n' // Initialize i18n on app start
 import { useFonts } from 'expo-font'
 import { View, ActivityIndicator } from 'react-native'
 import { AuthProvider } from '../src/contexts/AuthContext'
+import { usePushToken } from '../src/hooks/usePushToken'
+
+function AppLayout() {
+  // Register Expo push token on app launch (NOTF-01)
+  usePushToken()
+
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+      }}
+    />
+  )
+}
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -17,11 +31,7 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
-      />
+      <AppLayout />
     </AuthProvider>
   )
 }
