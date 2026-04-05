@@ -21,6 +21,10 @@ interface CompaniesResponse {
   total: number
 }
 
+interface DisputesResponse {
+  total: number
+}
+
 // Stat icons as inline SVG
 function OrdersIcon() {
   return (
@@ -59,19 +63,22 @@ function DisputesIcon() {
 }
 
 async function getStats() {
-  const [ordersData, pendingData] = await Promise.allSettled([
+  const [ordersData, pendingData, disputesData] = await Promise.allSettled([
     adminFetch<OrdersResponse>('/api/admin/orders?page=1&limit=10'),
     adminFetch<CompaniesResponse>('/api/admin/companies?status=pending&limit=1'),
+    adminFetch<DisputesResponse>('/api/admin/disputes?status=open&limit=1'),
   ])
 
   const ordersResult = ordersData.status === 'fulfilled' ? ordersData.value : null
   const pendingResult = pendingData.status === 'fulfilled' ? pendingData.value : null
+  const disputesResult = disputesData.status === 'fulfilled' ? disputesData.value : null
 
   return {
     ordersToday: ordersResult?.total ?? 0,
     pendingReviews: pendingResult?.total ?? 0,
     recentOrders: ordersResult?.orders ?? [],
     totalOrders: ordersResult?.total ?? 0,
+    openDisputes: disputesResult?.total ?? 0,
   }
 }
 
@@ -97,6 +104,7 @@ export default async function DashboardPage() {
     pendingReviews: 0,
     recentOrders: [] as Order[],
     totalOrders: 0,
+    openDisputes: 0,
   }))
 
   const orderColumns = [
@@ -135,7 +143,7 @@ export default async function DashboardPage() {
         <StatCard label="Orders Today" value={stats.ordersToday} icon={<OrdersIcon />} />
         <StatCard label="Active Washers" value={0} icon={<WasherIcon />} />
         <StatCard label="Pending Reviews" value={stats.pendingReviews} icon={<PendingIcon />} />
-        <StatCard label="Open Disputes" value={0} icon={<DisputesIcon />} />
+        <StatCard label="Open Disputes" value={stats.openDisputes} icon={<DisputesIcon />} />
       </div>
 
       {/* Recent orders table */}
