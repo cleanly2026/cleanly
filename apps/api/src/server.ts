@@ -100,6 +100,12 @@ await server.register(import('./routes/admin/cities.js'), { prefix: '/api/admin/
 await server.register(import('./routes/admin/audit-log.js'), { prefix: '/api/admin/audit-log' })
 await server.register(import('./routes/admin/refunds.js'), { prefix: '/api/admin/refunds' })
 
+// Customer dispute routes — Plan 04-06: customer-initiated dispute creation (D-10, ADM-04)
+await server.register(import('./routes/disputes/customer.js'), { prefix: '/api/disputes' })
+
+// Push token registration — Plan 04-03: Expo push token endpoint (NOTF-01)
+await server.register(import('./routes/users/push-token.js'), { prefix: '/api/users' })
+
 // Stripe webhook — Plan 08: payment confirmation, dispute handling (PAY-05)
 // IMPORTANT: Must NOT be behind fastify.authenticate — Stripe sends the webhook, not an authenticated user
 await server.register(stripeWebhookRoutes, { prefix: '/webhooks/stripe' })
