@@ -110,7 +110,7 @@ Plans:
 **Plans**: 7 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — Schema migration (Dispute + push token) + notification service files + bilingual copy
+- [x] 04-01-PLAN.md — Schema migration (Dispute + push token) + notification service files + bilingual copy
 - [ ] 04-02-PLAN.md — Admin guard plugin + all admin API routes (companies, orders, disputes, cities, audit log, refunds)
 - [ ] 04-03-PLAN.md — Notification worker dispatch + lifecycle route integration + push token registration
 - [ ] 04-04-PLAN.md — Admin-web sidebar + dashboard + company review pages
