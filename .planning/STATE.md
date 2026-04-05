@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-02-PLAN.md — admin API routes
-last_updated: "2026-04-05T02:40:21.168Z"
+stopped_at: Completed 04-06-PLAN.md — customer dispute creation
+last_updated: "2026-04-05T02:47:32.795Z"
 last_activity: 2026-04-05
 progress:
   total_phases: 4
   completed_phases: 2
   total_plans: 40
-  completed_plans: 34
+  completed_plans: 35
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-03-30)
 ## Current Position
 
 Phase: 04 (supporting-systems-admin) — EXECUTING
-Plan: 3 of 7
+Plan: 4 of 7
 Status: Ready to execute
 Last activity: 2026-04-05
 
@@ -73,6 +73,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 03 P09 | 3min | 1 tasks | 2 files |
 | Phase 04-supporting-systems-admin P01 | 12min | 2 tasks | 10 files |
 | Phase 04 P02 | 7min | 2 tasks | 10 files |
+| Phase 04 P06 | 5min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -135,6 +136,7 @@ Recent decisions affecting current work:
 - [Phase 04-supporting-systems-admin]: 360dialog uses native fetch (no Node.js SDK on npm) to waba-v2.360dialog.io with D360-API-KEY header
 - [Phase 04]: Admin routes use addHook preHandler pattern (not per-route array) for consistent auth across all admin endpoints
 - [Phase 04]: cities.ts registers /categories before /:id to prevent route collision in Fastify
+- [Phase 04]: DisputeReasonSheet uses apiFetch helper (not raw fetch) for consistent API_BASE and auth header handling
 
 ### Pending Todos
 
@@ -149,6 +151,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-05T02:40:21.157Z
-Stopped at: Completed 04-02-PLAN.md — admin API routes
+Last session: 2026-04-05T02:47:32.781Z
+Stopped at: Completed 04-06-PLAN.md — customer dispute creation
 Resume file: None
