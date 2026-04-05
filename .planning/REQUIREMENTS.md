@@ -96,12 +96,12 @@ Requirements for private beta launch. Each maps to roadmap phases.
 
 ### Admin Panel
 
-- [ ] **ADM-01**: Admin can review and verify/reject company applications
-- [ ] **ADM-02**: Admin can view platform-wide order list and details
-- [ ] **ADM-03**: Admin can manage cities and service categories
-- [ ] **ADM-04**: Admin can handle disputes with photo evidence viewer
-- [ ] **ADM-05**: Admin can issue manual refunds
-- [ ] **ADM-06**: Admin can view audit log of all admin actions
+- [x] **ADM-01**: Admin can review and verify/reject company applications
+- [x] **ADM-02**: Admin can view platform-wide order list and details
+- [x] **ADM-03**: Admin can manage cities and service categories
+- [x] **ADM-04**: Admin can handle disputes with photo evidence viewer
+- [x] **ADM-05**: Admin can issue manual refunds
+- [x] **ADM-06**: Admin can view audit log of all admin actions
 
 ### Bilingual (AR/EN)
 
@@ -114,11 +114,11 @@ Requirements for private beta launch. Each maps to roadmap phases.
 
 ### Notifications
 
-- [ ] **NOTF-01**: Push notification sent on key order status changes (Expo Push)
-- [ ] **NOTF-02**: SMS sent for order confirmation and washer arrival (Twilio)
-- [ ] **NOTF-03**: WhatsApp notification for order confirmation (360dialog)
-- [ ] **NOTF-04**: Email receipt sent after order completion (Resend)
-- [ ] **NOTF-05**: All notifications sent in customer's preferred language
+- [x] **NOTF-01**: Push notification sent on key order status changes (Expo Push)
+- [x] **NOTF-02**: SMS sent for order confirmation and washer arrival (Twilio)
+- [x] **NOTF-03**: WhatsApp notification for order confirmation (360dialog)
+- [x] **NOTF-04**: Email receipt sent after order completion (Resend)
+- [x] **NOTF-05**: All notifications sent in customer's preferred language
 
 ### Infrastructure
 
@@ -257,17 +257,17 @@ Which phases cover which requirements. Updated during roadmap creation.
 | WASH-04 | Phase 3 | Complete |
 | WASH-05 | Phase 3 | Complete |
 | WASH-06 | Phase 3 | Complete |
-| NOTF-01 | Phase 4 | Pending |
-| NOTF-02 | Phase 4 | Pending |
-| NOTF-03 | Phase 4 | Pending |
-| NOTF-04 | Phase 4 | Pending |
-| NOTF-05 | Phase 4 | Pending |
-| ADM-01 | Phase 4 | Pending |
-| ADM-02 | Phase 4 | Pending |
-| ADM-03 | Phase 4 | Pending |
-| ADM-04 | Phase 4 | Pending |
-| ADM-05 | Phase 4 | Pending |
-| ADM-06 | Phase 4 | Pending |
+| NOTF-01 | Phase 4 | Complete |
+| NOTF-02 | Phase 4 | Complete |
+| NOTF-03 | Phase 4 | Complete |
+| NOTF-04 | Phase 4 | Complete |
+| NOTF-05 | Phase 4 | Complete |
+| ADM-01 | Phase 4 | Complete |
+| ADM-02 | Phase 4 | Complete |
+| ADM-03 | Phase 4 | Complete |
+| ADM-04 | Phase 4 | Complete |
+| ADM-05 | Phase 4 | Complete |
+| ADM-06 | Phase 4 | Complete |
 
 **Coverage:**
 - v1 requirements: 84 total

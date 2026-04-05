@@ -117,7 +117,7 @@ Plans:
 - [x] 04-05-PLAN.md — Admin-web disputes/refund + orders + cities/categories + audit log pages
 - [x] 04-06-PLAN.md — Customer dispute initiation (API + web UI) + Report Issue flow
 - [x] 04-07-PLAN.md — Seed script + error boundaries + manual verification checkpoint
-- [ ] 04-08-PLAN.md — [GAP CLOSURE] Company rejection email handler + dashboard stats wiring
+- [x] 04-08-PLAN.md — [GAP CLOSURE] Company rejection email handler + dashboard stats wiring
 **UI hint**: yes
 
 ## Progress

@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Completed 04-07-PLAN.md — beta readiness (seed data, error boundaries, test checklist)
-last_updated: "2026-04-05T07:36:47.918Z"
+status: executing
+stopped_at: Completed 04-08-PLAN.md -- gap closure (rejection email + dashboard stats)
+last_updated: "2026-04-05T08:30:05.132Z"
 last_activity: 2026-04-05
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 40
-  completed_plans: 39
+  total_plans: 41
+  completed_plans: 40
   percent: 0
 ---
 
@@ -26,8 +26,8 @@ See: .planning/PROJECT.md (updated 2026-03-30)
 ## Current Position
 
 Phase: 04 (supporting-systems-admin) — EXECUTING
-Plan: 7 of 7
-Status: Phase complete — ready for verification
+Plan: 2 of 8
+Status: Ready to execute
 Last activity: 2026-04-05
 
 Progress: [░░░░░░░░░░] 0%
@@ -78,6 +78,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 04-supporting-systems-admin P03 | 7min | 2 tasks | 9 files |
 | Phase 04-supporting-systems-admin P05 | 6min | 2 tasks | 8 files |
 | Phase 04-supporting-systems-admin P07 | 1min | 2 tasks | 3 files |
+| Phase 04 P08 | 1min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -149,6 +150,7 @@ Recent decisions affecting current work:
 - [Phase 04-supporting-systems-admin]: DisputePhotoViewer uses plain img with onError fallback — photos are full public URLs from R2 getPublicUrl, no presigned URL needed in client components
 - [Phase 04-supporting-systems-admin]: Flatten-row pattern (DisputeRow/OrderRow/AuditEntryRow): intermediate types extend Record<string,unknown> to satisfy DataTable generic without unsafe casts
 - [Phase 04-supporting-systems-admin]: seed.ts already existed from prior execution with full beta data — no changes needed in 04-07
+- [Phase 04]: Active Washers stat remains stub (value=0) -- no washer-online count API endpoint exists
 
 ### Pending Todos
 
@@ -163,6 +165,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-05T07:36:47.910Z
-Stopped at: Completed 04-07-PLAN.md — beta readiness (seed data, error boundaries, test checklist)
+Last session: 2026-04-05T08:30:05.125Z
+Stopped at: Completed 04-08-PLAN.md -- gap closure (rejection email + dashboard stats)
 Resume file: None
