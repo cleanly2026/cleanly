@@ -1,22 +1,20 @@
-// IMPORTANT: Uses otplib v13.4.0, NOT speakeasy (unmaintained since 2019).
-import { authenticator } from 'otplib'
+// IMPORTANT: Uses otplib v13.4.0 ESM API — no 'authenticator' named export in v13.
+import { generateSecret, generateURI, verifySync } from 'otplib'
 import QRCode from 'qrcode'
 
-// Defaults: 30-second window, SHA1 HMAC, 6-digit token — matches Google Authenticator.
-// otplib handles clock skew tolerance automatically.
-
 export function generateTotpSecret(): string {
-  return authenticator.generateSecret()
+  return generateSecret()
 }
 
 export async function generateTotpQrCode(email: string, secret: string): Promise<string> {
-  const otpauth = authenticator.keyuri(email, 'Cleanly Admin', secret)
+  const otpauth = generateURI({ issuer: 'Cleanly Admin', label: email, secret })
   return QRCode.toDataURL(otpauth)
 }
 
 export function verifyTotpToken(token: string, secret: string): boolean {
   try {
-    return authenticator.verify({ token, secret })
+    const { valid } = verifySync({ secret, token })
+    return valid
   } catch {
     return false
   }

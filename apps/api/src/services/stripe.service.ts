@@ -1,10 +1,23 @@
 import Stripe from 'stripe'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2026-03-25.dahlia',
-})
+let _stripe: Stripe | undefined
 
-export { stripe }
+function getStripe(): Stripe {
+  if (!_stripe) {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      throw new Error('STRIPE_SECRET_KEY is not set — add it to apps/api/.env')
+    }
+    _stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2026-03-25.dahlia',
+    })
+  }
+  return _stripe
+}
+
+// Lazy proxy: server boots without STRIPE_SECRET_KEY, fails only when Stripe is actually used
+export const stripe = new Proxy({} as Stripe, {
+  get(_, prop) { return Reflect.get(getStripe(), prop) },
+})
 
 // Create PaymentIntent with destination charge (PAY-01, PAY-03)
 // Per research: use transfer_data.destination, NOT on_behalf_of (UAE restriction)
