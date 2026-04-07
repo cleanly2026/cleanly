@@ -172,7 +172,9 @@
       "newJob": "New Job",
       "accept": "Accept Job",
       "decline": "Decline",
-      "autoDeclined": "Job auto-declined — you're now offline."
+      "autoDeclined": "Job auto-declined — you're now offline.",
+      "distanceAway": "{{distance}} km away",
+      "loadingMap": "Loading map…"
     },
     "enRoute": {
       "navigate": "Navigate",
@@ -185,6 +187,10 @@
       "afterOnSite": "Take an after photo",
       "afterCarpet": "Photograph returned carpets",
       "bodyInstruction": "Show the {{serviceType}} in full view before cleaning begins.",
+      "bodyBefore": "Show the service area in full view before cleaning begins.",
+      "bodyAfter": "Show the service area after cleaning is complete.",
+      "bodyPickup": "Document the carpets before pickup for the customer record.",
+      "bodyReturn": "Document the carpets upon return to confirm condition.",
       "openCamera": "Open Camera",
       "upload": "Upload Photo",
       "retake": "Retake",
@@ -198,7 +204,27 @@
     "checklist": {
       "heading": "Service Checklist",
       "progress": "{{checked}} of {{total}} items checked",
-      "incompleteWarning": "Please complete at least {{count}} more checklist item(s) before finishing."
+      "incompleteWarning": "Please complete at least {{count}} more checklist item(s) before finishing.",
+      "jobActive": "Job Active",
+      "completeJob": "Complete Job",
+      "items": {
+        "car_wash": {
+          "exterior_wash": "Exterior wash",
+          "interior_vacuum": "Interior vacuum",
+          "window_clean": "Window clean",
+          "tire_clean": "Tire clean",
+          "dashboard_wipe": "Dashboard wipe",
+          "final_inspection": "Final inspection"
+        },
+        "sofa": {
+          "pre_treatment": "Pre-treatment applied",
+          "surface_clean": "Surface clean",
+          "cushion_clean": "Cushion clean",
+          "final_dry_check": "Final dry check",
+          "odor_treatment": "Odor treatment (if requested)",
+          "final_inspection": "Final inspection"
+        }
+      }
     },
     "completion": {
       "completeJob": "Complete Job",

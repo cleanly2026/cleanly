@@ -2,28 +2,31 @@ import { useState, useEffect, useRef } from 'react'
 import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useTranslation } from 'react-i18next'
 import { ChecklistItem } from '../../src/components/ChecklistItem'
 
-const CHECKLISTS: Record<string, string[]> = {
+// Checklist item translation keys per service type
+const CHECKLIST_KEYS: Record<string, string[]> = {
   car_wash: [
-    'Exterior wash',
-    'Interior vacuum',
-    'Window clean',
-    'Tire clean',
-    'Dashboard wipe',
-    'Final inspection',
+    'washer.checklist.items.car_wash.exterior_wash',
+    'washer.checklist.items.car_wash.interior_vacuum',
+    'washer.checklist.items.car_wash.window_clean',
+    'washer.checklist.items.car_wash.tire_clean',
+    'washer.checklist.items.car_wash.dashboard_wipe',
+    'washer.checklist.items.car_wash.final_inspection',
   ],
   sofa: [
-    'Pre-treatment applied',
-    'Surface clean',
-    'Cushion clean',
-    'Final dry check',
-    'Odor treatment (if requested)',
-    'Final inspection',
+    'washer.checklist.items.sofa.pre_treatment',
+    'washer.checklist.items.sofa.surface_clean',
+    'washer.checklist.items.sofa.cushion_clean',
+    'washer.checklist.items.sofa.final_dry_check',
+    'washer.checklist.items.sofa.odor_treatment',
+    'washer.checklist.items.sofa.final_inspection',
   ],
 }
 
 export default function ActiveJobScreen() {
+  const { t } = useTranslation()
   const router = useRouter()
   const insets = useSafeAreaInsets()
   const params = useLocalSearchParams<{
@@ -33,7 +36,8 @@ export default function ActiveJobScreen() {
   }>()
 
   const { orderId, serviceType, startedAt } = params
-  const items = CHECKLISTS[serviceType] || CHECKLISTS.car_wash
+  const itemKeys = CHECKLIST_KEYS[serviceType] || CHECKLIST_KEYS.car_wash
+  const items = itemKeys.map((key) => t(key))
   const [checked, setChecked] = useState<boolean[]>(new Array(items.length).fill(false))
   const [elapsed, setElapsed] = useState(0)
   const [showWarning, setShowWarning] = useState(false)
@@ -84,15 +88,20 @@ export default function ActiveJobScreen() {
     })
   }
 
+  // Translated service label: try discovery.categories key, fall back to capitalised raw value
+  const serviceLabel = t(`discovery.categories.${serviceType}`, {
+    defaultValue: (serviceType || 'Service').replace('_', ' '),
+  })
+
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* Status bar */}
       <View style={styles.statusBar}>
         <View style={styles.statusRow}>
           <Text style={styles.elapsedTime}>{formatElapsed(elapsed)}</Text>
-          <Text style={styles.serviceLabel}>{serviceType.replace('_', ' ')}</Text>
+          <Text style={styles.serviceLabel}>{serviceLabel}</Text>
           <View style={styles.activeBadge}>
-            <Text style={styles.activeBadgeText}>Job Active</Text>
+            <Text style={styles.activeBadgeText}>{t('washer.checklist.jobActive')}</Text>
           </View>
         </View>
       </View>
@@ -102,20 +111,22 @@ export default function ActiveJobScreen() {
         contentContainerStyle={[styles.scrollContent, { paddingBottom: Math.max(insets.bottom, 16) + 80 }]}
       >
         {/* Checklist heading */}
-        <Text style={styles.heading}>Service Checklist</Text>
+        <Text style={styles.heading}>{t('washer.checklist.heading')}</Text>
 
         {/* Progress bar */}
         <View style={styles.progressContainer}>
           <View style={styles.progressTrack}>
             <View style={[styles.progressFill, { width: `${(checkedCount / totalCount) * 100}%` }]} />
           </View>
-          <Text style={styles.progressLabel}>{`${checkedCount} of ${totalCount} items checked`}</Text>
+          <Text style={styles.progressLabel}>
+            {t('washer.checklist.progress', { checked: checkedCount, total: totalCount })}
+          </Text>
         </View>
 
         {/* Checklist items */}
         {items.map((item, index) => (
           <ChecklistItem
-            key={item}
+            key={itemKeys[index]}
             label={item}
             checked={checked[index]}
             onToggle={() => handleToggle(index)}
@@ -127,7 +138,7 @@ export default function ActiveJobScreen() {
       <View style={[styles.bottomBar, { paddingBottom: Math.max(insets.bottom, 16) }]}>
         {showWarning && (
           <Text style={styles.warningText}>
-            {`Please complete at least ${remaining} more checklist item(s) before finishing.`}
+            {t('washer.checklist.incompleteWarning', { count: remaining })}
           </Text>
         )}
         <Pressable
@@ -135,7 +146,7 @@ export default function ActiveJobScreen() {
           onPress={handleComplete}
         >
           <Text style={[styles.completeButtonText, !canComplete && styles.completeButtonTextDisabled]}>
-            Complete Job
+            {t('washer.checklist.completeJob')}
           </Text>
         </Pressable>
       </View>

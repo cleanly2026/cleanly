@@ -172,7 +172,9 @@
       "newJob": "مهمة جديدة",
       "accept": "قبول المهمة",
       "decline": "رفض",
-      "autoDeclined": "تم رفض المهمة تلقائياً — أنت الآن غير متاح."
+      "autoDeclined": "تم رفض المهمة تلقائياً — أنت الآن غير متاح.",
+      "distanceAway": "على بُعد {{distance}} كم",
+      "loadingMap": "جارٍ تحميل الخريطة…"
     },
     "enRoute": {
       "navigate": "التنقل",
@@ -185,6 +187,10 @@
       "afterOnSite": "التقط صورة بعد الانتهاء",
       "afterCarpet": "التقط صورة للسجاد بعد الإعادة",
       "bodyInstruction": "أظهر {{serviceType}} بالكامل قبل بدء التنظيف.",
+      "bodyBefore": "أظهر منطقة الخدمة بالكامل قبل بدء التنظيف.",
+      "bodyAfter": "أظهر منطقة الخدمة بعد اكتمال التنظيف.",
+      "bodyPickup": "وثّق السجاد قبل الاستلام لسجل العميل.",
+      "bodyReturn": "وثّق السجاد عند الإعادة للتأكد من حالته.",
       "openCamera": "فتح الكاميرا",
       "upload": "رفع الصورة",
       "retake": "إعادة التصوير",
@@ -198,7 +204,27 @@
     "checklist": {
       "heading": "قائمة الخدمة",
       "progress": "{{checked}} من {{total}} بنود مكتملة",
-      "incompleteWarning": "يرجى إكمال {{count}} بند إضافي على الأقل قبل الإنهاء."
+      "incompleteWarning": "يرجى إكمال {{count}} بند إضافي على الأقل قبل الإنهاء.",
+      "jobActive": "المهمة نشطة",
+      "completeJob": "إنهاء المهمة",
+      "items": {
+        "car_wash": {
+          "exterior_wash": "غسيل خارجي",
+          "interior_vacuum": "تنظيف داخلي بالمكنسة",
+          "window_clean": "تنظيف الزجاج",
+          "tire_clean": "تنظيف الإطارات",
+          "dashboard_wipe": "مسح لوحة التحكم",
+          "final_inspection": "الفحص النهائي"
+        },
+        "sofa": {
+          "pre_treatment": "تطبيق المعالجة المسبقة",
+          "surface_clean": "تنظيف السطح",
+          "cushion_clean": "تنظيف الوسائد",
+          "final_dry_check": "فحص الجفاف النهائي",
+          "odor_treatment": "معالجة الروائح (عند الطلب)",
+          "final_inspection": "الفحص النهائي"
+        }
+      }
     },
     "completion": {
       "completeJob": "إنهاء المهمة",

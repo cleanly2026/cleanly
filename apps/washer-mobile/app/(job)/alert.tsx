@@ -183,13 +183,20 @@ export default function JobAlertScreen() {
         <View style={styles.detailsBlock}>
           <View style={styles.serviceRow}>
             <ServiceIcon serviceType={serviceType} size={32} />
-            <Text style={styles.serviceName}>{serviceType || 'Service'}</Text>
+            <Text style={styles.serviceName}>
+              {t(`discovery.categories.${serviceType}`, {
+                defaultValue: (serviceType || 'Service').replace('_', ' '),
+              })}
+            </Text>
           </View>
           <Text style={styles.companyName}>{companyName}</Text>
           <Text style={styles.customerAddress}>{customerAddress}</Text>
           {estimatedDistanceNum > 0 && (
             <Text style={styles.distanceLabel}>
-              {(estimatedDistanceNum / 1000).toFixed(1)} km away
+              {t('washer.jobAlert.distanceAway', {
+                distance: (estimatedDistanceNum / 1000).toFixed(1),
+                defaultValue: `${(estimatedDistanceNum / 1000).toFixed(1)} km away`,
+              })}
             </Text>
           )}
         </View>
@@ -222,7 +229,7 @@ export default function JobAlertScreen() {
           </View>
         ) : (
           <View style={[styles.mapContainer, styles.mapPlaceholder]}>
-            <Text style={styles.mapPlaceholderText}>Loading map…</Text>
+            <Text style={styles.mapPlaceholderText}>{t('washer.jobAlert.loadingMap')}</Text>
           </View>
         )}
       </View>

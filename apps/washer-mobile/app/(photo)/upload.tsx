@@ -1,34 +1,12 @@
 import { View, StyleSheet } from 'react-native'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useTranslation } from 'react-i18next'
 import { PhotoUploader } from '../../src/components/PhotoUploader'
 import { useAuth } from '../../src/contexts/AuthContext'
 
-const INSTRUCTION_MAP: Record<string, Record<string, string>> = {
-  before: {
-    on_site: 'Take a before photo',
-    carpet: 'Photograph carpets for pickup',
-  },
-  after: {
-    on_site: 'Take an after photo',
-    carpet: 'Photograph returned carpets',
-  },
-  pickup: {
-    carpet: 'Photograph carpets for pickup',
-  },
-  return: {
-    carpet: 'Photograph returned carpets',
-  },
-}
-
-const BODY_MAP: Record<string, string> = {
-  before: 'Show the service area in full view before cleaning begins.',
-  after: 'Show the service area after cleaning is complete.',
-  pickup: 'Document the carpets before pickup for the customer record.',
-  return: 'Document the carpets upon return to confirm condition.',
-}
-
 export default function PhotoUploadScreen() {
+  const { t } = useTranslation()
   const router = useRouter()
   const insets = useSafeAreaInsets()
   const params = useLocalSearchParams<{
@@ -41,8 +19,29 @@ export default function PhotoUploadScreen() {
   const { orderId, photoType, serviceType, nextRoute } = params
   const orderType = serviceType === 'carpet' ? 'carpet' : 'on_site'
 
-  const instruction = INSTRUCTION_MAP[photoType]?.[orderType] || 'Take a photo'
-  const bodyText = BODY_MAP[photoType] || ''
+  // Resolve instruction string via i18n keys
+  const instructionKey = (() => {
+    if (photoType === 'before') {
+      return orderType === 'carpet' ? 'washer.photo.beforeCarpet' : 'washer.photo.beforeOnSite'
+    }
+    if (photoType === 'after') {
+      return orderType === 'carpet' ? 'washer.photo.afterCarpet' : 'washer.photo.afterOnSite'
+    }
+    if (photoType === 'pickup') return 'washer.photo.beforeCarpet'
+    if (photoType === 'return') return 'washer.photo.afterCarpet'
+    return 'washer.photo.beforeOnSite'
+  })()
+
+  const bodyKey = (() => {
+    if (photoType === 'before') return 'washer.photo.bodyBefore'
+    if (photoType === 'after') return 'washer.photo.bodyAfter'
+    if (photoType === 'pickup') return 'washer.photo.bodyPickup'
+    if (photoType === 'return') return 'washer.photo.bodyReturn'
+    return 'washer.photo.bodyBefore'
+  })()
+
+  const instruction = t(instructionKey)
+  const bodyText = t(bodyKey)
 
   const { token } = useAuth()
 
