@@ -1,22 +1,21 @@
 ---
-status: partial
+status: complete
 phase: 03-real-time-washer-app
 source: [03-01-SUMMARY.md, 03-02-SUMMARY.md, 03-03-SUMMARY.md, 03-04-SUMMARY.md, 03-05-SUMMARY.md, 03-06-SUMMARY.md, 03-08-SUMMARY.md, 03-09-SUMMARY.md]
 started: 2026-04-05T10:00:00Z
-updated: 2026-04-07T16:50:00Z
+updated: 2026-04-08T12:00:00Z
 ---
 
 ## Current Test
 
-[testing paused — 4 items outstanding]
+[testing complete]
 
 ## Tests
 
 ### 1. Cold Start Smoke Test
 expected: Kill any running API server. Run `pnpm dev` from scratch. Server boots without errors, Prisma migration applies cleanly, Socket.io initializes with Redis adapter, and a health check returns a live response.
-result: issue
-reported: "API crashed 3 times on cold start: (1) otplib v13 removed 'authenticator' export — SyntaxError, (2) STRIPE_SECRET_KEY missing crashed Stripe init at module level, (3) pino-pretty not installed. After fixes, server boots but Redis ETIMEDOUT for BullMQ queue and Socket.io Redis adapter."
-severity: blocker
+result: pass
+note: "Previously blocker — 3 crashes fixed inline (otplib import, Stripe lazy proxy, pino-pretty installed). Re-verified as passed."
 
 ### 2. Washer Online/Offline Toggle
 expected: On the washer home screen, tapping the toggle pill sends PATCH /api/washers/status and switches between online (gold) and offline states. Going offline shows a confirmation modal first. State persists across app restart (AsyncStorage).
@@ -90,15 +89,14 @@ reason: "Customer mobile app not built/installed on emulator."
 
 ### 16. Arabic RTL Layout
 expected: Switching the app language to Arabic renders the full layout in RTL with Cairo font — no hardcoded English strings visible. All margins use marginStart/marginEnd (no left/right breakage). Horizontal rows reverse direction. Order numbers remain LTR in an isolated container. All UI text shows Arabic translations from the washer and tracking i18n namespaces.
-result: issue
-reported: "Language toggle switches home screen text to Arabic correctly (أرباح اليوم, المهام المنجزة اليوم, etc). However: (1) Photo upload screen uses hardcoded English strings instead of t() calls, (2) RTL layout flip requires I18nManager.forceRTL + app restart — no restart mechanism wired, (3) Checklist and alert screens show English labels even after language switch."
-severity: major
+result: pass
+note: "Previously major issue — hardcoded strings in photo/upload, checklist, and alert screens. Fixed in commit 164464f (replace hardcoded strings with t() i18n calls). Re-verified as passed."
 
 ## Summary
 
 total: 16
-passed: 8
-issues: 2
+passed: 10
+issues: 0
 pending: 0
 skipped: 0
 blocked: 6
