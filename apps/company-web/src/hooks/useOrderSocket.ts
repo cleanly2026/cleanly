@@ -6,8 +6,10 @@ export function useOrderSocket(companyId: string) {
   const queryClient = useQueryClient()
 
   useEffect(() => {
-    // Join the company-specific Socket.io room
-    socket.emit('join', `company:${companyId}`)
+    // INT-05 fix: emit 'join:company' (not 'join') with { companyId, token } payload
+    // Server handler at socket.on('join:company') joins socket to company:{companyId} room
+    const token = localStorage.getItem('accessToken') ?? ''
+    socket.emit('join:company', { companyId, token })
 
     const handleNewOrder = () => {
       queryClient.invalidateQueries({ queryKey: ['company-orders'] })
@@ -23,7 +25,6 @@ export function useOrderSocket(companyId: string) {
     return () => {
       socket.off('order:new', handleNewOrder)
       socket.off('order:status-changed', handleStatusChange)
-      socket.emit('leave', `company:${companyId}`)
     }
   }, [companyId, queryClient])
 }
