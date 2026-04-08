@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import * as Notifications from 'expo-notifications'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3001'
@@ -9,12 +8,15 @@ const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3001'
  * Call this once in the authenticated root layout (app/_layout.tsx).
  * Requests permission if not already granted, then PATCHes the token
  * to /api/users/push-token with the stored auth token.
+ * expo-notifications is dynamically imported because it crashes in Expo Go (removed SDK 53+).
  * NOTF-01
  */
 export function usePushToken() {
   useEffect(() => {
     async function registerPushToken() {
       try {
+        const Notifications = await import('expo-notifications')
+
         const { status: existingStatus } = await Notifications.getPermissionsAsync()
         let finalStatus = existingStatus
         if (existingStatus !== 'granted') {
@@ -47,7 +49,7 @@ export function usePushToken() {
           body: JSON.stringify({ token }),
         })
       } catch (err) {
-        console.warn('[PushToken] Registration failed:', err)
+        console.warn('[PushToken] Registration skipped (expo-notifications unavailable in Expo Go):', err)
       }
     }
     void registerPushToken()

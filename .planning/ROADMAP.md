@@ -92,7 +92,7 @@ Plans:
 - [x] 03-04-PLAN.md — Washer job alert (30s countdown takeover) + en route (map + navigation)
 - [x] 03-05-PLAN.md — Washer active job (checklist) + photo upload + job completion flow
 - [x] 03-06-PLAN.md — Customer live tracking map + order complete with photos
-- [ ] 03-07-PLAN.md — Human verification: all 4 Phase 3 success criteria
+- [x] 03-07-PLAN.md — Human verification: all 4 Phase 3 success criteria
 - [x] 03-08-PLAN.md — [GAP CLOSURE] AuthContext for washer-mobile + GPS userId fix (RT-01, WASH-01, WASH-02, WASH-06)
 - [x] 03-09-PLAN.md — [GAP CLOSURE] Wire photo URLs to customer tracking screen (PHO-01, PHO-02)
 **UI hint**: yes
