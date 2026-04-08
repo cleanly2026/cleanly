@@ -1,0 +1,292 @@
+// packages/db/schema.prisma
+
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../generated/client"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
+  extensions = [postgis]
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+// D-02: Combined 14-state enum. MUST match packages/types/src/order.ts OrderStatus.
+enum OrderStatus {
+  pending
+  accepted
+  washer_assigned
+  washer_en_route
+  in_progress
+  completed
+  cancelled
+  pickup_scheduled
+  picked_up
+  in_cleaning
+  ready_for_return
+  return_scheduled
+  out_for_return
+  returned
+}
+
+// D-01: Order type distinguishes which lifecycle applies.
+enum OrderType {
+  on_site
+  carpet
+}
+
+enum UserRole {
+  customer
+  washer
+  company_member
+  admin
+}
+
+enum ServiceCategory {
+  car_wash
+  carpet
+  sofa
+}
+
+// ─── Core Models ─────────────────────────────────────────────────────────────
+
+// Unified user table for all roles (customer, washer, company_member, admin).
+// Role-specific data is in related tables.
+model User {
+  id                 String   @id @default(cuid())
+  role               UserRole
+  phone              String?  @unique // customers + washers
+  email              String?  @unique // company_member + admin
+  password_hash      String? // company_member only (bcrypt)
+  totp_secret        String? // company_member only (encrypted, otplib)
+  totp_enabled       Boolean  @default(false)
+  pin_hash           String? // washer only (bcrypt 4-digit PIN)
+  preferred_language String   @default("en") // I18N-04
+  google_id          String?  @unique // admin SSO (Auth.js)
+  company_id         String? // company_member only
+  wallet_balance     Int      @default(0) // in fils — PAY-02
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
+
+  company            Company?       @relation("CompanyMembers", fields: [company_id], references: [id])
+  washer_profile     WasherProfile?
+  orders_as_customer Order[]        @relation("CustomerOrders")
+  orders_as_washer   Order[]        @relation("WasherOrders")
+  refresh_tokens     RefreshToken[]
+
+  @@index([phone])
+  @@index([email])
+  @@index([company_id])
+}
+
+model WasherProfile {
+  id               String                                 @id @default(cuid())
+  user_id          String                                 @unique
+  is_online        Boolean                                @default(false)
+  current_location Unsupported("geography(Point, 4326)")? // D-04
+  created_at       DateTime                               @default(now())
+  updated_at       DateTime                               @updatedAt
+
+  user User @relation(fields: [user_id], references: [id])
+}
+
+// Short-lived opaque refresh tokens stored in Redis, but also tracked in DB
+// for revocation on logout/password change.
+model RefreshToken {
+  id         String   @id @default(cuid())
+  user_id    String
+  token_hash String   @unique // bcrypt hash of the opaque token
+  expires_at DateTime
+  revoked    Boolean  @default(false)
+  created_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
+  @@index([token_hash])
+}
+
+// ─── Company & Services ──────────────────────────────────────────────────────
+
+model City {
+  id        String  @id @default(cuid())
+  // D-03: bilingual content columns
+  name_en   String  @db.Text
+  name_ar   String  @db.Text
+  country   String  @default("AE")
+  is_active Boolean @default(true)
+
+  companies Company[]
+}
+
+model Company {
+  id                String                                 @id @default(cuid())
+  // D-03: bilingual content
+  name_en           String                                 @db.Text
+  name_ar           String                                 @db.Text
+  description_en    String                                 @db.Text
+  description_ar    String                                 @db.Text
+  slug              String                                 @unique
+  logo_url          String?
+  city_id           String
+  is_verified       Boolean                                @default(false)
+  // D-04: PostGIS geography for HQ location (used for radius filtering)
+  location          Unsupported("geography(Point, 4326)")?
+  stripe_account_id String? // Stripe Connect — PAY-04
+  commission_rate   Int                                    @default(15) // percentage, 15-20%
+  created_at        DateTime                               @default(now())
+  updated_at        DateTime                               @updatedAt
+
+  city     City             @relation(fields: [city_id], references: [id])
+  members  User[]           @relation("CompanyMembers")
+  services CompanyService[]
+  packages Package[]
+  orders   Order[]
+
+  @@index([city_id])
+  @@index([slug])
+}
+
+model CompanyService {
+  id         String          @id @default(cuid())
+  company_id String
+  category   ServiceCategory
+
+  company Company @relation(fields: [company_id], references: [id])
+
+  @@unique([company_id, category])
+}
+
+model Package {
+  id             String          @id @default(cuid())
+  company_id     String
+  category       ServiceCategory
+  // D-03: bilingual
+  name_en        String          @db.Text
+  name_ar        String          @db.Text
+  description_en String          @db.Text
+  description_ar String          @db.Text
+  base_price     Int // in fils
+  is_active      Boolean         @default(true)
+  created_at     DateTime        @default(now())
+  updated_at     DateTime        @updatedAt
+
+  company     Company     @relation(fields: [company_id], references: [id])
+  add_ons     AddOn[]
+  order_items OrderItem[]
+
+  @@index([company_id])
+}
+
+model AddOn {
+  id         String  @id @default(cuid())
+  package_id String
+  // D-03: bilingual
+  name_en    String  @db.Text
+  name_ar    String  @db.Text
+  price      Int // in fils
+  is_active  Boolean @default(true)
+
+  package Package @relation(fields: [package_id], references: [id])
+
+  @@index([package_id])
+}
+
+// ─── Orders ──────────────────────────────────────────────────────────────────
+
+// D-01: Single orders table. CarpetOrderDetails extension for carpet-specific fields.
+model Order {
+  id                String                                 @id @default(cuid())
+  type              OrderType
+  status            OrderStatus                            @default(pending)
+  customer_id       String
+  company_id        String
+  washer_id         String?
+  // Service location (on-site orders) — D-04
+  service_location  Unsupported("geography(Point, 4326)")?
+  location_note     String?                                @db.Text // parking/address note
+  // Payment
+  amount_subtotal   Int // in fils — before platform fee
+  platform_fee      Int // in fils
+  amount_total      Int // in fils — subtotal + platform fee
+  payment_intent_id String? // Stripe PaymentIntent ID
+  payment_status    String                                 @default("pending") // pending | paid | refunded
+  // Timestamps
+  created_at        DateTime                               @default(now())
+  updated_at        DateTime                               @updatedAt
+  completed_at      DateTime?
+
+  customer       User                @relation("CustomerOrders", fields: [customer_id], references: [id])
+  company        Company             @relation(fields: [company_id], references: [id])
+  washer         User?               @relation("WasherOrders", fields: [washer_id], references: [id])
+  items          OrderItem[]
+  carpet_details CarpetOrderDetails?
+
+  @@index([customer_id])
+  @@index([company_id])
+  @@index([washer_id])
+  @@index([status])
+  @@index([created_at])
+}
+
+model OrderItem {
+  id         String @id @default(cuid())
+  order_id   String
+  package_id String
+  quantity   Int    @default(1)
+  unit_price Int // in fils — snapshot at booking time
+
+  order   Order   @relation(fields: [order_id], references: [id])
+  package Package @relation(fields: [package_id], references: [id])
+
+  @@index([order_id])
+}
+
+// D-01: Extension table for carpet-specific fields only.
+model CarpetOrderDetails {
+  id               String    @id @default(cuid())
+  order_id         String    @unique
+  return_date      DateTime?
+  pickup_time      DateTime?
+  carpet_count     Int?
+  pickup_photo_url String?
+  return_photo_url String?
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+
+  order Order @relation(fields: [order_id], references: [id])
+}
+
+// ─── Reviews ─────────────────────────────────────────────────────────────────
+
+model Review {
+  id          String   @id @default(cuid())
+  order_id    String   @unique
+  company_id  String
+  customer_id String
+  rating      Int // 1-5
+  comment     String?  @db.Text
+  created_at  DateTime @default(now())
+
+  @@index([company_id])
+}
+
+// ─── Platform Config ─────────────────────────────────────────────────────────
+
+// Platform admin audit log (ADM-06)
+model AuditLog {
+  id         String   @id @default(cuid())
+  admin_id   String
+  action     String // e.g., "company.verify", "order.refund"
+  entity     String // e.g., "Company", "Order"
+  entity_id  String
+  metadata   Json?
+  created_at DateTime @default(now())
+
+  @@index([admin_id])
+  @@index([entity, entity_id])
+}

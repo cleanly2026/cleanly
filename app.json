@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "1b1df042-53f7-47db-b63a-ac468c0c62fd"
+      }
+    },
+    "android": {
+      "package": "com.rashino.cleanly"
+    }
+  }
+}

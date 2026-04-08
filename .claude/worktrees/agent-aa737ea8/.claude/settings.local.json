@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip install:*)",
+      "Bash(C:/Python314/python.exe -c \":*)",
+      "Skill(gsd:new-project)",
+      "Skill(gsd:new-project:*)",
+      "WebSearch",
+      "WebFetch(domain:support.stripe.com)",
+      "WebFetch(domain:fordewind.io)",
+      "WebFetch(domain:greenice.net)",
+      "WebFetch(domain:sloboda-studio.com)",
+      "WebFetch(domain:on-demand-app.com)",
+      "WebFetch(domain:www.gmtasoftware.com)",
+      "WebFetch(domain:upstash.com)",
+      "WebFetch(domain:neon.com)",
+      "Read(//c/Users/Rashino/.claude/**)",
+      "Read(//c/Users/Rashino/AppData/Roaming/Claude/**)",
+      "WebFetch(domain:ui.shadcn.com)",
+      "Bash(npx @_davideast/stitch-mcp init)",
+      "Bash(npx skills:*)",
+      "Read(//c/Users/Rashino/.claude/get-shit-done/templates/research-project/**)",
+      "WebFetch(domain:www.rigbyjs.com)",
+      "WebFetch(domain:dxbapps.com)",
+      "WebFetch(domain:cleancloudapp.com)",
+      "Bash(node \"C:/Users/Rashino/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs: complete project research\" --files .planning/research/)",
+      "Bash(node \"$HOME/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs: define v1 requirements\" --files .planning/REQUIREMENTS.md .planning/PROJECT.md)",
+      "Bash(node \"$HOME/.claude/get-shit-done/bin/gsd-tools.cjs\" generate-claude-md)",
+      "Bash(node \"$HOME/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs: create roadmap \\(4 phases\\)\" --files .planning/ROADMAP.md .planning/STATE.md .planning/REQUIREMENTS.md CLAUDE.md)",
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "mcp__plugin_context7_context7__query-docs",
+      "Bash(node \"$HOME/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs: add Context7-verified stack patterns\" --files .planning/research/CONTEXT7_VERIFIED.md)"
+    ]
+  }
+}

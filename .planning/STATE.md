@@ -80,11 +80,8 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 04-supporting-systems-admin P07 | 1min | 2 tasks | 3 files |
 | Phase 04 P08 | 1min | 2 tasks | 4 files |
 | Phase 05-wire-washer-job-dispatch P01 | 5min | 2 tasks | 4 files |
-<<<<<<< HEAD
-| Phase 06-fix-route-socket-wiring P02 | 8min | 2 tasks | 5 files |
-=======
 | Phase 06-fix-route-socket-wiring P01 | 2min | 2 tasks | 6 files |
->>>>>>> worktree-agent-a5d12084
+| Phase 06-fix-route-socket-wiring P02 | 8min | 2 tasks | 5 files |
 | Phase 06-fix-route-socket-wiring P03 | 8min | 2 tasks | 5 files |
 
 ## Accumulated Context
@@ -161,17 +158,11 @@ Recent decisions affecting current work:
 - [Phase 05-wire-washer-job-dispatch]: Job dispatch handlers in separate job-dispatch.ts module — keeps socket.ts focused on room management
 - [Phase 05-wire-washer-job-dispatch]: washer-response HTTP endpoint deprecated to 410 Gone per D-01 — socket events job:accept/job:decline are canonical interface
 
-<<<<<<< HEAD
-
-- [Phase 06-fix-route-socket-wiring]: decodeJwtPayload uses atob() — browser-native, zero dependencies, companyId from JWT payload.companyId
-- [Phase 06-fix-route-socket-wiring]: storedCompanyId in socket.ts — module-level storage for reconnect room rejoin without prop drilling
-
-=======
 
 - [Phase 06-fix-route-socket-wiring]: Server-side-only prefix change for most route fixes — clients updated only where base URL excluded /api (customer-web, company-web)
 - [Phase 06-fix-route-socket-wiring]: dispute-reason-sheet.tsx path changed from /api/disputes to /disputes after base URL fix to prevent double /api prefix
-
->>>>>>> worktree-agent-a5d12084
+- [Phase 06-fix-route-socket-wiring]: decodeJwtPayload uses atob() — browser-native, zero dependencies, companyId from JWT payload.companyId
+- [Phase 06-fix-route-socket-wiring]: storedCompanyId in socket.ts — module-level storage for reconnect room rejoin without prop drilling
 
 - [Phase 06-fix-route-socket-wiring]: buildTestApp uses passthrough validator — zod v3 schemas incompatible with fastify-type-provider-zod@6 which requires zod/v4/core; routing tests do not need schema validation
 - [Phase 06-fix-route-socket-wiring]: vitest.config.ts adds @cleanly/types alias pointing to packages/types/src/index.ts — worktree shares git objects but not pnpm workspace node_modules symlinks
@@ -195,11 +186,6 @@ None yet.
 
 ## Session Continuity
 
-<<<<<<< HEAD
 Last session: 2026-04-08T23:37:50.857Z
-Stopped at: Completed 06-03-PLAN.md
-=======
-Last session: 2026-04-08T23:25:54.718Z
-Stopped at: Completed 06-01-PLAN.md
->>>>>>> worktree-agent-a5d12084
+Stopped at: Completed 06-03-PLAN.md (all phase 06 plans done)
 Resume file: None
