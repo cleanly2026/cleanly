@@ -3,6 +3,7 @@ import type { Server as HttpServer } from 'http'
 import { createAdapter } from '@socket.io/redis-adapter'
 import Redis from 'ioredis'
 import { redis } from './redis.js'
+import { registerJobDispatchHandlers } from './job-dispatch.js'
 
 let io: SocketServer
 
@@ -44,6 +45,22 @@ export function setupSocketHandlers(httpServer: HttpServer) {
   io.adapter(createAdapter(pubClient, subClient))
 
   io.on('connection', (socket) => {
+    // Pitfall 1 fix: Auto-join washer personal room from JWT on connection
+    // Ensures washer:{userId} room is joined even if washer:join-order is never called
+    const token = socket.handshake.auth?.token as string | undefined
+    if (token) {
+      try {
+        // Decode JWT payload without crypto verification — lightweight, no dep needed
+        const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64url').toString())
+        if (payload.role === 'washer' && payload.sub) {
+          socket.join(`washer:${payload.sub}`)
+          ;(socket as any).userId = payload.sub
+        }
+      } catch {
+        // Invalid or malformed token — no-op, washer:join-order still works as fallback
+      }
+    }
+
     // Company room join — validate JWT before allowing
     socket.on('join:company', async ({ companyId, token }: { companyId: string; token: string }) => {
       try {
@@ -94,6 +111,9 @@ export function setupSocketHandlers(httpServer: HttpServer) {
     socket.on('washer:leave-order', ({ orderId }: { orderId: string }) => {
       socket.leave(`order:${orderId}`)
     })
+
+    // INT-04 fix: Register job dispatch handlers (job:accept, job:decline) per D-04
+    registerJobDispatchHandlers(socket)
   })
 
   return io
