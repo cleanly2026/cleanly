@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 06-01 and 06-02 (Wave 1)
-last_updated: "2026-04-08T23:27:55.290Z"
+stopped_at: Completed 06-03-PLAN.md
+last_updated: "2026-04-08T23:37:50.863Z"
 last_activity: 2026-04-08
 progress:
   total_phases: 7
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 45
-  completed_plans: 43
+  completed_plans: 45
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-03-30)
 ## Current Position
 
 Phase: 06 (fix-route-socket-wiring) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 Status: Ready to execute
 Last activity: 2026-04-08
 
@@ -85,6 +85,7 @@ Progress: [░░░░░░░░░░] 0%
 =======
 | Phase 06-fix-route-socket-wiring P01 | 2min | 2 tasks | 6 files |
 >>>>>>> worktree-agent-a5d12084
+| Phase 06-fix-route-socket-wiring P03 | 8min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -159,13 +160,21 @@ Recent decisions affecting current work:
 - [Phase 04]: Active Washers stat remains stub (value=0) -- no washer-online count API endpoint exists
 - [Phase 05-wire-washer-job-dispatch]: Job dispatch handlers in separate job-dispatch.ts module — keeps socket.ts focused on room management
 - [Phase 05-wire-washer-job-dispatch]: washer-response HTTP endpoint deprecated to 410 Gone per D-01 — socket events job:accept/job:decline are canonical interface
+
 <<<<<<< HEAD
+
 - [Phase 06-fix-route-socket-wiring]: decodeJwtPayload uses atob() — browser-native, zero dependencies, companyId from JWT payload.companyId
 - [Phase 06-fix-route-socket-wiring]: storedCompanyId in socket.ts — module-level storage for reconnect room rejoin without prop drilling
+
 =======
+
 - [Phase 06-fix-route-socket-wiring]: Server-side-only prefix change for most route fixes — clients updated only where base URL excluded /api (customer-web, company-web)
 - [Phase 06-fix-route-socket-wiring]: dispute-reason-sheet.tsx path changed from /api/disputes to /disputes after base URL fix to prevent double /api prefix
+
 >>>>>>> worktree-agent-a5d12084
+
+- [Phase 06-fix-route-socket-wiring]: buildTestApp uses passthrough validator — zod v3 schemas incompatible with fastify-type-provider-zod@6 which requires zod/v4/core; routing tests do not need schema validation
+- [Phase 06-fix-route-socket-wiring]: vitest.config.ts adds @cleanly/types alias pointing to packages/types/src/index.ts — worktree shares git objects but not pnpm workspace node_modules symlinks
 
 ### Pending Todos
 
@@ -187,8 +196,8 @@ None yet.
 ## Session Continuity
 
 <<<<<<< HEAD
-Last session: 2026-04-08T23:27:55.283Z
-Stopped at: Completed 06-02-PLAN.md
+Last session: 2026-04-08T23:37:50.857Z
+Stopped at: Completed 06-03-PLAN.md
 =======
 Last session: 2026-04-08T23:25:54.718Z
 Stopped at: Completed 06-01-PLAN.md

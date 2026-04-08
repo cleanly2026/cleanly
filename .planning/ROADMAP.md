@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Real-Time & Washer App** - GPS tracking, photo evidence, washer mobile app, customer mobile tracking
 - [x] **Phase 4: Supporting Systems & Admin** - Multi-channel notifications, admin panel, private beta readiness
 - [x] **Phase 5: Wire Washer Job Dispatch Loop** - Server job:alert emission, client handler wiring, accept/decline socket handlers (completed 2026-04-08)
-- [ ] **Phase 6: Fix Cross-Phase Route & Socket Wiring** - Route prefix 404 fix, company socket join fix, companyId auth wiring
+- [x] **Phase 6: Fix Cross-Phase Route & Socket Wiring** - Route prefix 404 fix, company socket join fix, companyId auth wiring (completed 2026-04-08)
 - [ ] **Phase 7: Auth Guards & Housekeeping** - Company-web route guard, env assertion fix, stale checkbox cleanup
 
 ## Phase Details
@@ -152,7 +152,7 @@ Plans:
 Plans:
 - [x] 06-01-PLAN.md — Add /api prefix to all server route registrations + align client URLs
 - [x] 06-02-PLAN.md — Company-web auth context + socket join fix (companyId wiring + INT-05)
-- [ ] 06-03-PLAN.md — Integration tests for route prefix, socket join, and company order scoping (D-04)
+- [x] 06-03-PLAN.md — Integration tests for route prefix, socket join, and company order scoping (D-04)
 
 
 **UI hint**: no
@@ -184,5 +184,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 3. Real-Time & Washer App | 9/9 | Complete |  |
 | 4. Supporting Systems & Admin | 8/8 | Complete |  |
 | 5. Wire Washer Job Dispatch Loop | 1/1 | Complete   | 2026-04-08 |
-| 6. Fix Cross-Phase Route & Socket Wiring | 1/3 | In Progress|  |
+| 6. Fix Cross-Phase Route & Socket Wiring | 3/3 | Complete   | 2026-04-08 |
 | 7. Auth Guards & Housekeeping | 0/0 | Not Started |  |
