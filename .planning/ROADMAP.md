@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Core Business Flow** - Discovery, booking (on-site + carpet), payments, order lifecycles, company dashboard
 - [x] **Phase 3: Real-Time & Washer App** - GPS tracking, photo evidence, washer mobile app, customer mobile tracking
 - [x] **Phase 4: Supporting Systems & Admin** - Multi-channel notifications, admin panel, private beta readiness
-- [ ] **Phase 5: Wire Washer Job Dispatch Loop** - Server job:alert emission, client handler wiring, accept/decline socket handlers
+- [x] **Phase 5: Wire Washer Job Dispatch Loop** - Server job:alert emission, client handler wiring, accept/decline socket handlers (completed 2026-04-08)
 - [ ] **Phase 6: Fix Cross-Phase Route & Socket Wiring** - Route prefix 404 fix, company socket join fix, companyId auth wiring
 - [ ] **Phase 7: Auth Guards & Housekeeping** - Company-web route guard, env assertion fix, stale checkbox cleanup
 
@@ -135,7 +135,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 05-01-PLAN.md — Server job-dispatch module + job:alert emission + client handleJobAlert fix
+- [x] 05-01-PLAN.md — Server job-dispatch module + job:alert emission + client handleJobAlert fix
 **UI hint**: no
 
 ### Phase 6: Fix Cross-Phase Route & Socket Wiring
@@ -179,6 +179,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 2. Core Business Flow | 12/12 | Complete |  |
 | 3. Real-Time & Washer App | 9/9 | Complete |  |
 | 4. Supporting Systems & Admin | 8/8 | Complete |  |
-| 5. Wire Washer Job Dispatch Loop | 0/1 | Planned |  |
+| 5. Wire Washer Job Dispatch Loop | 1/1 | Complete   | 2026-04-08 |
 | 6. Fix Cross-Phase Route & Socket Wiring | 0/0 | Not Started |  |
 | 7. Auth Guards & Housekeeping | 0/0 | Not Started |  |
