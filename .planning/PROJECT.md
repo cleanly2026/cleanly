@@ -100,4 +100,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-05 after Phase 4 completion — all 4 milestone phases complete*
+*Last updated: 2026-04-08 after Phase 5 completion — washer job dispatch loop wired end-to-end (INT-02, INT-04 closed)*
