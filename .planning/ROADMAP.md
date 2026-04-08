@@ -12,10 +12,10 @@ Four phases deliver the complete private beta: Foundation lays the monorepo, dat
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - Monorepo scaffold, Neon/Prisma schema, all-role auth, RTL/i18n infrastructure
-- [ ] **Phase 2: Core Business Flow** - Discovery, booking (on-site + carpet), payments, order lifecycles, company dashboard
-- [ ] **Phase 3: Real-Time & Washer App** - GPS tracking, photo evidence, washer mobile app, customer mobile tracking
-- [ ] **Phase 4: Supporting Systems & Admin** - Multi-channel notifications, admin panel, private beta readiness
+- [x] **Phase 1: Foundation** - Monorepo scaffold, Neon/Prisma schema, all-role auth, RTL/i18n infrastructure
+- [x] **Phase 2: Core Business Flow** - Discovery, booking (on-site + carpet), payments, order lifecycles, company dashboard
+- [x] **Phase 3: Real-Time & Washer App** - GPS tracking, photo evidence, washer mobile app, customer mobile tracking
+- [x] **Phase 4: Supporting Systems & Admin** - Multi-channel notifications, admin panel, private beta readiness
 - [ ] **Phase 5: Wire Washer Job Dispatch Loop** - Server job:alert emission, client handler wiring, accept/decline socket handlers
 - [ ] **Phase 6: Fix Cross-Phase Route & Socket Wiring** - Route prefix 404 fix, company socket join fix, companyId auth wiring
 - [ ] **Phase 7: Auth Guards & Housekeeping** - Company-web route guard, env assertion fix, stale checkbox cleanup
@@ -175,10 +175,10 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 9/12 | In Progress|  |
-| 2. Core Business Flow | 3/12 | In Progress|  |
-| 3. Real-Time & Washer App | 8/9 | In Progress|  |
-| 4. Supporting Systems & Admin | 7/8 | In Progress|  |
+| 1. Foundation | 12/12 | Complete |  |
+| 2. Core Business Flow | 12/12 | Complete |  |
+| 3. Real-Time & Washer App | 9/9 | Complete |  |
+| 4. Supporting Systems & Admin | 8/8 | Complete |  |
 | 5. Wire Washer Job Dispatch Loop | 0/0 | Not Started |  |
 | 6. Fix Cross-Phase Route & Socket Wiring | 0/0 | Not Started |  |
 | 7. Auth Guards & Housekeeping | 0/0 | Not Started |  |
