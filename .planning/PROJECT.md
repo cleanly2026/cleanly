@@ -33,6 +33,9 @@ A customer can book a cleaning service, pay securely, and track their washer arr
 - [x] Push notifications (Expo), SMS (Twilio), Email (Resend) — Validated in Phase 4: Supporting Systems & Admin
 - [x] WhatsApp notifications (360dialog) — Validated in Phase 4: Supporting Systems & Admin
 - [x] Admin panel for platform oversight — Validated in Phase 4: Supporting Systems & Admin
+- [x] Cross-surface API route consistency (/api prefix) — Validated in Phase 6: Fix Route & Socket Wiring
+- [x] Company dashboard real-time order events (Socket.io) — Validated in Phase 6: Fix Route & Socket Wiring
+- [x] Company auth context with JWT-decoded companyId — Validated in Phase 6: Fix Route & Socket Wiring
 
 ### Active
 - [ ] Loyalty points and wallet system
@@ -100,4 +103,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-08 after Phase 5 completion — washer job dispatch loop wired end-to-end (INT-02, INT-04 closed)*
+*Last updated: 2026-04-09 after Phase 6 completion — route prefix 404 fixed, company auth/socket wired, 8 integration tests (INT-01, INT-05 closed)*
