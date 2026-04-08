@@ -1,7 +1,7 @@
 // API client for company-web — thin wrapper over fetch with JWT auth injection
 // Created as prerequisite for plan 02-09 (plan 02-02 dependency)
 
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+const API_URL = (import.meta.env.VITE_API_URL ?? 'http://localhost:3000') + '/api'
 
 function getAccessToken(): string | null {
   return localStorage.getItem('accessToken')

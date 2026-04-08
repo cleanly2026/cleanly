@@ -28,7 +28,7 @@ export function DisputeReasonSheet({ isOpen, onClose, orderId }: DisputeReasonSh
     if (!reason) return
     setStatus('submitting')
     try {
-      await apiFetch('/api/disputes', {
+      await apiFetch('/disputes', {
         method: 'POST',
         body: { order_id: orderId, reason, note: note || undefined },
       })
