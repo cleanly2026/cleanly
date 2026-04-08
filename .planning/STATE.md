@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Phase 6 context gathered
-last_updated: "2026-04-08T18:36:14.155Z"
+status: executing
+stopped_at: Completed 06-02-PLAN.md
+last_updated: "2026-04-08T23:27:55.290Z"
 last_activity: 2026-04-08
 progress:
   total_phases: 7
   completed_phases: 5
-  total_plans: 42
-  completed_plans: 42
+  total_plans: 45
+  completed_plans: 43
   percent: 0
 ---
 
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-30)
 
 **Core value:** A customer can book a cleaning service, pay securely, and track their washer arriving in real-time — the full end-to-end booking-to-completion flow must work flawlessly.
-**Current focus:** Phase 05 — wire-washer-job-dispatch
+**Current focus:** Phase 06 — fix-route-socket-wiring
 
 ## Current Position
 
-Phase: 06
-Plan: Not started
-Status: Phase complete — ready for verification
+Phase: 06 (fix-route-socket-wiring) — EXECUTING
+Plan: 2 of 3
+Status: Ready to execute
 Last activity: 2026-04-08
 
 Progress: [░░░░░░░░░░] 0%
@@ -80,6 +80,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 04-supporting-systems-admin P07 | 1min | 2 tasks | 3 files |
 | Phase 04 P08 | 1min | 2 tasks | 4 files |
 | Phase 05-wire-washer-job-dispatch P01 | 5min | 2 tasks | 4 files |
+| Phase 06-fix-route-socket-wiring P02 | 8min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -154,6 +155,8 @@ Recent decisions affecting current work:
 - [Phase 04]: Active Washers stat remains stub (value=0) -- no washer-online count API endpoint exists
 - [Phase 05-wire-washer-job-dispatch]: Job dispatch handlers in separate job-dispatch.ts module — keeps socket.ts focused on room management
 - [Phase 05-wire-washer-job-dispatch]: washer-response HTTP endpoint deprecated to 410 Gone per D-01 — socket events job:accept/job:decline are canonical interface
+- [Phase 06-fix-route-socket-wiring]: decodeJwtPayload uses atob() — browser-native, zero dependencies, companyId from JWT payload.companyId
+- [Phase 06-fix-route-socket-wiring]: storedCompanyId in socket.ts — module-level storage for reconnect room rejoin without prop drilling
 
 ### Pending Todos
 
@@ -174,6 +177,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-08T18:36:14.147Z
-Stopped at: Phase 6 context gathered
-Resume file: .planning/phases/06-fix-route-socket-wiring/06-CONTEXT.md
+Last session: 2026-04-08T23:27:55.283Z
+Stopped at: Completed 06-02-PLAN.md
+Resume file: None

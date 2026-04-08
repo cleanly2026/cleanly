@@ -151,7 +151,7 @@ Plans:
 
 Plans:
 - [ ] 06-01-PLAN.md — Add /api prefix to all server route registrations + align client URLs
-- [ ] 06-02-PLAN.md — Company-web auth context + socket join fix (companyId wiring + INT-05)
+- [x] 06-02-PLAN.md — Company-web auth context + socket join fix (companyId wiring + INT-05)
 - [ ] 06-03-PLAN.md — Integration tests for route prefix, socket join, and company order scoping (D-04)
 
 
@@ -184,5 +184,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 3. Real-Time & Washer App | 9/9 | Complete |  |
 | 4. Supporting Systems & Admin | 8/8 | Complete |  |
 | 5. Wire Washer Job Dispatch Loop | 1/1 | Complete   | 2026-04-08 |
-| 6. Fix Cross-Phase Route & Socket Wiring | 0/3 | Planned |  |
+| 6. Fix Cross-Phase Route & Socket Wiring | 1/3 | In Progress|  |
 | 7. Auth Guards & Housekeeping | 0/0 | Not Started |  |
