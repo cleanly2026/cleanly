@@ -132,10 +132,10 @@ Plans:
   1. Server emits `job:alert` to `washer:{userId}` room when company assigns a washer
   2. Washer-mobile receives the alert and navigates to the job alert screen with 30s countdown
   3. `job:accept` and `job:decline` socket events are handled by the server and update order state accordingly
-**Plans**: 0 plans
+**Plans**: 1 plan
 
 Plans:
-(none yet — run `/gsd:plan-phase 5`)
+- [ ] 05-01-PLAN.md — Server job-dispatch module + job:alert emission + client handleJobAlert fix
 **UI hint**: no
 
 ### Phase 6: Fix Cross-Phase Route & Socket Wiring
@@ -179,6 +179,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 2. Core Business Flow | 12/12 | Complete |  |
 | 3. Real-Time & Washer App | 9/9 | Complete |  |
 | 4. Supporting Systems & Admin | 8/8 | Complete |  |
-| 5. Wire Washer Job Dispatch Loop | 0/0 | Not Started |  |
+| 5. Wire Washer Job Dispatch Loop | 0/1 | Planned |  |
 | 6. Fix Cross-Phase Route & Socket Wiring | 0/0 | Not Started |  |
 | 7. Auth Guards & Housekeeping | 0/0 | Not Started |  |
