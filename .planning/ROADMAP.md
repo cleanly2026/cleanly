@@ -16,6 +16,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 2: Core Business Flow** - Discovery, booking (on-site + carpet), payments, order lifecycles, company dashboard
 - [ ] **Phase 3: Real-Time & Washer App** - GPS tracking, photo evidence, washer mobile app, customer mobile tracking
 - [ ] **Phase 4: Supporting Systems & Admin** - Multi-channel notifications, admin panel, private beta readiness
+- [ ] **Phase 5: Wire Washer Job Dispatch Loop** - Server job:alert emission, client handler wiring, accept/decline socket handlers
+- [ ] **Phase 6: Fix Cross-Phase Route & Socket Wiring** - Route prefix 404 fix, company socket join fix, companyId auth wiring
+- [ ] **Phase 7: Auth Guards & Housekeeping** - Company-web route guard, env assertion fix, stale checkbox cleanup
 
 ## Phase Details
 
@@ -120,6 +123,51 @@ Plans:
 - [x] 04-08-PLAN.md — [GAP CLOSURE] Company rejection email handler + dashboard stats wiring
 **UI hint**: yes
 
+### Phase 5: Wire Washer Job Dispatch Loop
+**Goal**: The washer job dispatch loop works end-to-end — when a company assigns a washer, the washer receives an in-app job alert, can accept/decline within the countdown timer, and the server processes the response to advance the order lifecycle.
+**Depends on**: Phase 3
+**Requirements**: WASH-02, ORD-03, ORD-04
+**Gap Closure:** Closes INT-02, INT-03, INT-04 from v1.0 audit. Fixes Flow 3 (Washer Job Alert Dispatch).
+**Success Criteria** (what must be TRUE):
+  1. Server emits `job:alert` to `washer:{userId}` room when company assigns a washer
+  2. Washer-mobile receives the alert and navigates to the job alert screen with 30s countdown
+  3. `job:accept` and `job:decline` socket events are handled by the server and update order state accordingly
+**Plans**: 0 plans
+
+Plans:
+(none yet — run `/gsd:plan-phase 5`)
+**UI hint**: no
+
+### Phase 6: Fix Cross-Phase Route & Socket Wiring
+**Goal**: Washer status transitions succeed (no more 404), company dashboard receives real-time events, and company orders load for the authenticated company — completing the on-site order lifecycle and real-time company dashboard flows.
+**Depends on**: Phase 5
+**Requirements**: WASH-06, ORD-01, ORD-02, PAY-04, NOTF-01, NOTF-02, NOTF-03, NOTF-04, COMP-05, COMP-06
+**Gap Closure:** Closes INT-01, INT-05 from v1.0 audit + companyId TODO tech debt. Fixes Flow 1 (On-Site Order Lifecycle) and Flow 2 (Real-Time Company Dashboard).
+**Success Criteria** (what must be TRUE):
+  1. Washer PATCH to order status endpoint returns 200 (not 404) — order transitions to `in_progress` and `completed`
+  2. Company-web joins the correct socket room and receives `order:new` and `order:status-changed` events in real time
+  3. Company dashboard loads orders scoped to the authenticated company (not TODO placeholder)
+**Plans**: 0 plans
+
+Plans:
+(none yet — run `/gsd:plan-phase 6`)
+**UI hint**: no
+
+### Phase 7: Auth Guards & Housekeeping
+**Goal**: Company-web routes are protected behind authentication, crash-risk env assertions are safe, and all planning artifacts accurately reflect the verified state of requirements.
+**Depends on**: Phase 6
+**Requirements**: AUTH-03, AUTH-04
+**Gap Closure:** Closes company-web route guard gap, env assertion tech debt, 22 stale checkboxes, PAY-02 misleading checkbox, dead queue cleanup.
+**Success Criteria** (what must be TRUE):
+  1. Unauthenticated access to company-web `/orders`, `/packages`, `/washers` redirects to login
+  2. API server starts without crash even when ADMIN_EXCHANGE_SECRET env var is missing (graceful error)
+  3. REQUIREMENTS.md checkboxes match verification status for all 84 requirements
+**Plans**: 0 plans
+
+Plans:
+(none yet — run `/gsd:plan-phase 7`)
+**UI hint**: no
+
 ## Progress
 
 **Execution Order:**
@@ -131,3 +179,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 2. Core Business Flow | 3/12 | In Progress|  |
 | 3. Real-Time & Washer App | 8/9 | In Progress|  |
 | 4. Supporting Systems & Admin | 7/8 | In Progress|  |
+| 5. Wire Washer Job Dispatch Loop | 0/0 | Not Started |  |
+| 6. Fix Cross-Phase Route & Socket Wiring | 0/0 | Not Started |  |
+| 7. Auth Guards & Housekeeping | 0/0 | Not Started |  |
