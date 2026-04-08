@@ -150,7 +150,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 06-01-PLAN.md — Add /api prefix to all server route registrations + align client URLs
+- [x] 06-01-PLAN.md — Add /api prefix to all server route registrations + align client URLs
 - [x] 06-02-PLAN.md — Company-web auth context + socket join fix (companyId wiring + INT-05)
 - [ ] 06-03-PLAN.md — Integration tests for route prefix, socket join, and company order scoping (D-04)
 

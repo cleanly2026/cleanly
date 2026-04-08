@@ -54,34 +54,34 @@ server.get('/health', async () => ({
 }))
 
 // Auth routes — Plan 06: phone OTP (customers) and OTP+PIN (washers)
-await server.register(otpRoutes, { prefix: '/auth/otp' })
-await server.register(washerRoutes, { prefix: '/auth/washer' })
+await server.register(otpRoutes, { prefix: '/api/auth/otp' })
+await server.register(washerRoutes, { prefix: '/api/auth/washer' })
 // Auth routes — Plan 07: company admin email+TOTP MFA and platform admin Google SSO exchange
-await server.register(companyRoutes, { prefix: '/auth/company' })
-await server.register(adminRoutes, { prefix: '/auth/admin' })
+await server.register(companyRoutes, { prefix: '/api/auth/company' })
+await server.register(adminRoutes, { prefix: '/api/auth/admin' })
 
 // Company routes — Plan 09: company dashboard order feed (COMP-05, COMP-06)
-await server.register(companyOrdersRoute, { prefix: '/company/orders' })
+await server.register(companyOrdersRoute, { prefix: '/api/company/orders' })
 
 // Company management routes — Plan 05: profile, services, packages, washers, Stripe Connect
-await server.register(companyProfileRoutes, { prefix: '/company/profile' })
-await server.register(companyServicesRoutes, { prefix: '/company/services' })
-await server.register(stripeConnectRoutes, { prefix: '/company/stripe-connect' })
-await server.register(companyPackageRoutes, { prefix: '/company/packages' })
-await server.register(companyWasherRoutes, { prefix: '/company/washers' })
+await server.register(companyProfileRoutes, { prefix: '/api/company/profile' })
+await server.register(companyServicesRoutes, { prefix: '/api/company/services' })
+await server.register(stripeConnectRoutes, { prefix: '/api/company/stripe-connect' })
+await server.register(companyPackageRoutes, { prefix: '/api/company/packages' })
+await server.register(companyWasherRoutes, { prefix: '/api/company/washers' })
 
 // Discovery routes — Plan 03: company listing + profiles (DISC-01 through DISC-05)
-await server.register(cityRoutes, { prefix: '/cities' })
-await server.register(discoveryRoutes, { prefix: '/companies' })
+await server.register(cityRoutes, { prefix: '/api/cities' })
+await server.register(discoveryRoutes, { prefix: '/api/companies' })
 
 // Booking routes — Plan 04: order creation for on-site and carpet bookings (BOOK-01 through BOOK-04, CARP-01 through CARP-03)
-await server.register(bookingRoutes, { prefix: '/orders' })
+await server.register(bookingRoutes, { prefix: '/api/orders' })
 
 // Order lifecycle routes — Plan 07: state transitions, washer assignment, cancellation (ORD-01 through ORD-06, CARP-05)
-await server.register(orderLifecycleRoutes, { prefix: '/orders' })
+await server.register(orderLifecycleRoutes, { prefix: '/api/orders' })
 
 // Customer order read routes — Plan 07: GET /customer/orders and /customer/orders/:id
-await server.register(customerOrderRoutes, { prefix: '/customer/orders' })
+await server.register(customerOrderRoutes, { prefix: '/api/customer/orders' })
 
 // Washer routes — Plan 03-01: washer status toggle (WASH-01)
 await server.register(washerStatusRoutes, { prefix: '/api/washers' })
@@ -108,7 +108,7 @@ await server.register(import('./routes/users/push-token.js'), { prefix: '/api/us
 
 // Stripe webhook — Plan 08: payment confirmation, dispute handling (PAY-05)
 // IMPORTANT: Must NOT be behind fastify.authenticate — Stripe sends the webhook, not an authenticated user
-await server.register(stripeWebhookRoutes, { prefix: '/webhooks/stripe' })
+await server.register(stripeWebhookRoutes, { prefix: '/api/webhooks/stripe' })
 
 const port = parseInt(process.env.PORT ?? '3000', 10)
 const host = process.env.HOST ?? '0.0.0.0'
