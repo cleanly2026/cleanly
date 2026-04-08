@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 06-03-PLAN.md
-last_updated: "2026-04-08T23:37:50.863Z"
+stopped_at: Completed 06-03-PLAN.md (all phase 06 plans done)
+last_updated: "2026-04-08T23:43:33.347Z"
 last_activity: 2026-04-08
 progress:
   total_phases: 7
@@ -25,8 +25,8 @@ See: .planning/PROJECT.md (updated 2026-03-30)
 
 ## Current Position
 
-Phase: 06 (fix-route-socket-wiring) — EXECUTING
-Plan: 3 of 3
+Phase: 07
+Plan: Not started
 Status: Ready to execute
 Last activity: 2026-04-08
 
@@ -157,7 +157,6 @@ Recent decisions affecting current work:
 - [Phase 04]: Active Washers stat remains stub (value=0) -- no washer-online count API endpoint exists
 - [Phase 05-wire-washer-job-dispatch]: Job dispatch handlers in separate job-dispatch.ts module — keeps socket.ts focused on room management
 - [Phase 05-wire-washer-job-dispatch]: washer-response HTTP endpoint deprecated to 410 Gone per D-01 — socket events job:accept/job:decline are canonical interface
-
 
 - [Phase 06-fix-route-socket-wiring]: Server-side-only prefix change for most route fixes — clients updated only where base URL excluded /api (customer-web, company-web)
 - [Phase 06-fix-route-socket-wiring]: dispute-reason-sheet.tsx path changed from /api/disputes to /disputes after base URL fix to prevent double /api prefix
