@@ -147,10 +147,13 @@ Plans:
   1. Washer PATCH to order status endpoint returns 200 (not 404) — order transitions to `in_progress` and `completed`
   2. Company-web joins the correct socket room and receives `order:new` and `order:status-changed` events in real time
   3. Company dashboard loads orders scoped to the authenticated company (not TODO placeholder)
-**Plans**: 0 plans
+**Plans**: 2 plans
 
 Plans:
-(none yet — run `/gsd:plan-phase 6`)
+- [ ] 06-01-PLAN.md — Add /api prefix to all server route registrations + align client URLs
+- [ ] 06-02-PLAN.md — Company-web auth context + socket join fix (companyId wiring + INT-05)
+
+
 **UI hint**: no
 
 ### Phase 7: Auth Guards & Housekeeping
@@ -180,5 +183,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 3. Real-Time & Washer App | 9/9 | Complete |  |
 | 4. Supporting Systems & Admin | 8/8 | Complete |  |
 | 5. Wire Washer Job Dispatch Loop | 1/1 | Complete   | 2026-04-08 |
-| 6. Fix Cross-Phase Route & Socket Wiring | 0/0 | Not Started |  |
+| 6. Fix Cross-Phase Route & Socket Wiring | 0/2 | Planned |  |
 | 7. Auth Guards & Housekeeping | 0/0 | Not Started |  |
