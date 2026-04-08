@@ -7,7 +7,6 @@ import { orderQueue } from '../../lib/queue.js'
 import { notificationQueue } from '../../queues/queues.js'
 import {
   assignWasherSchema,
-  washerResponseSchema,
   transitionOrderStatusSchema,
   OrderStatus,
 } from '@cleanly/types'
@@ -218,59 +217,42 @@ export async function orderLifecycleRoutes(fastify: FastifyInstance) {
       })
     }
 
+    // INT-02 fix: Emit in-app job alert to washer's personal socket room
+    const company = await prisma.company.findUniqueOrThrow({
+      where: { id: companyId },
+      select: { name_en: true },
+    })
+
+    // Extract lat/lng from PostGIS geography column (cannot use Prisma field directly)
+    const locationResult = await prisma.$queryRaw<Array<{ lat: number; lng: number }>>`
+      SELECT
+        ST_Y(service_location::geometry) as lat,
+        ST_X(service_location::geometry) as lng
+      FROM "Order"
+      WHERE id = ${orderId}
+    `
+    const loc = locationResult[0] ?? { lat: 0, lng: 0 }
+
+    io.to(`washer:${washer_id}`).emit('job:alert', {
+      orderId,
+      serviceType: assignedOrder.type,
+      companyName: company.name_en,
+      customerAddress: assignedOrder.location_note ?? '',
+      customerLat: loc.lat,
+      customerLng: loc.lng,
+      estimatedDistance: 0,
+    })
+
     return { orderId, status: 'washer_assigned', washer_id }
   })
 
-  // POST /orders/:id/washer-response — washer accepts/declines (ORD-04)
+  // POST /orders/:id/washer-response — DEPRECATED per D-01 (use socket events job:accept and job:decline)
   fastify.post<{ Params: { id: string } }>('/:id/washer-response', {
     preHandler: [fastify.authenticate],
-    schema: { body: washerResponseSchema },
-  }, async (request, reply) => {
-    const { id: orderId } = request.params
-    const { accepted } = request.body as { accepted: boolean }
-    const washerId = (request.user as { sub: string }).sub
-
-    const order = await prisma.order.findUniqueOrThrow({ where: { id: orderId } })
-
-    // Verify this washer is assigned to this order
-    if (order.washer_id !== washerId) {
-      return reply.status(403).send({ error: 'Not assigned to this order' })
-    }
-
-    if (accepted) {
-      // Transition to washer_en_route (uses FOR UPDATE locking)
-      try {
-        await transitionOrderStatus(orderId, OrderStatus.washer_en_route)
-      } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'Transition failed'
-        return reply.status(400).send({ error: message })
-      }
-
-      // Cancel the auto-decline timer
-      const job = await orderQueue.getJob(`washer-timeout-${orderId}`)
-      if (job) await job.remove()
-
-      const io = getIO()
-      io.to(`company:${order.company_id}`).emit('order:status-changed', { orderId, status: 'washer_en_route' })
-      io.to(`order:${orderId}`).emit('order:status-changed', { orderId, status: 'washer_en_route' })
-
-      return { orderId, status: 'washer_en_route' }
-    } else {
-      // Washer declined — revert to accepted, clear washer_id
-      await prisma.order.update({
-        where: { id: orderId },
-        data: { washer_id: null, status: 'accepted' },
-      })
-
-      // Cancel the auto-decline timer
-      const job = await orderQueue.getJob(`washer-timeout-${orderId}`)
-      if (job) await job.remove()
-
-      const io = getIO()
-      io.to(`company:${order.company_id}`).emit('order:status-changed', { orderId, status: 'accepted' })
-
-      return { orderId, status: 'accepted' }
-    }
+  }, async (_request, reply) => {
+    return reply.status(410).send({
+      error: 'This endpoint is deprecated. Use socket events job:accept and job:decline instead.',
+    })
   })
 
   // DELETE /orders/:id — customer cancellation (ORD-06)

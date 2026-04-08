@@ -6,11 +6,14 @@ import {
   StyleSheet,
   ScrollView,
   StatusBar,
+  TouchableOpacity,
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useRouter } from 'expo-router'
 import { OnlineToggle } from '../../src/components/OnlineToggle'
+import i18n, { switchLanguage } from '../../src/i18n/expo-i18n'
 import { useWasherSocket } from '../../src/hooks/useWasherSocket'
 import { useAuth } from '../../src/contexts/AuthContext'
 
@@ -49,6 +52,7 @@ export default function WasherHomeScreen() {
   const { t } = useTranslation()
   const insets = useSafeAreaInsets()
   const { token } = useAuth()
+  const router = useRouter()
 
   const [isOnline, setIsOnline] = useState(false)
   const [stats, setStats] = useState<WasherStats | null>(null)
@@ -87,10 +91,20 @@ export default function WasherHomeScreen() {
     fetchStats()
   }, [token])
 
-  const handleJobAlert = useCallback(() => {
-    // TODO: Navigate to job alert screen in Phase 3 plan 03
-    // router.push('/job-alert')
-  }, [])
+  const handleJobAlert = useCallback((alert: { orderId: string; serviceType: string; companyName: string; customerAddress: string; customerLat: number; customerLng: number; estimatedDistance: number }) => {
+    router.push({
+      pathname: '/(job)/alert',
+      params: {
+        orderId: alert.orderId,
+        serviceType: alert.serviceType,
+        companyName: alert.companyName,
+        customerAddress: alert.customerAddress,
+        customerLat: String(alert.customerLat),
+        customerLng: String(alert.customerLng),
+        estimatedDistance: String(alert.estimatedDistance),
+      },
+    })
+  }, [router])
 
   useWasherSocket(token, handleJobAlert)
 
@@ -150,6 +164,43 @@ export default function WasherHomeScreen() {
           </View>
         )}
 
+        {/* Test Buttons */}
+        <View style={styles.testButtons}>
+          <TouchableOpacity
+            style={styles.langToggle}
+            onPress={() => {
+              const next = i18n.language === 'en' ? 'ar' : 'en'
+              switchLanguage(next as 'en' | 'ar')
+            }}
+          >
+            <Text style={styles.langToggleText}>
+              {i18n.language === 'en' ? 'العربية' : 'English'}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.langToggle, { backgroundColor: '#C9A84C' }]}
+            onPress={() => {
+              router.push({
+                pathname: '/(job)/alert',
+                params: {
+                  orderId: 'test-order-001',
+                  serviceType: 'car_wash',
+                  companyName: 'Sparkle Auto Care',
+                  customerAddress: 'Downtown Dubai, Sheikh Mohammed Blvd',
+                  customerLat: '25.1972',
+                  customerLng: '55.2744',
+                  estimatedDistance: '3200',
+                },
+              })
+            }}
+          >
+            <Text style={[styles.langToggleText, { color: '#1A2744' }]}>
+              Simulate Job Alert
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Completed Jobs List */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('washer.home.jobsCompleted')}</Text>
@@ -185,7 +236,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 16, // md spacing
     gap: 16,
-    paddingTop: 16,
+    paddingTop: 60, // Extra top padding to avoid Expo dev client gear icon overlay
   },
   section: {
     gap: 12,
@@ -291,6 +342,24 @@ const styles = StyleSheet.create({
     height: 120,
     backgroundColor: '#F3F4F6',
     borderRadius: 8,
+  },
+
+  // Language toggle
+  testButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  langToggle: {
+    flex: 1,
+    backgroundColor: '#1A2744',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  langToggleText: {
+    color: '#C9A84C',
+    fontSize: 14,
+    fontWeight: '600',
   },
 
   // Empty state
