@@ -67,7 +67,7 @@ export default function CompleteJobScreen() {
       {step === 'summary' && (
         <ScrollView style={styles.scrollArea} contentContainerStyle={styles.scrollContent}>
           <Text style={styles.heading}>Job Summary</Text>
-          <Text style={styles.serviceType}>{serviceType.replace('_', ' ')}</Text>
+          <Text style={styles.serviceType}>{(serviceType || 'Service').replace('_', ' ')}</Text>
 
           {completedItems.map((item) => (
             <View key={item} style={styles.summaryRow}>
@@ -86,7 +86,7 @@ export default function CompleteJobScreen() {
       {step === 'confirm' && (
         <View style={styles.centered}>
           <Text style={styles.heading}>Mark Job Complete?</Text>
-          <Text style={styles.serviceType}>{serviceType.replace('_', ' ')}</Text>
+          <Text style={styles.serviceType}>{(serviceType || 'Service').replace('_', ' ')}</Text>
           <View style={styles.orderNumberContainer}>
             <Text style={styles.orderNumber}>{`Order #CLN-${orderId.slice(0, 8)}`}</Text>
           </View>

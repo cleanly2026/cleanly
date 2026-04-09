@@ -4,9 +4,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { I18nManager } from 'react-native'
 import * as Localization from 'expo-localization'
 
-// Import from shared @cleanly/i18n package
-import en from '@cleanly/i18n/locales/en.json'
-import ar from '@cleanly/i18n/locales/ar.json'
+// Import locale files directly (Metro doesn't resolve package exports wildcards)
+import en from '../../../../packages/i18n/locales/en.json'
+import ar from '../../../../packages/i18n/locales/ar.json'
 
 const LANG_KEY = 'preferred_language'
 
