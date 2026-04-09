@@ -36,6 +36,8 @@ A customer can book a cleaning service, pay securely, and track their washer arr
 - [x] Cross-surface API route consistency (/api prefix) — Validated in Phase 6: Fix Route & Socket Wiring
 - [x] Company dashboard real-time order events (Socket.io) — Validated in Phase 6: Fix Route & Socket Wiring
 - [x] Company auth context with JWT-decoded companyId — Validated in Phase 6: Fix Route & Socket Wiring
+- [x] Company-web route protection (auth gate) — Validated in Phase 7: Auth Guards & Housekeeping
+- [x] Graceful env assertion handling (no server crash) — Validated in Phase 7: Auth Guards & Housekeeping
 
 ### Active
 - [ ] Loyalty points and wallet system
@@ -103,4 +105,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-09 after Phase 6 completion — route prefix 404 fixed, company auth/socket wired, 8 integration tests (INT-01, INT-05 closed)*
+*Last updated: 2026-04-09 after Phase 7 completion — auth guards verified, env crash fix, requirements audit complete. Milestone v1.0 is 100% complete (all 7 phases, 47 plans).*
