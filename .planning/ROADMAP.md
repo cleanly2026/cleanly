@@ -169,7 +169,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 07-01-PLAN.md — Env assertion fix + AuthGate smoke test
+- [x] 07-01-PLAN.md — Env assertion fix + AuthGate smoke test
 - [ ] 07-02-PLAN.md — Dead queue cleanup + checkbox verification
 **UI hint**: no
 
@@ -186,4 +186,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 4. Supporting Systems & Admin | 8/8 | Complete |  |
 | 5. Wire Washer Job Dispatch Loop | 1/1 | Complete   | 2026-04-08 |
 | 6. Fix Cross-Phase Route & Socket Wiring | 3/3 | Complete   | 2026-04-08 |
-| 7. Auth Guards & Housekeeping | 0/2 | Planned |  |
+| 7. Auth Guards & Housekeeping | 1/2 | In Progress|  |
