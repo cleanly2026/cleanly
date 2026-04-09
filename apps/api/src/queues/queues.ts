@@ -16,14 +16,3 @@ export const notificationQueue = new Queue('notifications', {
     removeOnFail: { count: 500 },
   },
 })
-
-// Order lifecycle queue — for state transitions that need async processing
-export const orderQueue = new Queue('order-lifecycle', {
-  connection: redis,
-  defaultJobOptions: {
-    attempts: 3,
-    backoff: { type: 'exponential', delay: 1000 },
-    removeOnComplete: { count: 200 },
-    removeOnFail: { count: 500 },
-  },
-})
