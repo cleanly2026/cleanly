@@ -7,11 +7,11 @@ import crypto from 'node:crypto'
 // Shared secret between admin-web and Fastify API.
 // admin-web signs: HMAC-SHA256(email, ADMIN_EXCHANGE_SECRET)
 // Fastify verifies the signature before issuing a JWT.
-const EXCHANGE_SECRET = process.env.ADMIN_EXCHANGE_SECRET!
+// Secret is resolved lazily inside the handler — missing env does NOT crash server at import.
 
-function verifyExchangeSignature(email: string, signature: string): boolean {
+function verifyExchangeSignature(email: string, signature: string, secret: string): boolean {
   const expected = crypto
-    .createHmac('sha256', EXCHANGE_SECRET)
+    .createHmac('sha256', secret)
     .update(email)
     .digest('hex')
   // Both buffers must be same length for timingSafeEqual
@@ -30,9 +30,20 @@ export async function adminRoutes(fastify: FastifyInstance) {
   fastify.post('/exchange', {
     schema: { body: ExchangeRequestSchema },
     handler: async (request, reply) => {
+      // Lazy env check: return 503 if secret is not configured rather than crashing at import
+      const secret = process.env.ADMIN_EXCHANGE_SECRET
+      if (!secret) {
+        fastify.log.warn('[admin] ADMIN_EXCHANGE_SECRET not set — admin exchange disabled')
+        return reply.status(503).send({
+          statusCode: 503,
+          error: 'Service Unavailable',
+          message: 'Admin exchange not configured',
+        })
+      }
+
       const { email, signature } = request.body as z.infer<typeof ExchangeRequestSchema>
 
-      if (!verifyExchangeSignature(email, signature)) {
+      if (!verifyExchangeSignature(email, signature, secret)) {
         return reply.status(401).send({
           statusCode: 401, error: 'Unauthorized', message: 'Invalid exchange signature',
         })

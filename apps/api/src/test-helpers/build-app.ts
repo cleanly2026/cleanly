@@ -17,7 +17,8 @@ export async function buildTestApp(
 
   // Passthrough validator: skip Zod schema validation in test context.
   // These integration tests verify routing and auth scoping, not schema shape.
-  app.setValidatorCompiler(() => () => ({ value: true }))
+  // Use (data) => ({ value: data }) to preserve the parsed body for handler access.
+  app.setValidatorCompiler(() => (data) => ({ value: data }))
   app.setSerializerCompiler(() => (data) => JSON.stringify(data))
 
   // Mock auth: read x-test-user header and parse as JSON into request.user
