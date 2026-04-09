@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 07-02-PLAN.md
-last_updated: "2026-04-09T00:02:58.020Z"
+stopped_at: Completed 07-01 and 07-02 (Wave 1)
+last_updated: "2026-04-09T00:08:34.928Z"
 last_activity: 2026-04-09
 progress:
   total_phases: 7
@@ -83,7 +83,8 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 06-fix-route-socket-wiring P01 | 2min | 2 tasks | 6 files |
 | Phase 06-fix-route-socket-wiring P02 | 8min | 2 tasks | 5 files |
 | Phase 06-fix-route-socket-wiring P03 | 8min | 2 tasks | 5 files |
-| Phase 07-auth-guards-housekeeping P02 | 1min | 2 tasks | 1 files |
+| Phase 07 P01 | 10min | 2 tasks | 8 files |
+| Phase 07 P02 | 1min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -166,7 +167,9 @@ Recent decisions affecting current work:
 
 - [Phase 06-fix-route-socket-wiring]: buildTestApp uses passthrough validator — zod v3 schemas incompatible with fastify-type-provider-zod@6 which requires zod/v4/core; routing tests do not need schema validation
 - [Phase 06-fix-route-socket-wiring]: vitest.config.ts adds @cleanly/types alias pointing to packages/types/src/index.ts — worktree shares git objects but not pnpm workspace node_modules symlinks
-- [Phase 07-auth-guards-housekeeping]: REQUIREMENTS.md was already accurate post-audit — verification confirmed correct state, no edits needed
+- [Phase 07]: REQUIREMENTS.md was already accurate post-audit — verification confirmed correct state, no edits needed
+- [Phase 07]: AuthGate extracted from main.tsx to components/AuthGate.tsx to enable isolated unit testing
+- [Phase 07]: buildTestApp validator fixed to (data) => ({ value: data }) — preserves request body for POST route tests
 
 ### Pending Todos
 
@@ -187,6 +190,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-09T00:02:58.014Z
-Stopped at: Completed 07-02-PLAN.md
+Last session: 2026-04-09T00:08:34.922Z
+Stopped at: Completed all Phase 07 plans (Wave 1)
 Resume file: None

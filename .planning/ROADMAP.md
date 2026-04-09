@@ -169,7 +169,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 07-01-PLAN.md — Env assertion fix + AuthGate smoke test
+- [x] 07-01-PLAN.md — Env assertion fix + AuthGate smoke test
 - [x] 07-02-PLAN.md — Dead queue cleanup + checkbox verification
 **UI hint**: no
 
