@@ -8,49 +8,73 @@ On-demand mobile cleaning services marketplace for the Gulf region (UAE, Saudi A
 
 A customer can book a cleaning service, pay securely, and track their washer arriving in real-time — the full end-to-end booking-to-completion flow must work flawlessly.
 
+## Current State (v1.0 shipped)
+
+- **Shipped:** 2026-04-09 — 7 phases, 47 plans, ~22,400 LOC TypeScript
+- **Tech stack:** Fastify 5 + Prisma 6 + Neon PostgreSQL + Socket.io + BullMQ + Stripe Connect + Expo SDK 55 + Next.js + Vite
+- **All 5 surfaces functional:** customer-web (Next.js), customer-mobile (Expo), company-web (Vite SPA), washer-mobile (Expo), admin-web (Next.js)
+- **84 requirements:** 81 code-verified, 2 need human testing (map labels AR, GPS background), 1 N/A (wallet balance scoped out)
+- **Known tech debt:** Active Washers admin stat is stub (0), wallet balance deferred, 360dialog/Stripe accounts need production setup
+
 ## Requirements
 
 ### Validated
 
-- [x] Phone OTP authentication for customers and washers — Validated in Phase 1: Foundation
-- [x] Company email/password authentication with MFA — Validated in Phase 1: Foundation
-- [x] Platform admin Google SSO authentication — Validated in Phase 1: Foundation
-- [x] Bilingual Arabic (RTL) + English throughout — Validated in Phase 1: Foundation (infrastructure + auth screens)
-- [x] Service category browsing (car wash, carpet, sofa) — Validated in Phase 2: Core Business Flow
-- [x] GPS-based city detection and company filtering — Validated in Phase 2: Core Business Flow
-- [x] Company listing with ratings, pricing, and ETA — Validated in Phase 2: Core Business Flow
-- [x] Package and add-on selection with quantity support — Validated in Phase 2: Core Business Flow
-- [x] Stripe payment (card, Apple Pay, Google Pay, wallet) — Validated in Phase 2: Core Business Flow
-- [x] Order lifecycle management (7 statuses) — Validated in Phase 2: Core Business Flow
-- [x] Customer reviews and ratings — Validated in Phase 2: Core Business Flow
-- [x] Company dashboard with order management — Validated in Phase 2: Core Business Flow
-- [x] Company onboarding (profile, cities, categories, packages) — Validated in Phase 2: Core Business Flow
-- [x] Stripe Connect for company payouts — Validated in Phase 2: Core Business Flow
-- [x] Real-time washer GPS tracking via Socket.io — Validated in Phase 3: Real-Time & Washer App
-- [x] Before/after photo evidence system — Validated in Phase 3: Real-Time & Washer App
-- [x] Per-category service checklists for washers — Validated in Phase 3: Real-Time & Washer App
-- [x] Washer mobile app (GPS, camera, job management) — Validated in Phase 3: Real-Time & Washer App
-- [x] Push notifications (Expo), SMS (Twilio), Email (Resend) — Validated in Phase 4: Supporting Systems & Admin
-- [x] WhatsApp notifications (360dialog) — Validated in Phase 4: Supporting Systems & Admin
-- [x] Admin panel for platform oversight — Validated in Phase 4: Supporting Systems & Admin
-- [x] Cross-surface API route consistency (/api prefix) — Validated in Phase 6: Fix Route & Socket Wiring
-- [x] Company dashboard real-time order events (Socket.io) — Validated in Phase 6: Fix Route & Socket Wiring
-- [x] Company auth context with JWT-decoded companyId — Validated in Phase 6: Fix Route & Socket Wiring
-- [x] Company-web route protection (auth gate) — Validated in Phase 7: Auth Guards & Housekeeping
-- [x] Graceful env assertion handling (no server crash) — Validated in Phase 7: Auth Guards & Housekeeping
+- ✓ Phone OTP authentication for customers and washers — v1.0
+- ✓ Company email/password authentication with TOTP MFA — v1.0
+- ✓ Platform admin Google Workspace SSO — v1.0
+- ✓ Rate limiting on OTP endpoints (3/phone/15min) — v1.0
+- ✓ Bilingual Arabic (RTL) + English throughout — v1.0
+- ✓ Service category browsing (car wash, carpet, sofa) — v1.0
+- ✓ GPS-based city detection and company filtering — v1.0
+- ✓ Company listing with ratings, pricing, reviews — v1.0
+- ✓ Package and add-on selection with quantity — v1.0
+- ✓ Stripe payment (card, Apple Pay, Google Pay) — v1.0
+- ✓ On-site order lifecycle (7 states) — v1.0
+- ✓ Carpet order lifecycle (10 states) — v1.0
+- ✓ Washer job dispatch with 30s accept/decline — v1.0
+- ✓ Database-level order locking — v1.0
+- ✓ Order cancellation with policy enforcement — v1.0
+- ✓ Company dashboard with real-time order feed — v1.0
+- ✓ Company Stripe Connect onboarding for payouts — v1.0
+- ✓ Platform commission auto-deducted (15-20%) — v1.0
+- ✓ Refund flow with transfer reversal — v1.0
+- ✓ Real-time washer GPS tracking via Socket.io — v1.0
+- ✓ Before/after photo evidence via presigned R2 URLs — v1.0
+- ✓ Carpet pickup/return photo evidence — v1.0
+- ✓ Per-category service checklists for washers — v1.0
+- ✓ Washer mobile app (GPS, camera, job management) — v1.0
+- ✓ Push notifications (Expo) — v1.0
+- ✓ SMS notifications (Twilio) — v1.0
+- ✓ WhatsApp notifications (360dialog) — v1.0
+- ✓ Email receipts (Resend) — v1.0
+- ✓ All notifications bilingual — v1.0
+- ✓ Admin company review/reject — v1.0
+- ✓ Admin dispute handling with photo evidence — v1.0
+- ✓ Admin manual refunds — v1.0
+- ✓ Admin cities/categories management — v1.0
+- ✓ Admin audit log — v1.0
+- ✓ Cross-surface API route consistency (/api prefix) — v1.0
+- ✓ Company-web auth gate for protected routes — v1.0
+- ✓ Graceful env assertion handling — v1.0
+- ✓ Turborepo monorepo with CI pipeline — v1.0
 
 ### Active
+
 - [ ] Loyalty points and wallet system
 - [ ] Promo codes and discount engine
 - [ ] Analytics dashboards for companies
+- [ ] Map label Arabic switching (human verification needed)
+- [ ] GPS background tracking device testing (Samsung + iPhone)
 
 ### Out of Scope
 
-- Subscriptions and B2B/fleet accounts — Phase 3, deferred until post-launch
-- AI features (smart pricing, sentiment analysis, chatbot) — Phase 3, requires data volume
-- Multi-region expansion (KSA, Egypt) — Phase 3, launch UAE first
-- Mattress/curtain cleaning categories — future expansion after core validates
-- Public API for enterprise integrations — post-scale feature
+- Subscriptions and B2B/fleet accounts — different billing model, deferred
+- AI features (smart pricing, sentiment, chatbot) — needs data volume
+- Multi-region expansion (KSA, Egypt) — launch UAE first
+- In-app chat/messaging — use WhatsApp deep-links
+- Instant auto-dispatch — companies control their staff
+- Wallet balance (PAY-02) — scoped out of v1.0, revisit in v1.1
 
 ## Context
 
@@ -58,34 +82,40 @@ A customer can book a cleaning service, pay securely, and track their washer arr
 - **Market**: UAE first launch. Companies already lined up to onboard.
 - **Business model**: Marketplace — 15-20% platform commission per order via Stripe Connect.
 - **Prior experience**: Builder has experience with similar stack from Zooli.ai (Node.js, Neon, BullMQ, Cloudflare R2, Claude).
-- **Blueprint**: Comprehensive 22-page Platform Blueprint + 15-page Vibe Coding Guide define the full specification including database schema (15 tables), order lifecycle (10 steps), security blueprint, scalability architecture, and bilingual system.
-- **Third-party accounts**: None set up yet — all accounts (Stripe, Twilio, Neon, Vercel, etc.) need to be created.
-- **Timeline**: No rush — quality over speed. Blueprint estimates ~10 weeks to private beta solo.
-- **Supply side**: Companies ready to join — build confidence is high.
+- **Blueprint**: Comprehensive 22-page Platform Blueprint + 15-page Vibe Coding Guide.
+- **Third-party accounts**: Need production setup — Stripe, Twilio, Neon, 360dialog, Vercel, Fly.io.
+- **Timeline**: v1.0 shipped in 10 days. Quality over speed.
+- **Supply side**: Companies ready to join.
 
 ## Constraints
 
-- **Tech stack**: Blueprint specifies Fastify, Neon, Prisma, Stripe, etc. but open to better alternatives if research suggests them.
-- **Languages**: Arabic (RTL) + English required from day 1 — not retrofittable.
-- **Monorepo**: Turborepo monorepo with 6 apps + shared packages as specified in blueprint.
-- **Platforms**: Web (Next.js) + Mobile (React Native/Expo) for customers. Web-only for companies. Mobile-only for washers.
-- **Region**: Neon Bahrain region for low latency to Gulf users.
-- **Payments**: Stripe + Stripe Connect — AED currency, Apple/Google Pay support.
-- **Security**: PCI scope reduction via Stripe Elements, encrypted phone numbers, signed R2 URLs, rate limiting on all sensitive endpoints.
-- **Solo builder**: Architecture must be manageable by one person with AI assistance.
+- **Tech stack**: Fastify, Neon, Prisma, Stripe — validated in v1.0.
+- **Languages**: Arabic (RTL) + English from day 1 — established.
+- **Monorepo**: Turborepo with 6 apps + shared packages — working.
+- **Platforms**: Web (Next.js) + Mobile (Expo) for customers. Vite SPA for companies. Expo for washers.
+- **Region**: Neon Bahrain region for Gulf latency.
+- **Payments**: Stripe + Stripe Connect — AED, Apple/Google Pay.
+- **Security**: Stripe Elements for PCI, signed R2 URLs, rate limiting.
+- **Solo builder**: Architecture manageable by one person with AI.
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Marketplace model (customer picks company) | Gulf customers trust brand names; faster to launch than gig-dispatch | — Pending |
-| Washer travels to client for car wash + sofa | Maximum convenience — car/home/office service anywhere | — Pending |
-| Carpet = pickup → facility clean → return | Carpets need deep cleaning equipment only available at facility; return date agreed at booking | — Pending |
-| Bilingual from day 1 (not retrofit) | UAE/KSA/Egypt markets require Arabic; retrofitting RTL is extremely painful | — Pending |
-| Separate _en/_ar DB columns (not JSON) | Queryable, indexable, enforces both translations exist | — Pending |
-| UAE first, then KSA + Egypt | Concentrate supply/demand in one market first | — Pending |
-| Blueprint stack open to alternatives | Research may surface better tools for solo builder context | — Pending |
-| 5 app surfaces from start | All roles need tooling for end-to-end flow to work | — Pending |
+| Marketplace model (customer picks company) | Gulf customers trust brand names | ✓ Good — built and functional |
+| Washer travels to client for car wash + sofa | Maximum convenience | ✓ Good — 7-state lifecycle works |
+| Carpet = pickup → facility clean → return | Deep cleaning needs equipment | ✓ Good — 10-state lifecycle works |
+| Bilingual from day 1 (not retrofit) | UAE/KSA/Egypt require Arabic | ✓ Good — RTL/LTR across all surfaces |
+| Separate _en/_ar DB columns (not JSON) | Queryable, indexable, enforces translations | ✓ Good — clean schema |
+| UAE first, then KSA + Egypt | Concentrate supply/demand | — Pending (launch first) |
+| Vite SPA for company dashboard (not Next.js) | No SEO needed, 10x faster HMR | ✓ Good — smooth DX |
+| Socket.io for real-time (not Ably) | Free, self-hosted, adequate at launch scale | ✓ Good — GPS tracking works |
+| Cloudflare R2 (not S3) | Zero egress fees | ✓ Good — photo system works |
+| BullMQ + Upstash Fixed Plan | Avoids PAYG polling cost blowout | ✓ Good — workers stable |
+| HMAC exchange for admin SSO→JWT bridge | Bridges Auth.js Google session to Fastify JWT securely | ✓ Good — zero token leakage |
+| fastify-type-provider-zod (community) | @fastify/type-provider-zod doesn't exist on npm | ✓ Good — works with zod v3 |
+| Pre-MFA session token (5min TTL, Redis) | Prevents TOTP replay attacks | ✓ Good — secure flow |
+| Socket job:accept/decline (not HTTP) | Real-time, no polling, 30s countdown UX | ✓ Good — dispatch loop works |
 
 ## Evolution
 
@@ -105,4 +135,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-09 after Phase 7 completion — auth guards verified, env crash fix, requirements audit complete. Milestone v1.0 is 100% complete (all 7 phases, 47 plans).*
+*Last updated: 2026-04-09 after v1.0 milestone completion*
