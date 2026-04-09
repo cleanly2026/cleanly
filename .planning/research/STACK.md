@@ -1,264 +1,528 @@
 # Stack Research
 
-**Domain:** On-demand cleaning services marketplace (Gulf region, bilingual AR/EN)
-**Researched:** 2026-03-30
-**Confidence:** HIGH (primary choices verified via official sources and WebSearch with multiple corroborating sources)
+**Domain:** On-demand cleaning services marketplace — v1.1 Deployment Infrastructure
+**Researched:** 2026-04-09
+**Confidence:** MEDIUM-HIGH (core tooling verified via official docs; Fly.io Bahrain region status is a critical finding below)
 
 ---
 
-## Verdict on Blueprint Stack
+## CRITICAL FINDING: Fly.io Bahrain Region Does Not Exist
 
-The blueprint stack is **95% validated**. Two targeted adjustments are recommended:
-1. **ORM: Consider Drizzle over Prisma** — meaningful DX advantage for solo developers with Neon
-2. **Redis: Upstash requires a Fixed Plan** (not Pay-As-You-Go) to avoid BullMQ cost blowout
+The v1.0 STACK.md stated "Fly.io has Bahrain/Middle East regions" — **this is incorrect**.
 
-Everything else in the blueprint — Fastify, Neon + PostGIS, Socket.io, BullMQ, Cloudflare R2, Stripe Connect, Expo Push, Twilio, Resend, Turborepo — is validated as the right choice for this context.
+Research confirms Fly.io executed a region consolidation project (documented on their blog) that removed ~17 regions. The final network covers North America, Europe, Asia-Pacific, South America, and Africa — **no Middle East or Bahrain region exists**. The original blueprint assumption was based on stale training data.
 
----
+**Closest available Fly.io region to UAE:** `bom` (Mumbai, India) — approximately 1,700km, +60-80ms latency over direct Gulf hosting.
 
-## Recommended Stack
+**Decision required:** Either accept Mumbai latency on Fly.io, or use Railway (Singapore, ~150ms) for simpler DX, or use a Gulf-native provider. For a marketplace at launch scale, Mumbai on Fly.io is acceptable — real-world user latency will be dominated by mobile network delays, not the 60-80ms routing overhead.
 
-### Core Framework
-
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| Fastify | 5.8.4 | API server (HTTP + WebSocket host) | 2-3x throughput vs Express, TypeScript-first, built-in schema validation via JSON Schema/Zod, v5 dropped Node <20 and cleaned up breaking changes. Validated by benchmarks and production adoption. |
-| Node.js | 20 LTS (min) | Runtime | Required by Fastify v5. LTS until April 2026. Ecosystem compatibility for BullMQ, Prisma, Socket.io. |
-| TypeScript | 5.x | Language | End-to-end type safety across monorepo — shared types between API, web, mobile are the core solo-dev productivity multiplier. |
-
-### Monorepo
-
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| Turborepo | latest | Monorepo orchestration | Purpose-built for Next.js + Expo + Node.js monorepos. Remote caching means CI never rebuilds unchanged packages. Native pnpm support. Expo SDK 52+ auto-detects Turborepo — no Metro config needed. |
-| pnpm | 9.x | Package manager | Turborepo's recommended package manager. Workspace hoisting handles shared packages correctly. Significantly faster than npm for monorepos. |
-
-### Database
-
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| Neon PostgreSQL | serverless | Primary data store | Serverless Postgres with autoscaling. Bahrain region available for Gulf latency. Database branching for safe schema migrations. PgBouncer connection pooling built-in (up to 10,000 connections). Acquired by Databricks (2025) — strong financial backing. |
-| PostGIS | (via Neon extension) | Geospatial queries | Natively supported Neon extension. Use `geography` type (not `geometry`) for GPS coordinates — `geography` uses WGS84 spheroid for accurate real-world distance calculations, critical for washer proximity search. Add GIST index on location columns. |
-| Prisma | 6.19.0 | ORM | Schema-first, mature ecosystem, Neon-native adapter (`@prisma/adapter-neon`), excellent migration tooling. Blueprint builder already has Zooli.ai experience with this stack. Prisma 7 (engine removed) is imminent — narrowing the performance gap with Drizzle. **See Drizzle alternative below.** |
-
-### Cache & Queue
-
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| Upstash Redis | Fixed Plan ($10/mo) | Redis host for BullMQ + rate limiting + session cache | Managed Redis with zero ops. **CRITICAL: Must use Fixed Plan, not Pay-As-You-Go** — BullMQ polls Redis continuously even when idle; PAYG billing would incur unexpectedly high costs. Fixed Plan at $10/mo is predictable. |
-| BullMQ | 5.71.1 | Background job queues | Industry standard for Node.js job queues. Handles: order notifications, SMS/email dispatch, photo processing, payout triggers, promo code expiry. Persistent, retryable, prioritizable. Workers need long-lived process (deploy as separate Fastify worker dyno). |
-
-### Real-Time
-
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| Socket.io | 4.8.3 | Real-time GPS tracking, order status push | Battle-tested, TypeScript support, automatic WebSocket fallback. For single-server deployment (solo dev at launch), no Redis adapter needed — add `@socket.io/redis-adapter` only when horizontal scaling is required. Self-hosted = $0 vs Ably's $59+/mo. |
-
-### Front-End (Web)
-
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| Next.js | 16.2 | Customer web app + Admin panel | App Router stable in v16, Turbopack default. Server Components reduce JS bundle for customer-facing pages. SEO matters for customer acquisition. Two Next.js apps in monorepo share `packages/ui`. |
-| Vite + React | 6.x | Company dashboard | No SEO needed — authenticated SPA. Vite HMR is 150ms vs Next.js 4s for dashboard hot-reload. Superior DX for data-heavy dashboard work. Stays SPA so no SSR complexity for an ops tool. |
-| shadcn/ui | latest | UI component library | Copy-paste components, Radix UI primitives, Tailwind-based. RTL-compatible (Radix handles direction). Monorepo-friendly — one `packages/ui` package exports components to all web apps. The de-facto standard for new React apps in 2025-2026. |
-| Tailwind CSS | 4.x | Styling | Co-released with shadcn/ui integration. `dir="rtl"` CSS attribute handles Arabic layout. Logical properties (`ms-`, `me-`, `ps-`, `pe-`) replace left/right throughout. |
-
-### Front-End (Mobile)
-
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| Expo | 55.x (SDK 55) | Customer mobile + Washer mobile | SDK 55 includes React Native 0.83. New Architecture enabled by default. Expo auto-detects Turborepo monorepos. EAS Build + EAS Update (OTA) are essential for solo dev — no App Store approval wait for fixes. Push notifications require development build (not Expo Go) from SDK 52+. |
-| expo-router | 4.x | Navigation | File-based routing mirrors Next.js App Router — same mental model across web and mobile. Deep linking for order tracking shares routes. |
-| i18next + react-i18next | latest | Bilingual AR/EN | Standard i18n for React/React Native. Namespace support for large translation files. Use `I18nManager.forceRTL()` + AsyncStorage for language persistence. Use `marginStart`/`marginEnd` (not left/right) throughout. |
-
-### Payments
-
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| Stripe + Stripe Connect | latest SDK | Customer payments + company payouts | Stripe is fully operational in UAE. AED currency, Apple Pay, Google Pay, and Samsung Pay all supported. Stripe Connect (Destination Charges model) handles 15-20% platform commission automatically. T+5 payout schedule for UAE accounts. Use Stripe Elements for PCI scope reduction. |
-
-### Storage
-
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| Cloudflare R2 | — | Before/after photos, company assets | Zero egress fees vs S3's $0.09/GB. Permanent free tier: 10GB storage, 1M Class A + 10M Class B ops/month. S3-compatible API. At typical image-heavy workloads, R2 is 50-90x cheaper than S3 on egress. Sign URLs with short TTLs (15 min) for washer photo uploads. |
-
-### Notifications
-
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| Expo Push Notifications | (via EAS) | Mobile push (customer + washer) | Built into Expo infrastructure. Works across iOS and Android without Firebase configuration complexity. Requires development builds (not Expo Go) from SDK 52+. |
-| Twilio Verify | latest | Phone OTP (customer + washer onboarding) | Industry standard for OTP. Verify API handles retry logic, fraud detection, and adaptive routing. UAE SMS delivery is reliable. Pay-per-use keeps cost low during launch. |
-| Resend | latest | Transactional email (company onboarding, receipts) | Modern developer-first API. React Email templates (JSX). Free tier: 3,000 emails/month permanent. 8-minute setup vs SendGrid's 45 minutes. Better DX than SendGrid for solo dev. |
-| 360dialog | — | WhatsApp Business notifications | Purpose-built WhatsApp API provider. Flat monthly fee ($50/number) with no per-message markup vs Twilio's $0.005/message platform fee on top of Meta charges. WhatsApp is the dominant notification channel in UAE/KSA/Egypt — this is not optional. |
-
-### Auth
-
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| Custom JWT (Fastify) | — | Phone OTP auth (customers, washers) | `@fastify/jwt` + Twilio Verify OTP. Simple stateless tokens. No external auth service needed for mobile-first OTP flow. Refresh tokens stored in Upstash Redis. |
-| NextAuth.js / Auth.js | 5.x | Admin Google SSO | Next.js-native auth for the admin panel. Handles Google OAuth without custom token logic. Isolate to admin panel only. |
-
-### Infrastructure & DevOps
-
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| Vercel | — | Host: customer web, admin panel (Next.js) | Zero-config Next.js deployment. Edge Network CDN. Preview deployments per PR. Free tier sufficient for launch. |
-| Fly.io or Railway | — | Host: Fastify API + BullMQ workers | Long-running processes (Socket.io + BullMQ workers) cannot run on serverless (Vercel/Lambda). Fly.io has Bahrain/Middle East regions. Railway is simpler to operate solo. Both support persistent Node.js processes. |
-| Netlify or Vercel | — | Host: company dashboard (Vite SPA) | Static SPA — any CDN works. Vercel handles it alongside Next.js apps. |
-| GitHub Actions | — | CI/CD | Turborepo remote cache integration. Run tests only on changed packages. Deploy on merge to main. |
-| Cloudflare | — | DNS + DDoS protection | Free tier covers DNS. Proxies API traffic for rate limiting at network edge. Pairs naturally with R2. |
+**Recommendation: Use Fly.io Mumbai (`bom`) for the API.** Fly.io has 61ms average global latency (vs Railway's 381ms in independent benchmarks), persistent VMs, and a Bahrain region may be added in future.
 
 ---
 
-## Supporting Libraries
+## Recommended Deployment Stack
 
-| Library | Version | Purpose | When to Use |
-|---------|---------|---------|-------------|
-| `@prisma/adapter-neon` | 6.x | Neon serverless driver for Prisma | Always — required for Prisma + Neon connection pooling |
-| `@fastify/jwt` | latest | JWT auth middleware | Always — stateless auth tokens |
-| `@fastify/cors` | latest | CORS handling | Always — API consumed by web + mobile |
-| `@fastify/rate-limit` | latest | Rate limiting | OTP endpoints, payment endpoints |
-| `@fastify/multipart` | latest | File upload (photo evidence) | Washer before/after photo upload to R2 |
-| `zod` | 3.x | Schema validation | Shared validation between API and clients via monorepo package |
-| `@socket.io/redis-adapter` | latest | Socket.io multi-server sync | Only when scaling to multiple API instances — NOT needed at launch |
-| `react-hook-form` + `zod` | latest | Form state management | All web forms — company dashboard, admin panel |
-| `@tanstack/react-query` | 5.x | Server state management | All web and mobile apps — replaces Redux for API data |
-| `date-fns` | 3.x | Date manipulation | Booking times, ETA calculations |
-| `sharp` | latest | Image optimization before R2 upload | Resize/compress before/after photos server-side |
+### Compute (Persistent Processes)
+
+| Technology | Version | Purpose | Why Recommended |
+|------------|---------|---------|-----------------|
+| Fly.io | flyctl latest | Host Fastify API + Socket.io + BullMQ worker | Persistent VMs required for Socket.io WebSocket connections and BullMQ long-lived polling. Fly.io has 61ms average latency vs Railway's 381ms (independent 2025 benchmark). Mumbai region (`bom`) is closest to UAE. Two separate machines from same Docker image: API process and worker process. |
+| flyctl | latest CLI | Deploy and manage Fly.io machines | `fly tokens create deploy` for GitHub Actions; `fly deploy --remote-only` builds on Fly.io infrastructure without local Docker. |
+
+**Machine sizing for API (Socket.io + Fastify):**
+- `shared-cpu-1x` with **512MB RAM** — starting point for Node.js API with Socket.io connections
+- Node.js heap is typically 150-300MB at launch scale; 512MB leaves headroom
+- If GPS tracking concurrent connections grow past 100, upgrade to `shared-cpu-2x` with 1GB
+- Set `NODE_OPTIONS=--max-old-space-size=400` in fly.toml env to prevent heap OOM with 512MB
+
+**Machine sizing for BullMQ worker:**
+- `shared-cpu-1x` with **512MB RAM** — BullMQ workers are CPU-light, memory-bound by job payload size
+- Worker machine must have `auto_stop_machines = "off"` (or `"suspend"`) — BullMQ polls Redis continuously via HTTP, not incoming TCP connections, so Fly's autostop mechanism (which monitors inbound connections) will kill a worker that has no jobs but is waiting
+- Use `min_machines_running = 1` to always keep worker alive
+
+### Web Hosting (Static / SSR)
+
+| Technology | Version | Purpose | Why Recommended |
+|------------|---------|---------|-----------------|
+| Vercel | — | customer-web (Next.js), admin-web (Next.js) | Zero-config Next.js deployment. Turborepo monorepo is natively supported — set Root Directory per project, `turbo-ignore` handles skipping unchanged apps. Preview deployments on every PR. |
+| Vercel (or Netlify) | — | company-web (Vite SPA) | Static SPA deploys trivially. Deploying on Vercel alongside the Next.js apps gives one dashboard for three web surfaces. Set Root Directory to `apps/company-web`, build command to `turbo build`. |
+
+**Vercel project setup per app (create 3 separate Vercel projects):**
+```
+Project 1: cleanly-customer-web
+  Root Directory: apps/customer-web
+  Framework: Next.js
+  Build Command: turbo build
+  Ignored Build Step: npx turbo-ignore --fallback=HEAD^1
+
+Project 2: cleanly-admin-web
+  Root Directory: apps/admin-web
+  Framework: Next.js
+  Build Command: turbo build
+  Ignored Build Step: npx turbo-ignore --fallback=HEAD^1
+
+Project 3: cleanly-company-web
+  Root Directory: apps/company-web
+  Framework: Vite
+  Build Command: turbo build
+  Output Directory: dist
+  Ignored Build Step: npx turbo-ignore --fallback=HEAD^1
+```
+
+### Mobile Distribution
+
+| Technology | Version | Purpose | Why Recommended |
+|------------|---------|---------|-----------------|
+| EAS Build | eas-cli latest | Build iOS (.ipa) and Android (.apk/.aab) binaries | Cloud build service — no local Xcode/Android Studio required. Handles signing certificates. SDK 55 default build image is Xcode 26.2 (per EAS docs). Integrates with GitHub Actions for automated builds on merge. |
+| EAS Submit | eas-cli latest | Submit iOS to TestFlight, Android to internal track | Automated store submission from CI. Wraps `eas submit --platform ios` (uploads to App Store Connect → TestFlight) and `eas submit --platform android --track internal`. |
+| EAS Update | eas-cli latest | OTA JavaScript updates | Push JS-only fixes without App Store approval. Critical for solo dev — fixes bugs in hours not days. Requires `expo-updates` in app config. |
+
+### CI/CD
+
+| Technology | Version | Purpose | Why Recommended |
+|------------|---------|---------|-----------------|
+| GitHub Actions | — | Lint, typecheck, test, deploy on merge | Turborepo remote cache integration eliminates rebuilding unchanged packages. Official Vercel and Fly.io GitHub Actions available. Store `TURBO_TOKEN` + `TURBO_TEAM` as repo secrets for Vercel remote cache. |
+| Turborepo Remote Cache | via Vercel | Share build artifacts across CI runs | Set `TURBO_TOKEN` (Vercel scoped token) and `TURBO_TEAM` (Vercel team slug) as GitHub secrets. Each workflow run re-uses cached build outputs from previous runs. Alternative: `rharkor/caching-for-turbo` action uses GitHub Actions Cache API as backing store (free, no Vercel account required). |
+
+### Error Monitoring
+
+| Technology | Version | Purpose | Why Recommended |
+|------------|---------|---------|-----------------|
+| Sentry | @sentry/nextjs 10.x, @sentry/react-native 6.x, @sentry/node 8.x | Error tracking across all 5 surfaces | Per-app DSN — create 5 Sentry projects: customer-web, admin-web, company-web, customer-mobile, washer-mobile. Source maps auto-upload during EAS Build (via `@sentry/react-native/expo` plugin) and Vercel builds (via `withSentryConfig` in next.config.ts). |
+
+**Sentry project mapping for monorepo:**
+```
+Sentry org: cleanly
+  Project: cleanly-customer-web      DSN → NEXT_PUBLIC_SENTRY_DSN_CUSTOMER_WEB
+  Project: cleanly-admin-web         DSN → NEXT_PUBLIC_SENTRY_DSN_ADMIN_WEB
+  Project: cleanly-company-web       DSN → VITE_SENTRY_DSN_COMPANY_WEB
+  Project: cleanly-customer-mobile   DSN → SENTRY_DSN_CUSTOMER_MOBILE
+  Project: cleanly-washer-mobile     DSN → SENTRY_DSN_WASHER_MOBILE
+```
+
+### DNS + CDN + Storage
+
+| Technology | Version | Purpose | Why Recommended |
+|------------|---------|---------|-----------------|
+| Cloudflare | Free tier | DNS, DDoS protection, R2 storage | Domain DNS proxied through Cloudflare for free DDoS mitigation. R2 bucket for photos requires domain to be in Cloudflare account to attach custom domain (e.g. `assets.cleanly.ae`). |
+| Cloudflare R2 | — | Before/after photos, company logos | Already in v1.0 stack. Create bucket, attach custom subdomain via R2 Settings → Custom Domains → Add. Domain must be in same Cloudflare account. |
+
+---
+
+## Dockerfile Pattern (Turborepo + pnpm + Fastify)
+
+The Turborepo `turbo prune` command creates a pruned monorepo containing only the target app and its workspace dependencies — this is the correct pattern for Docker builds in a monorepo (not copying the entire repo).
+
+The `--docker` flag produces two directories:
+- `out/json` — package.json files only (for dependency install layer caching)
+- `out/full` — full source code (separate layer, rebuilt only when source changes)
+
+```dockerfile
+# Stage 1: Prune the monorepo to just the API and its deps
+FROM node:20-alpine AS pruner
+RUN npm install -g turbo
+WORKDIR /app
+COPY . .
+RUN turbo prune api --docker
+
+# Stage 2: Install dependencies (this layer is cached unless lockfile changes)
+FROM node:20-alpine AS installer
+RUN npm install -g pnpm
+WORKDIR /app
+# Copy pruned package.json files only (for cache layer)
+COPY --from=pruner /app/out/json/ .
+COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+RUN pnpm install --frozen-lockfile
+
+# Stage 3: Build TypeScript
+FROM node:20-alpine AS builder
+RUN npm install -g pnpm turbo
+WORKDIR /app
+COPY --from=installer /app/node_modules ./node_modules
+COPY --from=pruner /app/out/full/ .
+RUN turbo build --filter=api
+
+# Stage 4: Production runner (minimal image)
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+# Copy only built output and prod node_modules
+COPY --from=builder /app/apps/api/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/apps/api/package.json ./package.json
+EXPOSE 3000
+CMD ["node", "dist/index.js"]
+```
+
+**Important notes for this stack:**
+- `turbo prune api` assumes `"api"` matches the `name` field in `apps/api/package.json`
+- Prisma requires a post-install generate step: add `RUN pnpm prisma generate` in the builder stage after copying full source
+- The `sharp` package requires native binaries — use `node:20-alpine` consistently across stages (not mixing Debian and Alpine)
+
+---
+
+## fly.toml Pattern (API Machine with Socket.io)
+
+```toml
+app = "cleanly-api"
+primary_region = "bom"  # Mumbai — closest to UAE
+
+[build]
+  dockerfile = "apps/api/Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "3000"
+  NODE_OPTIONS = "--max-old-space-size=400"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = "suspend"
+  auto_start_machines = true
+  min_machines_running = 1  # always 1 API machine up
+
+  [http_service.concurrency]
+    type = "connections"
+    hard_limit = 500
+    soft_limit = 400
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
+```
+
+**For the BullMQ worker machine (separate fly.toml at `apps/worker/fly.toml`):**
+
+```toml
+app = "cleanly-worker"
+primary_region = "bom"
+
+[build]
+  dockerfile = "apps/api/Dockerfile"  # same image, different CMD
+
+[env]
+  NODE_ENV = "production"
+  # No http_service section — worker has no inbound HTTP
+  # This means autostop won't trigger (no connection monitoring)
+
+[processes]
+  worker = "node dist/worker.js"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
+```
+
+**Socket.io WebSocket on Fly.io:** Fly.io handles WebSocket transparently — TLS is terminated at the edge, and the app sees plain HTTP/TCP on the internal port. No special `fly.toml` configuration needed for WebSocket beyond ensuring the service uses TCP protocol. Sticky sessions are NOT natively supported by Fly.io (as of 2025). Since the API runs as a single machine at launch, this is not an issue. When adding a second API machine, add `@socket.io/redis-adapter` to Upstash Fixed Plan Redis simultaneously.
+
+---
+
+## eas.json Pattern (Expo SDK 55)
+
+```json
+{
+  "cli": {
+    "version": ">= 12.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "APP_ENV": "development",
+        "API_URL": "http://localhost:3000"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "ios": {
+        "simulator": false
+      },
+      "env": {
+        "APP_ENV": "staging",
+        "API_URL": "https://api-staging.cleanly.ae"
+      }
+    },
+    "production": {
+      "env": {
+        "APP_ENV": "production",
+        "API_URL": "https://api.cleanly.ae"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "your@apple.id",
+        "ascAppId": "APP_STORE_CONNECT_APP_ID",
+        "appleTeamId": "APPLE_TEAM_ID"
+      },
+      "android": {
+        "serviceAccountKeyPath": "./service-account-key.json",
+        "track": "internal"
+      }
+    }
+  }
+}
+```
+
+**EAS Build notes for SDK 55:**
+- Default build image for SDK 55: Xcode 26.2 (auto-selected when no `image` key specified)
+- `preview` profile with `distribution: internal` generates APK (Android) for direct install, not AAB
+- iOS ad hoc internal distribution caps at 100 registered device UDIDs per year — register devices with `eas device:create` before building preview
+- Push notifications require a development build (`eas build --profile development`) — Expo Go cannot receive push notifications from SDK 52+
+- `appVersionSource: remote` means EAS manages version bumps, not local package.json
+
+---
+
+## GitHub Actions Workflow Structure
+
+**Recommended: 3-job CI pipeline**
+
+```yaml
+# .github/workflows/ci.yml
+name: CI
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
+jobs:
+  lint-typecheck:
+    name: Lint & Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo lint typecheck
+
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    needs: lint-typecheck
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo test
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: [lint-typecheck, test]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      # Vercel deployment is handled automatically via Vercel Git integration
+      # (push to main triggers Vercel deploy — no manual step needed here)
+
+      # Fly.io API deploy
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only --config apps/api/fly.toml
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      # Fly.io Worker deploy
+      - run: flyctl deploy --remote-only --config apps/api/fly.worker.toml
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_WORKER_API_TOKEN }}
+```
+
+**Required GitHub Secrets:**
+```
+TURBO_TOKEN          — Vercel scoped access token (for remote cache)
+TURBO_TEAM           — Vercel team slug (e.g., "cleanly-team")
+FLY_API_TOKEN        — fly tokens create deploy -x 999999h (API machine)
+FLY_WORKER_API_TOKEN — fly tokens create deploy -x 999999h (worker machine)
+```
+
+**Alternative remote cache (no Vercel account):** Use `rharkor/caching-for-turbo@v1.9` action which spins up a local cache server backed by GitHub Actions Cache API. Free, no external account required.
+
+---
+
+## Environment Variable Management
+
+**Pattern: per-app .env files, never at monorepo root**
+
+```
+cleanly/
+  apps/
+    api/           .env.local, .env.staging, .env.production
+    customer-web/  .env.local, .env.staging, .env.production
+    admin-web/     .env.local, .env.staging, .env.production
+    company-web/   .env.local, .env.staging, .env.production
+    customer-mobile/ .env.local, .env.staging, .env.production
+    washer-mobile/ .env.local, .env.staging, .env.production
+  packages/        (NO .env files in shared packages)
+```
+
+**turbo.json must declare env vars to prevent cache poisoning:**
+```json
+{
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "env": ["NODE_ENV", "NEXT_PUBLIC_*", "VITE_*"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+    }
+  }
+}
+```
+
+**Staging vs Production:**
+- Vercel: set env vars per environment (Development / Preview / Production) in Vercel dashboard per project
+- Fly.io: `fly secrets set KEY=value --app cleanly-api` for production; use a separate `cleanly-api-staging` app for staging
+- EAS Build: use `env` block per profile in eas.json (shown above); sensitive values via `eas secret:create`
+
+**Critical: Do NOT put `SENTRY_AUTH_TOKEN` in .env files** — it's a build-time secret. Set it as a Vercel env var (not exposed to browser) and as an EAS secret (`eas secret:create --name SENTRY_AUTH_TOKEN`).
+
+---
+
+## Sentry Configuration Patterns
+
+**Next.js (customer-web, admin-web) — next.config.ts:**
+```typescript
+import { withSentryConfig } from "@sentry/nextjs";
+
+const nextConfig = { /* ... */ };
+
+export default withSentryConfig(nextConfig, {
+  org: "cleanly",
+  project: "cleanly-customer-web",  // or cleanly-admin-web
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  silent: !process.env.CI,
+  widenClientFileUpload: true,
+  hideSourceMaps: true,
+});
+```
+
+**instrumentation-client.ts (client-side init):**
+```typescript
+import * as Sentry from "@sentry/nextjs";
+
+Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  environment: process.env.NEXT_PUBLIC_APP_ENV ?? "development",
+  tracesSampleRate: process.env.NODE_ENV === "production" ? 0.1 : 1.0,
+  replaysOnErrorSampleRate: 1.0,
+  replaysSessionSampleRate: 0.1,
+});
+```
+
+**Expo / React Native (app.json plugin addition):**
+```json
+{
+  "plugins": [
+    [
+      "@sentry/react-native/expo",
+      {
+        "url": "https://sentry.io/",
+        "organization": "cleanly",
+        "project": "cleanly-customer-mobile"
+      }
+    ]
+  ]
+}
+```
+
+**Known issue (SDK 55 + Sentry):** There is a documented GitHub issue (`expo/expo#42494`) where Android EAS builds with Sentry Gradle integration fail due to Gradle 9 incompatibility in some SDK 55 configurations. If this occurs, set `SENTRY_DISABLE_AUTO_UPLOAD=true` and upload source maps manually, or add `SENTRY_ALLOW_FAILURE=true` to allow the build to succeed without source map upload.
+
+---
+
+## Cloudflare R2 Setup Steps
+
+1. Create bucket: Cloudflare Dashboard → R2 → Create bucket (name: `cleanly-photos`)
+2. Attach custom domain: Bucket Settings → Custom Domains → Add → enter `assets.cleanly.ae`
+   - Domain must be in the same Cloudflare account and have Cloudflare as nameserver
+   - Custom domain creation adds a CNAME record automatically
+3. Keep bucket private — do not enable public access via r2.dev subdomain
+4. Access via presigned URLs from Fastify API (already implemented in v1.0)
+5. CORS configuration needed for direct browser upload (washer photo evidence):
+   ```json
+   [{ "AllowedOrigins": ["https://cleanly.ae", "https://company.cleanly.ae"], "AllowedMethods": ["PUT", "GET"], "AllowedHeaders": ["Content-Type", "Content-Length"] }]
+   ```
 
 ---
 
 ## Alternatives Considered
 
-| Category | Recommended | Alternative | Why Not |
-|----------|-------------|-------------|---------|
-| ORM | Prisma 6 | **Drizzle ORM** | Drizzle is a legitimate alternative — 90% smaller bundle, no generate step, SQL-proximate API. Choose Drizzle if cold starts become an issue (Neon + Drizzle can do <500ms vs Prisma's 1-3s). Builder's Zooli.ai experience with Prisma reduces switching friction, so Prisma wins by familiarity unless cold starts prove problematic. |
-| API Framework | Fastify | Hono | Hono excels on edge/Cloudflare Workers. Fastify is better for traditional Node.js servers with long-lived WebSocket connections (Socket.io requirement). |
-| API Framework | Fastify | NestJS | NestJS imposes heavy architectural opinions (DI, decorators) — mismatched with solo dev velocity. Fastify is faster to build. |
-| Real-time | Socket.io | Ably | Ably is $59+/mo managed service. Socket.io is free, self-hosted, battle-tested. At launch scale (hundreds of concurrent), Socket.io on a single server is zero operational complexity. Switch to Ably at 10K+ concurrent connections. |
-| Database | Neon PostgreSQL | Supabase | Supabase adds auth/storage bundling that conflicts with Stripe + R2 choices. Neon is pure Postgres with better branching. |
-| Email | Resend | SendGrid | SendGrid free tier expired. Resend has permanent free tier, better DX, React Email integration. At enterprise volume (>100K emails/mo) SendGrid has marginal deliverability edge. |
-| Storage | Cloudflare R2 | AWS S3 | S3 charges $0.09/GB egress. R2 charges $0. No technical difference for this use case. |
-| Mobile | Expo | Bare React Native | Expo SDK 55 includes New Architecture by default. EAS Build/Update removes most native toolchain pain. Bare RN requires Xcode/Android Studio locally — not ideal for solo AI-assisted dev. |
-| Company dashboard | Vite React | Next.js | Company dashboard is authenticated SPA — no SEO need. Vite is 10-30x faster HMR. Mixing SSR into a pure ops tool adds complexity without benefit. |
-| Queue | BullMQ + Upstash | QStash (Upstash) | QStash is HTTP-based and serverless-compatible but less feature-rich (no job priorities, limited retry control). BullMQ is the standard for complex job pipelines. |
+| Recommended | Alternative | When to Use Alternative |
+|-------------|-------------|-------------------------|
+| Fly.io Mumbai | Railway Singapore | Railway has simpler DX (no fly.toml, no Docker required). Use Railway if Fly.io operational complexity is blocking for solo dev. Tradeoff: 381ms avg latency vs Fly.io's 61ms. |
+| Fly.io Mumbai | Render | Render is even simpler but slower (451ms) and no Middle East/India regions. Avoid. |
+| Vercel Remote Cache | GitHub Actions Cache (rharkor/caching-for-turbo) | Use GitHub Cache if not on Vercel paid plan. Zero cost, stores in GitHub. Slower first-time hits vs Vercel CDN. |
+| EAS Build (Expo cloud) | Local builds | Local builds require Xcode (Mac only) and Android Studio. Not viable for solo AI-assisted dev on Windows. EAS is non-negotiable. |
+| 5 separate Sentry projects | 1 shared Sentry project | Single project reduces noise during development. But separate projects give cleaner error assignment and separate alerting rules per surface. Separate projects are the production pattern. |
 
 ---
 
-## What NOT to Use
+## What NOT to Do
 
 | Avoid | Why | Use Instead |
 |-------|-----|-------------|
-| Upstash Redis Pay-As-You-Go for BullMQ | BullMQ polls Redis continuously — PAYG billing becomes unpredictable and expensive. Documented issue in Upstash own docs. | Upstash Redis Fixed Plan ($10/mo) |
-| Serverless deployment for Fastify API | Socket.io requires persistent WebSocket connections — serverless functions time out after 10-30s, incompatible. BullMQ workers also need long-lived processes. | Fly.io or Railway (persistent Node.js) |
-| Prisma without `@prisma/adapter-neon` | Default Prisma uses direct TCP connections — exhausts Neon's connection limits rapidly in serverless context. | Always use neon adapter + PgBouncer pooled URL |
-| `geometry` PostGIS type for GPS | Geometry uses flat-plane math — inaccurate over real-world GPS distances. Washer proximity queries will return wrong results. | `geography` type with GIST index |
-| `marginLeft`/`marginRight` in React Native | Breaks RTL layout silently — left remains left in Arabic. | `marginStart`/`marginEnd` (logical properties) throughout |
-| Express.js | 2-3x worse performance than Fastify, no native TypeScript types, middleware model is less safe. New projects should not start with Express. | Fastify 5 |
-| Firebase for OTP | Firebase OTP has quotas and inconsistent behavior between Expo Go and production builds. Documented confusion in Expo community. | Twilio Verify |
-| Redux / MobX for state | Overengineered for API data that TanStack Query handles better. React 19 + `use()` makes server state simpler. | TanStack Query v5 |
-| `moment.js` | 67kb, unmaintained. | `date-fns` (tree-shakeable, 2kb per function) |
-| JSON columns for AR/EN translations | Not queryable, not indexable, no enforcement that both languages exist. Blueprint's decision to use `name_en`/`name_ar` column pairs is correct. | Separate `_en`/`_ar` columns as specified in blueprint |
+| `fly.io` Bahrain region (`bah`) | Does not exist — was never launched, consolidated project removed hypothetical plans | Use `bom` (Mumbai) as nearest available region |
+| Deploying API to Vercel/Netlify serverless | Socket.io WebSockets require persistent connections; serverless cold-starts + 10-30s timeouts kill WebSocket sessions | Fly.io or Railway persistent VMs |
+| `auto_stop_machines = "stop"` on BullMQ worker | BullMQ polls Redis constantly — no inbound HTTP traffic means Fly considers worker "idle" and stops it, killing all pending job processing | Set `auto_stop_machines = "off"` for worker machine |
+| Building Expo apps with Expo Go for production testing | Push notifications don't work in Expo Go from SDK 52+. GPS background tracking is unreliable in Expo Go. | Always use `eas build --profile development` for device testing |
+| Committing `.env` files with secrets | Obvious security issue, but also breaks Turborepo cache invalidation if env values change between machines | Use per-platform secret management (Vercel dashboard, `fly secrets`, EAS secrets) |
+| Single Sentry project for all 5 surfaces | Can't distinguish between API errors, mobile crashes, and web errors without surface-specific DSNs | Create 5 Sentry projects, 5 DSNs |
+| iOS ad hoc distribution for >100 testers | Apple caps ad hoc provisioning at 100 device UDIDs per year; exceeding requires rebuilding | For wider beta, use TestFlight (production profile + EAS Submit → TestFlight) |
+| `turbo prune` without checking workspace name | `turbo prune api` fails silently if the workspace `name` in package.json is `@cleanly/api` not `api` | Use exact `name` field value from the app's package.json |
 
 ---
 
-## Stack Patterns by Variant
-
-**If deploying API to Fly.io:**
-- Use Fly.io Bahrain region (`bah`) for lowest latency to UAE users
-- Deploy API + BullMQ worker as two separate Fly.io machines (same image, different start command)
-- Socket.io runs on the API machine — no Redis adapter needed until you add a second API machine
-
-**If deploying API to Railway:**
-- Simpler UI for solo dev, good DX
-- Use Railway's Singapore region as closest available to Gulf (adds ~50ms latency vs Fly.io Bahrain)
-- Same split: one service for API, one for BullMQ worker
-
-**If Prisma cold starts become a problem:**
-- Migrate to Drizzle ORM — same Neon connection string, similar migration tooling (`drizzle-kit`)
-- Drizzle's bundle is ~7kb vs Prisma's ~30MB binary — cold starts drop from 1-3s to <500ms
-- Schema migration is a one-time effort; Drizzle + Neon is a documented, supported combination
-
-**If Socket.io needs horizontal scaling later:**
-- Add `@socket.io/redis-adapter` pointing to the Upstash Fixed Plan Redis already in use
-- Enable sticky sessions in the load balancer (or disable HTTP long-polling to avoid the requirement)
-- This is a one-afternoon addition, not an architectural change
-
-**If WhatsApp volume justifies cost reassessment:**
-- At >5,000 WhatsApp messages/day, compare 360dialog flat fee vs Twilio per-message
-- 360dialog's zero per-message markup becomes decisive at high volume
-
----
-
-## Version Compatibility
+## Version Compatibility (Deployment Tools)
 
 | Package | Compatible With | Notes |
 |---------|-----------------|-------|
-| Fastify 5.x | Node.js 20+ | Node 18 dropped in Fastify v5 |
-| Expo SDK 55 | React Native 0.83, React 19 | New Architecture on by default |
-| Next.js 16.x | React 19, Node.js 18+ | Turbopack default, React Compiler stable |
-| Prisma 6.x | Node.js 18+ | v7 coming — breaking changes documented but migration guide exists |
-| BullMQ 5.x | ioredis 5+, Node.js 18+ | Upstash Redis must use TLS config |
-| Socket.io 4.x | Node.js 10+ | Use same major version on client and server |
-| `@prisma/adapter-neon` | Prisma 6.x + @neondatabase/serverless | Must match Prisma major version |
-
----
-
-## Installation (Monorepo Root Bootstrap)
-
-```bash
-# Create monorepo
-npx create-turbo@latest cleanly --package-manager pnpm
-
-# API package dependencies
-pnpm add fastify @fastify/jwt @fastify/cors @fastify/rate-limit @fastify/multipart
-pnpm add prisma @prisma/client @prisma/adapter-neon @neondatabase/serverless
-pnpm add socket.io bullmq ioredis
-pnpm add @aws-sdk/client-s3 @aws-sdk/s3-request-presigner  # R2 is S3-compatible
-pnpm add stripe twilio resend
-pnpm add zod date-fns sharp
-
-# Customer web (Next.js)
-pnpm add next react react-dom
-pnpm add @tanstack/react-query react-hook-form
-
-# Company dashboard (Vite)
-pnpm add vite @vitejs/plugin-react
-pnpm add @tanstack/react-query react-hook-form
-
-# Shared UI package
-pnpm add tailwindcss @tailwindcss/typography
-# Add shadcn/ui components via CLI: pnpm dlx shadcn@latest init
-
-# Mobile (Expo)
-# Use: npx create-expo-app --template (inside apps/mobile-customer, apps/mobile-washer)
-pnpm add i18next react-i18next expo-localization
-
-# Dev dependencies (root)
-pnpm add -D typescript @types/node turbo
-```
+| EAS CLI 12.x | Expo SDK 55 | SDK 55 default image: Xcode 26.2. Use `sdk-55` image alias in eas.json if explicit version needed. |
+| @sentry/nextjs 10.x | Next.js 15+ | v8 minimum requirement for Next.js integration. v10 is current as of 2026. |
+| @sentry/react-native 6.x | Expo SDK 55, React Native 0.83 | Expo plugin config via `@sentry/react-native/expo`. Known Gradle 9 incompatibility with some SDK 55 Android builds (see PITFALLS). |
+| flyctl latest | Fly Machines API | Always use latest flyctl — breaking changes happen frequently. Pin version in CI only if a specific release is required. |
+| superfly/flyctl-actions | flyctl latest | Use `@master` for latest. Pin to a tag only if CI stability is paramount. |
+| Turborepo 2.4.1+ | Next.js Skew Protection | Required if using Vercel Skew Protection. Versions below 2.4.1 cause asset-missing issues in production with Skew Protection enabled. |
 
 ---
 
 ## Sources
 
-- Fastify official docs (fastify.dev) — version 5.8.4 confirmed, Node 20+ requirement
-- Neon docs (neon.com/docs/extensions/postgis) — PostGIS extension support confirmed
-- Neon docs (neon.com/docs/connect/connection-pooling) — PgBouncer 10K connections confirmed
-- PostGIS docs (postgis.net/documentation/faq) — geography vs geometry recommendation
-- Upstash docs (upstash.com/docs/redis/integrations/bullmq) — BullMQ compatibility + Fixed Plan recommendation
-- Socket.io docs (socket.io/docs/v4) — single server needs no Redis adapter confirmed
-- Expo changelog (expo.dev/changelog/sdk-53) — SDK 55 latest, push notifications require dev builds
-- Stripe support (support.stripe.com) — UAE Connect + Apple/Google Pay confirmed
-- Cloudflare R2 vs S3 (cloudflare.com) — zero egress fee confirmed
-- WebSearch: Fastify vs Hono vs Express benchmarks — Fastify 2-3x Express, Hono better for edge
-- WebSearch: Prisma vs Drizzle 2025 — cold start difference, Drizzle 90% smaller bundle
-- WebSearch: Turborepo + Expo monorepo 2025 — Expo SDK auto-detects Turborepo
-- WebSearch: Next.js 16.2 (March 2026) — Turbopack default, React Compiler stable
-- WebSearch: BullMQ 5.71.1 (latest) — OpenTelemetry, flow producers, active maintenance
+- Fly.io region consolidation blog (fly.io/blog/the-region-consolidation-project/) — confirmed no Bahrain/Middle East region, Mumbai (bom) is nearest — MEDIUM confidence (page fetched, confirms network covers NA/EU/APAC/SA/Africa only)
+- Fly.io WebSocket blog (fly.io/blog/websockets-and-fly/) — WebSocket handled transparently, TLS terminated at edge — HIGH confidence
+- Fly.io community forum — BullMQ worker autostop issue documented, `auto_stop_machines = "off"` required for workers — MEDIUM confidence (community posts, no official docs)
+- Vercel Turborepo docs (vercel.com/docs/monorepos/turborepo) — Root Directory per app, turbo-ignore for ignored builds, build command patterns — HIGH confidence (official docs fetched)
+- EAS Build docs (docs.expo.dev/build/eas-json/) — profile structure, distribution modes, SDK 55 image — HIGH confidence (official docs fetched)
+- EAS internal distribution docs (docs.expo.dev/build/internal-distribution/) — ad hoc 100 UDID cap, APK vs AAB — HIGH confidence
+- Sentry Next.js docs (docs.sentry.io) — withSentryConfig pattern, instrumentation-client.ts — HIGH confidence (official docs fetched)
+- Sentry monorepo best practices (github.com/getsentry/sentry-docs/issues/10631) — separate DSN per app recommended — MEDIUM confidence (GitHub issue, community consensus)
+- GitHub Actions Fly.io docs (fly.io/docs/launch/continuous-deployment-with-github-actions/) — full workflow YAML, FLY_API_TOKEN setup — HIGH confidence (official docs fetched)
+- Turborepo GitHub Actions docs (turborepo.dev/docs/guides/ci-vendors/github-actions) — TURBO_TOKEN/TURBO_TEAM pattern — HIGH confidence
+- Cloudflare R2 custom domain docs (developers.cloudflare.com/r2/buckets/public-buckets/) — custom domain setup steps — HIGH confidence
+- Openstatus latency benchmark (openstatus.dev/blog/monitoring-latency-cf-workers-fly-koyeb-raylway-render) — Fly.io 61ms vs Railway 381ms — MEDIUM confidence (independent benchmark, 2025)
+- expo/expo#42494 GitHub issue — SDK 55 + Sentry Gradle 9 incompatibility — HIGH confidence (active GitHub issue)
+- Turborepo 2.4.1 Skew Protection fix (vercel docs) — requirement for Next.js Skew Protection — MEDIUM confidence (docs note)
 
 ---
 
-*Stack research for: Cleanly — on-demand cleaning services marketplace (Gulf region)*
-*Researched: 2026-03-30*
+*Stack research for: Cleanly — v1.1 deployment infrastructure*
+*Researched: 2026-04-09*
+*Supersedes: Infrastructure & DevOps section of STACK.md v1.0 (researched 2026-03-30)*

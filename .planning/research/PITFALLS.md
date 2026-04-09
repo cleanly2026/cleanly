@@ -1,277 +1,660 @@
 # Pitfalls Research
 
-**Domain:** On-demand cleaning services marketplace (Gulf region, bilingual AR/EN, 5 app surfaces)
-**Researched:** 2026-03-30
-**Confidence:** HIGH (multiple authoritative sources, domain-specific verification)
+**Domain:** On-demand cleaning services marketplace (Gulf region, bilingual AR/EN, 5 app surfaces) — Deployment to Production
+**Researched:** 2026-04-09
+**Confidence:** HIGH (multiple authoritative sources, deployment-specific verification)
 
 ---
 
 ## Critical Pitfalls
 
-### Pitfall 1: Stripe Connect UAE — Express Accounts Require Manual Onboarding
+### Pitfall 1: Fly.io Autostop Kills BullMQ Worker Mid-Job
+
+**Severity:** BLOCKER
 
 **What goes wrong:**
-Stripe Connect in UAE does not allow platform users to self-serve Express connected accounts. Companies trying to onboard to receive payouts must go through a manual process with Stripe — they cannot complete onboarding independently via the standard hosted onboarding link that works in other countries. This breaks the automated company onboarding flow that most tutorials and the standard Stripe Connect implementation assume.
+Fly.io's `auto_stop_machines` feature stops idle Machines when no HTTP requests are incoming. BullMQ workers do not serve HTTP traffic — they poll Redis. If autostop is enabled on the worker process (or left at the default), Fly shuts down the worker between job bursts. Any job being processed at shutdown is abandoned (not gracefully completed), becomes stalled after 30 seconds, and retries — sending duplicate SMS, WhatsApp, or Stripe transfers.
 
 **Why it happens:**
-Most Stripe Connect tutorials are written for US/EU markets where Express onboarding is fully self-serve. Developers build the onboarding flow assuming `AccountLink` hosted onboarding works end-to-end, then discover in production (or late in development) that UAE requires Stripe's direct involvement.
-
-Additionally, UAE platforms can only use `destination_charges` and `separate charges and transfers` — `on_behalf_of` with destination charges is not supported, which affects how charge metadata and statement descriptors appear to customers.
+The default `fly.toml` for a new Fly app enables autostop. Developers configure the API machine correctly but copy the same fly.toml for the worker machine without disabling autostop. The worker sleeps silently — no errors, jobs just pile up in the queue unprocessed.
 
 **How to avoid:**
-- Contact Stripe directly before building the company onboarding flow to confirm current UAE Connect capabilities and the exact onboarding path.
-- Design the company onboarding flow to accommodate manual steps (email Stripe, wait for approval) rather than assuming instant self-serve activation.
-- Build the UI so companies can complete profile setup while their Stripe onboarding is pending — don't gate all company functionality on Stripe activation.
-- Use `separate charges and transfers` (not `on_behalf_of`) as the payout model for UAE.
-- Test with UAE test accounts specifically, not default US test accounts.
+- Worker fly.toml must have `auto_stop_machines = "off"` (or `min_machines_running = 1`).
+- The API machine can use autostop; the worker machine must not.
+- Separate the API and worker into distinct Fly apps (or at minimum distinct process groups in the same app) with different `[http_service]` and `[[services]]` configurations.
+- In the worker fly.toml, set no `[http_service]` at all — the worker is not web-facing.
+- Implement a `SIGTERM` handler: `process.on('SIGTERM', async () => { await worker.close(); process.exit(0); })`. This lets in-flight jobs complete before shutdown.
 
 **Warning signs:**
-- Onboarding link generated but company completes it and payout capability never activates.
-- `account.updated` webhooks arriving with `requirements.currently_due` fields that never clear.
-- Payouts to connected accounts returning 400 errors about account capability not being enabled.
+- Worker Fly machine showing "stopped" state in `fly status` while queue has pending jobs.
+- Jobs sitting in BullMQ "waiting" state for minutes with no "active" state transitions.
+- Worker machine fly.toml identical to API machine fly.toml.
 
 **Phase to address:**
-Phase 1 (Foundation) — Account setup and Stripe Connect architecture decisions must be validated before any payout code is written.
+Infrastructure setup phase — worker deployment config must be defined before any background job is deployed.
 
 ---
 
-### Pitfall 2: Stripe Connect Refund and Dispute Clawback from Platform Account
+### Pitfall 2: Fly.io Machine Auto-Stops Drops All Socket.io Connections
+
+**Severity:** BLOCKER
 
 **What goes wrong:**
-When a customer disputes a charge or receives a refund, Stripe deducts the full amount from the platform account — even if that money has already been transferred to the connected company account. The platform eats the loss while the company has already received their payout. For a 15-20% commission model, a disputed AED 300 order means the platform absorbs the full AED 300, not just AED 45-60.
+If the Fly API machine autostops (scale-to-zero) during low-traffic periods, all active Socket.io connections are immediately killed. When the machine restarts (wake-on-request), it takes 2-5 seconds for a cold start. During that window, the mobile app's WebSocket connection fails. Socket.io will reconnect automatically, but GPS tracking data is lost for the reconnection window. More critically: if the washer's GPS connection drops and reconnects to a new machine instance, their location updates go to a different room reference and the customer stops receiving updates.
 
 **Why it happens:**
-Developers focus on the "happy path" — payment received, commission taken, remainder transferred to company. The reversal path (dispute, refund, cancellation) is implemented as an afterthought, usually after the first real dispute hits.
+Fly.io's default free-tier behavior scales to zero. Developers test locally (always-on) and don't encounter the sleep/wake cycle.
 
 **How to avoid:**
-- Implement a payout delay (7-14 days after service completion) before transferring to connected accounts, giving a window to handle disputes before money leaves the platform.
-- Store transfer metadata linking every charge to its associated transfer so reversals can trigger clawbacks.
-- Implement `transfer_reversal` logic for refunds — reverse the transfer first, then issue the refund.
-- Configure Stripe webhook handlers for `charge.dispute.created`, `charge.refund.updated`, and `transfer.reversed` from day 1.
-- Build a "funds on hold" period into the UX — tell companies upfront that payouts clear X days after service completion.
+- Set `min_machines_running = 1` in the API machine's `[http_service]` section. This costs roughly $3-7/month on the cheapest Fly machine — worth the reliability.
+- Alternatively use `auto_stop_machines = "suspend"` (not `"stop"`) — suspend preserves memory state and resumes in ~hundreds of milliseconds vs. full cold start.
+- Configure Socket.io with reconnection options on the client: `reconnectionDelay: 1000`, `reconnectionAttempts: 5`. This handles the rare cold-start reconnect gracefully.
+- Add a `/health` endpoint that the Fly health check pings every 30 seconds — this HTTP traffic keeps the machine "active" and prevents autostop.
 
 **Warning signs:**
-- Transfer executed immediately at payment capture rather than at service completion.
-- No webhook handler for `charge.dispute.created`.
-- Refund flow issues platform refund without first checking/reversing associated transfer.
+- Fly app `min_machines_running` not set (defaults to 0 = scale-to-zero eligible).
+- `fly status` showing machine in "stopped" state during off-peak hours.
+- Socket.io client logs showing reconnection events in production.
 
 **Phase to address:**
-Phase 2 (Payments) — Payout timing and dispute logic must be designed before the payment system is built, not retrofitted.
+Fly.io configuration phase — set `min_machines_running = 1` before deploying any Socket.io-dependent code.
 
 ---
 
-### Pitfall 3: RTL/Arabic Layout Breaks When Added Late — Non-Retrofittable
+### Pitfall 3: Socket.io WebSocket Upgrade Fails Behind Fly.io Proxy
+
+**Severity:** BLOCKER
 
 **What goes wrong:**
-RTL layout is not simply flipping text direction. It requires that every component uses `start`/`end` instead of `left`/`right` for margins, paddings, and positioning. Icons need mirroring. Flex direction reverses. Number formatting changes. Arabic plural forms have 6 forms vs. English's 2. Absolute positioning breaks entirely. If this is not built from day 1, every component must be manually audited and rewritten. The effort to retrofit RTL into a 50-component codebase is 3-5x the effort of building it correctly from the start.
+Fly.io uses an HTTP/1.1 proxy. If the Socket.io server is not explicitly configured to accept WebSocket upgrades, connections fall back to HTTP long-polling. Long-polling works but causes significantly higher latency for GPS tracking (300-600ms vs. sub-50ms WebSocket), consumes more CPU, and can cause Fly proxy timeouts on long-held connections.
+
+A related failure: if `transports: ['websocket']` is forced on the client without corresponding server config, connections fail completely rather than degrading gracefully.
 
 **Why it happens:**
-Developers build in English first and say "we'll add Arabic translation and RTL later." This works for simple text replacement but fails completely for layout because CSS properties like `marginLeft: 16` are baked into dozens of components with no systematic way to invert them.
+Socket.io defaults to HTTP long-polling first, then upgrades to WebSocket. The upgrade requires the proxy to pass `Upgrade: websocket` headers through. Fly's proxy does support this, but `fly.toml` must not have configurations that strip or reject upgrade headers.
 
 **How to avoid:**
-- From the first component written, use `marginStart`/`marginEnd`/`paddingStart`/`paddingEnd` exclusively — never `marginLeft`/`marginRight`/`paddingLeft`/`paddingRight`.
-- Set up `i18next` + `react-i18next` with Arabic translation keys from the first component — even placeholder values.
-- Use `I18nManager.isRTL` for any conditional layout logic from day 1.
-- In React Native, call `I18nManager.forceRTL(true)` in a test build early to verify all components handle RTL before the codebase grows.
-- For Next.js, set `dir="rtl"` on the HTML element and use CSS logical properties (`margin-inline-start`, `padding-inline-end`) throughout.
-- Create a shared design token system with RTL-aware spacing that both web and mobile inherit.
-- Note that `forceRTL(false)` does not override device language on iOS/Android — if the device is set to Arabic, the app will be RTL regardless. Test on actual Arabic-locale devices.
+- In `fly.toml`, ensure the service uses TCP (not HTTP) for the Socket.io port, OR configure `[[services.ports]]` with `handlers = ["http"]` and verify that WebSocket upgrades pass through (they do by default on Fly's standard HTTP handler).
+- On the Socket.io server, explicitly configure `cors` and `transports`:
+  ```typescript
+  const io = new Server(server, {
+    cors: { origin: ALLOWED_ORIGINS, credentials: true },
+    transports: ['polling', 'websocket'], // allow upgrade path
+  });
+  ```
+- Test WebSocket connectivity from production domain specifically — not just localhost. Use `wscat` or browser DevTools Network tab to verify the protocol upgrade.
+- Do not set `transports: ['websocket']` on the client without confirming the upgrade path works.
 
 **Warning signs:**
-- Any component using `marginLeft`, `marginRight`, `paddingLeft`, `paddingRight`, `left:`, `right:` in styles (in React Native).
-- Text alignment using `textAlign: 'left'` rather than `textAlign: 'auto'` or locale-aware values.
-- Icons rendered as `<Image>` without RTL mirroring logic.
-- Translation keys added only when a feature is "done."
+- Socket.io connections in production showing `transport: polling` in server logs rather than `transport: websocket`.
+- GPS update latency above 200ms in production (indicates polling fallback).
+- WebSocket handshake 400/426 errors in network inspector.
 
 **Phase to address:**
-Phase 1 (Foundation) — The monorepo shared packages must establish RTL infrastructure and conventions before any UI component is written.
+Fly.io API deployment phase — verify WebSocket upgrade works before any real-time feature is tested in staging.
 
 ---
 
-### Pitfall 4: GPS Background Tracking Killed by OS on Both iOS and Android
+### Pitfall 4: Fly.io Health Check Causes Deployment Loops
+
+**Severity:** MAJOR
 
 **What goes wrong:**
-In Expo managed workflow, background location tracking stops when the app is killed on both iOS and Android. On Android, manufacturer power-saving (Samsung, Xiaomi, OnePlus) aggressively kills background processes more than stock Android. On iOS, background tasks have a ~30 second execution window. For a washer app where the GPS must transmit continuously during a job, this means the customer's real-time tracking view goes dark mid-service.
+Fly.io performs health checks before routing traffic to a new deployment. If the health check path returns a non-200 response (redirect, 401, slow DB query), the deployment is considered failed and Fly rolls back. Common failures: the `/health` endpoint does a Prisma database ping on startup before Neon connection is established (returns 500), or the health check fires before BullMQ Redis connection is ready (throws on first request).
+
+A specific trap for this stack: Fastify's default behavior returns a 404 for undefined routes. If the `fly.toml` health check path is set to `/` and the API doesn't handle `/`, all deploys fail.
 
 **Why it happens:**
-The `expo-location` background task works in Expo Go during development. Developers test there, it works, they ship. In production with real devices and real power management, the OS kills the task. The issue only surfaces in production under battery-saving conditions.
+Developers set a generic health check path without implementing the endpoint, or implement it with side effects (DB ping) that are slow on cold start. The `grace_period` is not set, so the first health check fires while the process is still initializing.
 
 **How to avoid:**
-- Use a persistent foreground notification (Android Foreground Service) for the washer GPS tracking — this keeps the process alive on Android at the cost of a visible notification. This is the only reliable approach.
-- For iOS, use significant location change API (`startSignificantLocationChangesAsync`) for coarse tracking and accept that fine-grained continuous tracking is OS-restricted.
-- Consider `react-native-background-geolocation` (transistorsoft) which handles foreground service setup automatically — it is the production-proven library for this use case.
-- Design the customer-facing tracking view to gracefully handle GPS gaps — show "last known location" with timestamp, don't just freeze.
-- Implement server-side "last seen" timestamp so the customer UI can show "Washer GPS lost — last seen 3 min ago" rather than infinite loading.
-- Set `timeInterval` to 10+ seconds (not continuous) and use `Accuracy.Balanced` (not `Highest`) to prevent battery-triggered kills.
-- Test background tracking on a real Samsung Galaxy and real iPhone with Low Power Mode enabled before shipping.
+- Implement a dedicated `/health` endpoint in Fastify that returns `{ status: 'ok' }` without DB or Redis checks. Make it instantaneous.
+- In `fly.toml`, set `grace_period = "10s"` to give Fastify time to initialize before the first check:
+  ```toml
+  [[services.http_checks]]
+    interval = "10s"
+    timeout = "5s"
+    grace_period = "10s"
+    method = "GET"
+    path = "/health"
+  ```
+- Keep the health check lightweight — no DB queries. Use a separate `/ready` endpoint for deeper checks during manual diagnosis.
+- Test `fly deploy` at least once in staging before setting up CI/CD to verify the health check cycle works.
 
 **Warning signs:**
-- GPS tracking only tested in Expo Go, not a production build.
-- Tracking code using `watchPositionAsync` without a foreground service notification on Android.
-- No "GPS offline" state in the customer tracking UI.
-- Location update interval set to under 5 seconds.
+- Deploys consistently failing and rolling back with no application errors in logs.
+- Health check logs showing 404 or 500 responses.
+- Deployment hanging at "Waiting for health checks" then timing out.
 
 **Phase to address:**
-Phase 3 (Tracking) — The washer GPS system must be built as a production build with real device testing, not as an Expo Go prototype.
+Fly.io initial deployment phase — health check must be implemented before CI/CD is configured.
 
 ---
 
-### Pitfall 5: Order State Machine Race Conditions — Double Acceptance and Invalid Transitions
+### Pitfall 5: Vercel Monorepo Root Directory vs. App Directory Config Conflict
+
+**Severity:** BLOCKER
 
 **What goes wrong:**
-Two washers from the same company both accept the same order simultaneously (race condition at the database level). Or a customer cancels an order at the same moment the washer marks it as "en route" — the system allows both transitions and the order ends up in an undefined state. With 7 order statuses and multiple actors (customer, washer, company, system), the number of possible concurrent state transitions is high.
+When configuring a Turborepo monorepo app on Vercel, you must set the "Root Directory" to the specific app (e.g., `apps/customer-web`). If Root Directory is set to the monorepo root (`/`), Vercel builds all apps on every deploy, exceeding build time limits and causing cross-contamination of environment variables. If Root Directory is set to the app but the build command uses `turbo run build`, Vercel cannot find `turbo` without navigating to the monorepo root first.
+
+The `buildCommand` field in Vercel UI is interpreted relative to Root Directory. Running `turbo run build --filter=customer-web` from `apps/customer-web` fails because `turbo` is installed at the monorepo root.
 
 **Why it happens:**
-State transition logic implemented at the application layer with no database-level locking. Developers test one user at a time, where race conditions never appear. Production with real concurrent users exposes them immediately.
+The Turborepo deployment docs suggest using Root Directory per app, but the build command examples assume monorepo-root context. Developers copy the Vercel quickstart without adjusting for their repo structure.
 
 **How to avoid:**
-- Implement order state transitions using PostgreSQL `FOR UPDATE SKIP LOCKED` to lock the order row during transition evaluation.
-- Use optimistic locking with a `version` column on the `orders` table — increment on every state change, reject the transition if the version doesn't match expected.
-- Define a strict state transition matrix (allowed `from` → `to` pairs) and enforce it at the database level via a CHECK constraint or trigger, not just in application code.
-- Use BullMQ to serialize state transitions for the same order through a per-order queue, preventing concurrent processing.
-- Define cancellation windows explicitly — after "washer en route" state, cancellation either is blocked or triggers a cancellation fee flow, never a silent nullification.
-- Log every state transition attempt (including rejected ones) for debugging.
+- Set Root Directory to the specific app: `apps/customer-web`.
+- Set Build Command to: `cd ../.. && pnpm turbo run build --filter=customer-web`
+- Set Install Command to: `cd ../.. && pnpm install --frozen-lockfile`
+- Output Directory remains `apps/customer-web/.next` (Next.js) or `apps/customer-web/dist` (Vite).
+- Alternatively, use Vercel's monorepo detection (it auto-detects pnpm workspaces + Turborepo) — but verify its inferred commands match the above before trusting them.
+- Create separate Vercel projects for `customer-web` and `admin-web` — do not try to serve both from one project.
 
 **Warning signs:**
-- State transition logic is purely `UPDATE orders SET status = $1 WHERE id = $2` with no version check or lock.
-- No explicit allowed-transitions matrix (only "set to any status at any time" logic).
-- No test for concurrent requests hitting the same order endpoint.
-- Cancelled orders appearing in "in progress" company dashboards.
+- Vercel build logs showing `Cannot find module 'turbo'`.
+- Build succeeding but deploying wrong app's output.
+- `node_modules` not found errors during build despite `pnpm install` completing.
 
 **Phase to address:**
-Phase 2 (Order Management) — The state machine and database locking strategy must be established when the orders table and transition endpoints are first built.
+Vercel deployment setup phase — test build command in CI before connecting to production.
 
 ---
 
-### Pitfall 6: Socket.io Real-Time Tracking Doesn't Scale Past One Server Instance
+### Pitfall 6: Turborepo Cache Serves Staging Build to Production
+
+**Severity:** BLOCKER
 
 **What goes wrong:**
-Socket.io maintains connection state in-memory. When a second server instance is deployed (or Vercel serverless handles different requests), a customer's WebSocket connection lands on Server A while their washer's GPS updates are emitted on Server B. The customer never receives the updates. This is invisible in single-instance development and only breaks in production under load or after any horizontal scaling.
+Turborepo caches build outputs keyed by inputs including source code and environment variable values. If `NEXT_PUBLIC_API_URL` (staging endpoint) is not declared in `turbo.json`'s `env` array for the build task, Turborepo may restore a cached build from staging to production — the build "succeeds" but all API calls go to the staging server. This is silent: no build errors, app appears to work, but real users hit staging data.
 
 **Why it happens:**
-Socket.io's default configuration works perfectly on one instance. The Redis adapter is documented but treated as a "later" optimization. By the time the problem is discovered, the architecture is locked.
+Turborepo's cache is opt-in for environment variables. Developers add env vars to `.env` files but forget to add them to `turbo.json`. When CI runs the production build after the staging build, it sees a cache hit (same code, same hash) and skips rebuilding.
 
 **How to avoid:**
-- Use `@socket.io/redis-adapter` from the first production deployment, even on a single instance — this makes horizontal scaling a configuration change rather than an architectural change.
-- Use Socket.io rooms keyed by `orderId` — both the washer (emitter) and customer (listener) join the same room, so broadcasting to the room guarantees delivery regardless of which server instance handles the connection.
-- For the GPS tracking specifically, consider an alternative: washer app POSTs location to REST endpoint → server broadcasts to room via Redis pub/sub. This is more resilient than a persistent WebSocket from the washer.
-- Do not use Vercel Serverless/Edge for the Socket.io server — WebSockets require persistent processes. Deploy to Railway, Render, or a VPS.
-- Set Redis `maxmemory-policy` to `noeviction` — if Redis evicts Socket.io keys under memory pressure, all rooms and connections are silently broken.
+- In `turbo.json`, explicitly list all environment variables that affect build output:
+  ```json
+  {
+    "tasks": {
+      "build": {
+        "env": [
+          "NEXT_PUBLIC_API_URL",
+          "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
+          "NEXT_PUBLIC_SOCKET_URL",
+          "NODE_ENV"
+        ],
+        "outputs": [".next/**", "dist/**"]
+      }
+    }
+  }
+  ```
+- Add `globalEnv` for variables that affect all tasks.
+- In GitHub Actions, use `TURBO_TOKEN` and `TURBO_TEAM` to scope remote cache per environment — staging and production should use different cache namespaces, or disable remote cache for production builds.
+- After first production deploy, verify API calls in browser network tab are hitting the production URL.
 
 **Warning signs:**
-- Socket.io server deployed on Vercel Serverless.
-- No Redis adapter configured.
-- Real-time updates work in localhost but fail or intermittently drop in staging/production.
-- Socket.io events emitted on the same server instance as the connection work, but cross-instance events are never received.
+- Production build completes suspiciously fast (100% cache hit) after staging build.
+- Browser network requests in production going to staging API URL.
+- Turborepo logs showing "cache hit" when environment variables have changed.
 
 **Phase to address:**
-Phase 3 (Real-Time Infrastructure) — Redis adapter and room architecture must be in place before any real-time feature is built on top of it.
+CI/CD setup phase — `turbo.json` env configuration must be set before any multi-environment deploy.
 
 ---
 
-### Pitfall 7: Photo Upload Failures Leave Orders in Limbo — No Recovery Path
+### Pitfall 7: NEXT_PUBLIC_ Variables Baked at Build Time, Not Runtime
+
+**Severity:** MAJOR
 
 **What goes wrong:**
-The washer uploads before/after photos from a mobile device on a potentially poor Gulf cellular connection. The upload fails mid-transfer (R2 intermittent 500s, poor signal, app backgrounded). The order completion flow is gated on photo upload success. The washer has no UI to retry, or retrying creates a duplicate upload. The order gets stuck in "awaiting photos" state indefinitely. This breaks the entire service verification model.
+`NEXT_PUBLIC_*` variables in Next.js are inlined into the JavaScript bundle at build time by Vercel. If you add or change a `NEXT_PUBLIC_*` variable in Vercel's environment variables UI without triggering a new build, the running app uses the old value. This is a common source of "it's configured but not working" bugs.
+
+A related edge runtime trap: in Next.js 16.x middleware (`middleware.ts`), only `NEXT_PUBLIC_*` variables are available — non-public env vars set in `.env` or Vercel UI are not accessible in edge runtime. Server Actions and Route Handlers DO have access to non-public vars.
 
 **Why it happens:**
-Photo upload is implemented as "upload to R2 → update order" in a single synchronous flow. No retry, no partial upload tracking, no "upload later" fallback. Mobile network reliability is assumed to be as good as desktop development environments.
+Developers expect environment variables to be dynamic (like they are on a traditional server). Next.js's build-time variable inlining is non-obvious and documentation on the edge runtime restriction is scattered.
 
 **How to avoid:**
-- Generate signed R2 presigned upload URLs server-side; have the mobile client upload directly to R2 (bypasses the API server for large files).
-- Implement client-side exponential backoff retry on upload failures (3 retries minimum before surfacing error to user).
-- Store upload state locally on the device — if the app is backgrounded and killed mid-upload, resume on next app open.
-- Decouple photo upload from order completion — allow the washer to mark the job complete and upload photos within a grace window (e.g., 15 minutes), notifying the customer that photos are pending.
-- Implement multipart upload for R2 for photos over 5MB — R2 handles intermittent 503s better with multipart than single PUT.
-- Show the washer a clear "X of Y photos uploaded" progress state so they know what succeeded and what needs retry.
-- Track uploaded photo metadata (R2 key, size, timestamp) before associating with the order — allows orphan cleanup and auditing.
+- After updating any `NEXT_PUBLIC_*` variable in Vercel dashboard, always trigger a redeploy.
+- Use non-public env vars for everything that doesn't need to reach the client — only prefix with `NEXT_PUBLIC_` when the client JavaScript actually needs the value.
+- Never put secrets in `NEXT_PUBLIC_*` variables. They will appear in the JS bundle.
+- For middleware, only use `NEXT_PUBLIC_*` variables or hardcode values — document this constraint.
+- Add startup validation in `app/layout.tsx` for critical public env vars:
+  ```typescript
+  if (!process.env.NEXT_PUBLIC_API_URL) {
+    throw new Error('NEXT_PUBLIC_API_URL is not set');
+  }
+  ```
 
 **Warning signs:**
-- Photo upload goes through the API server as base64 or multipart form data (bypassing presigned URLs).
-- No retry logic in the upload component.
-- Order completion and photo upload are a single atomic operation with no fallback.
-- No local upload queue on the mobile device.
+- API calls in browser pointing to `undefined` as the URL (indicates env var missing at build time).
+- Middleware throwing `undefined` reference errors for process.env values.
+- Changing env vars in Vercel dashboard with no redeploy and expecting behavior to change.
 
 **Phase to address:**
-Phase 4 (Service Completion) — The photo evidence system must be designed with offline-first, retry-capable upload architecture before implementation.
+Vercel deployment setup phase — env var audit before first production build.
 
 ---
 
-### Pitfall 8: Prisma + Neon Connection Pool Exhaustion in Serverless Environments
+### Pitfall 8: Neon Two Connection Strings — Wrong One for Migrations vs. Runtime
+
+**Severity:** MAJOR
 
 **What goes wrong:**
-Each serverless function invocation creates a new Prisma client with its own connection pool. Under load, concurrent function invocations exhaust Neon's connection limit, causing `P1001: Can't reach database` errors for new requests. This does not appear in development (one process) and only surfaces under moderate production traffic.
+Neon provides two URLs: a direct connection URL and a pooled connection URL (with `-pooler` in the hostname). Prisma migrate requires the direct URL for schema migrations. The application must use the pooled URL at runtime to avoid connection exhaustion. Using the pooled URL for migrations causes `ERROR: prepared statement 's0' already exists`. Using the direct URL for runtime causes pool exhaustion under load.
+
+Historically this required maintaining two env vars (`DATABASE_URL` and `DIRECT_URL`). As of Neon's PgBouncer 1.22.0+ improvements, prepared statement issues are mostly resolved for the pooled URL — but not all Prisma migrate operations work reliably through the pooler. The safe split is still recommended.
 
 **Why it happens:**
-Prisma instantiation in serverless is commonly done at the module level: `const prisma = new PrismaClient()`. This looks correct but creates a new pool per cold start. Under traffic, dozens of concurrent functions each hold open their pools simultaneously.
+Developers use one `DATABASE_URL` for everything. Local development uses a direct URL and works fine. Production Neon (with PgBouncer) breaks migrations silently or with cryptic prepared statement errors.
 
 **How to avoid:**
-- Use Neon's serverless HTTP driver (`@neondatabase/serverless`) with Prisma's `@prisma/adapter-neon` for the Next.js API routes — it uses HTTP connections, not persistent TCP, so no pool exhaustion.
-- For the Fastify API server (long-running process), use a single PrismaClient instance as a singleton and configure the connection pool explicitly (`connection_limit=10` in DATABASE_URL).
-- Enable Neon's built-in connection pooler (PgBouncer-compatible) and use the pooled connection string for application connections.
-- Set `pool_timeout=0` in the connection string to fail fast rather than queue indefinitely.
-- Monitor Neon's connection count dashboard during load testing before launch.
+- In `schema.prisma`:
+  ```prisma
+  datasource db {
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")       // pooled URL for runtime
+    directUrl = env("DIRECT_DATABASE_URL") // direct URL for migrations only
+  }
+  ```
+- `DATABASE_URL`: the Neon pooled URL (contains `-pooler` in hostname and `?pgbouncer=true`).
+- `DIRECT_DATABASE_URL`: the Neon direct URL (no `-pooler`, no `?pgbouncer=true`).
+- In CI/CD, `prisma migrate deploy` uses the `directUrl` automatically via `schema.prisma`.
+- Never commit either URL to source code — both must be in environment variables.
 
 **Warning signs:**
-- `new PrismaClient()` called inside a request handler rather than as a module singleton.
-- DATABASE_URL using the direct connection string (not the pooled `-pooler` endpoint) for serverless functions.
-- Database errors only appearing under concurrent load, not in serial testing.
+- `ERROR: prepared statement 's0' already exists` during `prisma migrate deploy`.
+- `P1001: Can't reach database server` errors appearing only under concurrent load.
+- Single `DATABASE_URL` used for both application and migration contexts.
 
 **Phase to address:**
-Phase 1 (Foundation) — Database client initialization patterns must be established in the monorepo shared package before any service uses them.
+Database configuration phase — both URLs must be set before any migration is run in staging.
 
 ---
 
-### Pitfall 9: BullMQ Stalled Jobs on Worker Crash — Notifications and Payouts Not Sent
+### Pitfall 9: Prisma Migrate Deploy Runs Against Production Database Without Backup
+
+**Severity:** BLOCKER
 
 **What goes wrong:**
-BullMQ workers crash or are restarted (deploy, OOM kill). Any jobs being processed at that moment are marked "stalled" and only requeued after 30 seconds. Notification jobs (SMS, push, WhatsApp) sent twice (on stall + retry). Payout jobs may double-trigger transfers to Stripe. Order status update jobs may be processed out of order on retry, transitioning an order to a past state.
+`prisma migrate deploy` applies all pending migrations against the target database. If a migration contains a destructive operation (column drop, table rename, constraint change) that was intended for a test environment, it runs against production data. Neon does not auto-backup before migrations.
+
+A subtler failure: a migration that worked in development fails mid-application in production due to existing data violating the new constraint. The migration is left in a "failed" state, and the database is in a partially migrated condition — blocking all future `prisma migrate deploy` runs.
 
 **Why it happens:**
-Workers are deployed without graceful shutdown handling. SIGTERM is received, the process exits immediately, and in-progress jobs lose their lock. The 30-second stall window passes, jobs retry, and side effects happen twice.
+CI/CD pipelines run `prisma migrate deploy` automatically on merge to main. Developers don't think about the production database state when writing migrations locally.
 
 **How to avoid:**
-- Implement graceful shutdown: catch `SIGTERM`, call `worker.close()`, wait for in-progress jobs to complete before process exit.
-- Make all BullMQ job handlers idempotent — use `jobId` as an idempotency key when calling Stripe (Stripe natively supports idempotency keys) and when sending notifications (check if already sent via a DB flag).
-- Set `maxRetriesPerRequest: null` in the ioredis config passed to BullMQ — required for workers to function correctly.
-- Set Redis `maxmemory-policy noeviction` — if Redis evicts BullMQ keys under memory pressure, jobs are silently lost.
-- Separate queues by criticality: `payments` queue (1 retry, alert on failure), `notifications` queue (3 retries, fail silently after), `analytics` queue (best-effort).
-- Monitor stalled jobs via BullMQ's `stalled` event and alert immediately.
+- Create a Neon database branch before running migrations: `neon branches create --name pre-migration-$(date +%Y%m%d)`. This is Neon's killer feature — instant branching with no copy cost.
+- In CI/CD, the migration step should be: (1) create Neon branch, (2) run migrate deploy against branch, (3) validate, (4) apply to main branch.
+- For destructive migrations, use a two-phase approach: add the new column, migrate data, then drop the old column in a separate migration deployed separately.
+- Test every migration against a Neon branch with a copy of production data (use Neon's branch-from-production feature) before merging.
+- Add `prisma migrate status` as a CI step to detect drift before `migrate deploy`.
 
 **Warning signs:**
-- No `SIGTERM` handler in worker process.
-- Stripe API calls in job handlers without idempotency keys.
-- Single queue for all job types (payment and notification jobs competing).
-- Redis `maxmemory-policy` set to anything other than `noeviction`.
+- CI pipeline running `prisma migrate deploy` directly against `DATABASE_URL` pointing to production Neon database.
+- No Neon branch creation step before migration in deployment pipeline.
+- Migrations containing `DROP COLUMN` or `ALTER TABLE ... DROP CONSTRAINT` without testing on production-data-equivalent branch.
 
 **Phase to address:**
-Phase 2 (Async Infrastructure) — Graceful shutdown and idempotency patterns must be established before any business-critical job is processed.
+CI/CD setup phase — branch-before-migrate workflow must be established before production database is used.
 
 ---
 
-### Pitfall 10: Solo Developer Scope Creep Across 5 App Surfaces Kills Launch
+### Pitfall 10: BullMQ + Upstash TLS Configuration Silently Fails
+
+**Severity:** BLOCKER
 
 **What goes wrong:**
-The admin panel gets feature-complete before the customer mobile app is tested with real users. The company dashboard gets polished analytics while the washer app crashes on photo upload. Five partially-done apps ship instead of two great ones. The solo developer spends equal time on all surfaces instead of prioritizing the critical path (customer books → washer completes → company gets paid).
+Upstash Redis requires TLS. BullMQ uses `ioredis` under the hood. When connecting to a `rediss://` (SSL) URL, ioredis does not automatically enable TLS for all connection options. The `redisOptsFromUrl` helper in older versions of ioredis does not set `tls: {}` even when the URL scheme is `rediss://`. The worker starts without error but fails to connect, leaving all jobs permanently in "waiting" state.
 
 **Why it happens:**
-All 5 surfaces are "required" so the developer bounces between them in parallel. Without a strict launch sequence, each app is 60-70% done at the same time, and none is shippable.
+Local development uses a plain Redis without TLS. The Upstash documentation shows TLS configuration but developers often miss the `tls: {}` option when constructing the connection manually.
 
 **How to avoid:**
-- Define the critical path for private beta: customer web/mobile → washer mobile → company dashboard (just enough to manage orders). Admin panel is a monitoring tool, not a user-facing product — build it last.
-- Ship the critical path vertically: get the full booking-to-completion flow working end-to-end on these three surfaces before touching admin analytics or loyalty points.
-- Designate Phase 1-2 as "zero UI polish, functional only" for non-critical surfaces — admin panel and company analytics get their polish in Phase 3.
-- Maintain a strict "not needed for launch" list and enforce it. Loyalty points, promo codes, WhatsApp notifications, analytics dashboards — these are Phase 3 features that must not touch Phase 1-2 velocity.
-- Use feature flags to prevent half-built features from blocking the critical path release.
+- Use the explicit TLS config when connecting:
+  ```typescript
+  const connection = {
+    host: process.env.UPSTASH_REDIS_HOST,
+    port: 6379,
+    password: process.env.UPSTASH_REDIS_PASSWORD,
+    tls: {},  // REQUIRED for Upstash
+    maxRetriesPerRequest: null,  // REQUIRED for BullMQ workers
+    enableReadyCheck: false,     // REQUIRED for BullMQ
+  };
+  const worker = new Worker('jobs', processor, { connection });
+  ```
+- Do NOT use `rediss://` URL string with `redisOptsFromUrl` — always construct the options object manually with explicit `tls: {}`.
+- Verify the connection works with a test job immediately after deploying the worker — don't wait for organic traffic.
+- Set `enableOfflineQueue: false` on Queue instances (fail fast) and `enableOfflineQueue: true` on Worker instances (wait for reconnect).
 
 **Warning signs:**
-- Admin panel development started before end-to-end booking flow is working.
-- Time spent on loyalty points or promo code engine before payment flow is tested.
-- Company analytics dashboard more polished than washer job management.
-- Test coverage on admin features higher than on order state transitions.
+- Worker deployed but jobs sitting in "waiting" state indefinitely.
+- No ioredis errors in worker logs (silent TLS failure).
+- `ECONNREFUSED` or `ETIMEDOUT` errors appearing after 30-60 seconds.
 
 **Phase to address:**
-Phase 0 (Scope Definition) — The launch sequence and which surfaces are critical-path must be decided before the first line of code.
+BullMQ worker deployment phase — TLS connection must be verified with a test job before workers go live.
+
+---
+
+### Pitfall 11: BullMQ Worker Crash Recovery — Uncaught Redis Errors Bring Down the Process
+
+**Severity:** MAJOR
+
+**What goes wrong:**
+ioredis emits uncaught error events when the Redis connection drops. If these are not handled, Node.js throws an `UnhandledPromiseRejectionWarning` (or crashes in Node 15+). The worker process dies, Fly.io restarts it (after a delay), and all jobs that were in-flight are stalled.
+
+**Why it happens:**
+BullMQ documentation mentions `maxRetriesPerRequest: null` but does not prominently document the requirement to handle ioredis error events. Developers trust that BullMQ handles connection errors internally — it doesn't fully.
+
+**How to avoid:**
+- Add an error handler to the underlying ioredis connection:
+  ```typescript
+  const redisConnection = new IORedis({ ... });
+  redisConnection.on('error', (err) => {
+    logger.error({ err }, 'Redis connection error');
+    // Do NOT crash — ioredis will auto-reconnect
+  });
+  ```
+- Set `maxRetriesPerRequest: null` on the ioredis instance passed to all BullMQ Queue and Worker constructors.
+- Configure Fly.io to auto-restart the worker on crash with `restart_policy = "always"` in the process config.
+- Monitor `worker.on('error', ...)` and `worker.on('failed', ...)` events and send to Sentry.
+
+**Warning signs:**
+- Worker process exiting unexpectedly during high load.
+- Sentry showing `UnhandledPromiseRejectionWarning` from ioredis.
+- BullMQ jobs in "stalled" state after worker restarts.
+
+**Phase to address:**
+BullMQ worker deployment phase — error handling established before production traffic.
+
+---
+
+### Pitfall 12: Stripe Webhook Signature Verification Breaks with Body Parsers
+
+**Severity:** BLOCKER
+
+**What goes wrong:**
+Stripe webhook signature verification requires the **raw request body** as a Buffer. If Fastify (or any middleware) parses the body as JSON before the webhook handler reads it, the signature check fails with `No signatures found matching the expected signature for payload`. This causes all webhooks to be rejected with 400, and Stripe will retry them repeatedly, causing duplicate processing concerns.
+
+**Why it happens:**
+Fastify adds `@fastify/formbody` or `Content-Type: application/json` body parsing globally. The webhook route is added after the global parser is registered, so the body arrives pre-parsed as an object instead of raw Buffer.
+
+**How to avoid:**
+- Register the Stripe webhook route BEFORE registering the global JSON body parser, OR exempt the webhook route from body parsing.
+- In Fastify, use `addContentTypeParser` for the webhook route specifically:
+  ```typescript
+  fastify.addContentTypeParser(
+    'application/json',
+    { parseAs: 'buffer' },
+    (req, body, done) => done(null, body)
+  );
+
+  fastify.post('/webhooks/stripe', async (request, reply) => {
+    const sig = request.headers['stripe-signature'];
+    const event = stripe.webhooks.constructEvent(
+      request.body as Buffer,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
+    // process event...
+  });
+  ```
+- Register the raw body parser only on the webhook path, not globally.
+- Test webhook locally with `stripe listen --forward-to localhost:3000/webhooks/stripe` before staging.
+
+**Warning signs:**
+- Webhook 400 errors with message "No signatures found matching" in Stripe dashboard.
+- Stripe retrying the same event multiple times.
+- `typeof request.body === 'object'` (not Buffer) inside the webhook handler.
+
+**Phase to address:**
+Stripe integration setup phase — webhook signature must be verified in staging before going live.
+
+---
+
+### Pitfall 13: Stripe Webhook Event Ordering — Processing payment_intent.succeeded Before checkout.session.completed
+
+**Severity:** MAJOR
+
+**What goes wrong:**
+Stripe does not guarantee webhook event delivery order. `payment_intent.succeeded` can arrive before `checkout.session.completed`. If the order activation logic is triggered by `payment_intent.succeeded`, the order may be activated before the checkout session metadata (which contains `orderId`, `companyId`, etc.) is available. The order activation handler reads empty metadata and creates a corrupted order state.
+
+**Why it happens:**
+`payment_intent.succeeded` feels like "payment confirmed" and is intuitive as the trigger. `checkout.session.completed` is the correct event because it fires after the full session (including metadata) is finalized.
+
+**How to avoid:**
+- Use `checkout.session.completed` as the canonical event for order activation — it contains the full session metadata.
+- Use `payment_intent.succeeded` only for logging/analytics, not for state changes.
+- Store `stripePaymentIntentId` on the order when the checkout session is created (before payment) so the `payment_intent.succeeded` event can be correlated, but do not trigger state changes from it.
+- Implement idempotency: check if the order is already in the target state before applying transitions. Use `event.id` as the idempotency key stored in a `processed_webhook_events` table.
+- Design webhook handlers to be order-independent: use event `created` timestamps and database upserts, not sequential state machines.
+
+**Warning signs:**
+- Webhook handler using `payment_intent.succeeded` as the primary order activation trigger.
+- Orders occasionally stuck in "payment pending" state despite Stripe showing payment succeeded.
+- No `processed_webhook_events` table or idempotency check.
+
+**Phase to address:**
+Stripe integration setup phase — webhook handler logic must be designed before any live payment is accepted.
+
+---
+
+### Pitfall 14: Expo EAS Build — Push Notification Credentials Missing in Production Build Profile
+
+**Severity:** BLOCKER
+
+**What goes wrong:**
+Expo push notifications require APNs credentials (iOS) and FCM/Firebase credentials (Android) to be configured in EAS. If the production build profile in `eas.json` does not reference the correct credentials, push tokens are generated for the wrong environment (APNs sandbox vs. production), and all push notifications silently fail for iOS users — no error, just no delivery.
+
+A related failure: the APNs p8 authentication key is valid indefinitely but must be regenerated every time it is revoked. If a developer accidentally revokes the key in Apple Developer Portal, all push notifications stop immediately across all production installs.
+
+**Why it happens:**
+During development, Expo Go uses a shared APNs certificate in sandbox mode. EAS development builds use sandbox. Production builds need production APNs — and the switch is not automatic. Developers test with development builds, see push notifications working, assume production builds will also work.
+
+**How to avoid:**
+- In `eas.json`, explicitly specify credential source for production:
+  ```json
+  {
+    "build": {
+      "production": {
+        "credentialsSource": "remote",
+        "ios": { "buildConfiguration": "Release" }
+      }
+    }
+  }
+  ```
+- Run `eas credentials` to verify production APNs credentials are configured before the first production build.
+- Use p8 authentication token (not p12 certificate) — p8 does not expire, works for all apps in your Apple Developer team, and is simpler to manage in CI/CD.
+- Test push notifications on a TestFlight build (production APNs) before submitting to App Store.
+- Store push tokens in the database with an `environment` field (`sandbox` vs. `production`) — never send a sandbox token to the production APNs endpoint.
+
+**Warning signs:**
+- Push notifications work in development build but not in TestFlight.
+- Expo Push API returning `DeviceNotRegistered` errors for iOS tokens from production builds.
+- `eas credentials` showing no production APNs credentials configured.
+
+**Phase to address:**
+EAS Build setup phase — credentials must be verified before distributing to beta testers.
+
+---
+
+### Pitfall 15: Expo SDK Version Mismatch Between eas.json Build Profile and Runtime
+
+**Severity:** MAJOR
+
+**What goes wrong:**
+EAS Build locks the React Native and Expo SDK versions for a build based on `package.json` at build time. If the `eas.json` production build profile specifies a different Node.js version or uses a different build image than local development, native modules may fail to compile or behave differently. Common failure: `expo-camera` or `expo-location` compiling against the wrong NDK version, causing crashes on first GPS or camera use in production.
+
+**Why it happens:**
+Local development (Expo Go or local EAS build) uses the developer's machine toolchain. EAS cloud builders use a specific Ubuntu + Xcode + Android NDK image. Version divergence is invisible until the first cloud build.
+
+**How to avoid:**
+- Lock the EAS build image explicitly in `eas.json`:
+  ```json
+  {
+    "build": {
+      "production": {
+        "image": "latest",
+        "android": { "buildType": "apk" }
+      }
+    }
+  }
+  ```
+- Run `eas build --platform all --profile production` for the first build locally (with `--local` flag) before submitting to EAS cloud, to catch toolchain issues.
+- After any SDK upgrade, do a test production build before pushing to TestFlight/Google Play.
+- Check Expo's SDK changelog for native dependency breakage notes when upgrading.
+
+**Warning signs:**
+- EAS build succeeds but app crashes immediately on launch.
+- Native module errors in crash reports that don't reproduce locally.
+- Build image version not pinned in `eas.json`.
+
+**Phase to address:**
+EAS Build initial setup phase — first production build must be verified before TestFlight distribution.
+
+---
+
+### Pitfall 16: Environment Variable Leaking into Client Bundle via NEXT_PUBLIC_ or VITE_
+
+**Severity:** BLOCKER (security)
+
+**What goes wrong:**
+Any variable prefixed `NEXT_PUBLIC_` in Next.js or `VITE_` in the Vite company dashboard is inlined into the client-side JavaScript bundle. If a developer accidentally names a secret variable with these prefixes (e.g., `NEXT_PUBLIC_STRIPE_SECRET_KEY`, `VITE_DATABASE_URL`), it is shipped to every browser that loads the page — discoverable by anyone who opens DevTools and reads the JavaScript source.
+
+**Why it happens:**
+Developers copy env var names from backend config into frontend config without stripping secrets. The framework silently includes them without warning. CI/CD pipelines that inject all env vars as build args expose backend secrets if the filter is not tight.
+
+**How to avoid:**
+- Establish a rule: ONLY the following types of values get `NEXT_PUBLIC_` or `VITE_` prefix:
+  - Stripe publishable key (designed to be public)
+  - API URL (already known to the client)
+  - Socket.io URL
+  - Public Cloudflare R2 bucket URL
+  - App version/environment label
+- NEVER prefix: Stripe secret key, database URLs, JWT secrets, Twilio auth tokens, Resend API keys, admin credentials.
+- Add a CI step that scans for `NEXT_PUBLIC_STRIPE_SECRET`, `VITE_DATABASE_URL`, `NEXT_PUBLIC_JWT_SECRET` patterns and fails the build.
+- Audit `apps/customer-web/.env.example` and `apps/company-web/.env.example` — every `NEXT_PUBLIC_` and `VITE_` variable should be safe to make fully public.
+
+**Warning signs:**
+- `NEXT_PUBLIC_STRIPE_SECRET_KEY` or similar in `.env` files.
+- CI/CD injecting all env vars from a flat secrets store without filtering.
+- Stripe Dashboard showing unauthorized charges from unknown sources.
+
+**Phase to address:**
+First deployment phase — env audit must happen before any production deploy with real credentials.
+
+---
+
+### Pitfall 17: Missing Environment Variables Cause Silent Startup Failures
+
+**Severity:** MAJOR
+
+**What goes wrong:**
+A required environment variable (e.g., `STRIPE_WEBHOOK_SECRET`, `JWT_SECRET`, `UPSTASH_REDIS_URL`) is not set in the deployment environment. Node.js does not throw on `undefined` process.env access — the code runs until the first operation that uses the value, then fails with an opaque error ("Cannot read properties of undefined" rather than "STRIPE_WEBHOOK_SECRET is not set"). In the worst case, the app starts successfully but silently uses `undefined` as a token value, causing authentication to accept all requests.
+
+**Why it happens:**
+No startup validation. `.env.example` exists but the actual deployment environment is configured manually and a variable is missed.
+
+**How to avoid:**
+- Add startup env validation in the Fastify app's entry point using zod:
+  ```typescript
+  import { z } from 'zod';
+  const env = z.object({
+    DATABASE_URL: z.string().url(),
+    DIRECT_DATABASE_URL: z.string().url(),
+    JWT_SECRET: z.string().min(32),
+    STRIPE_SECRET_KEY: z.string().startsWith('sk_'),
+    STRIPE_WEBHOOK_SECRET: z.string().startsWith('whsec_'),
+    UPSTASH_REDIS_URL: z.string().url(),
+    UPSTASH_REDIS_TOKEN: z.string().min(1),
+  }).parse(process.env);
+  ```
+- If validation fails, log all missing variables and `process.exit(1)` — do not start the server.
+- Maintain a comprehensive `.env.example` with every required variable and a comment explaining each.
+- Add a CI step that runs `node -e "require('./apps/api/src/env.ts')"` against a dry env to verify the schema is current.
+- After provisioning any new service (Twilio, Resend, 360dialog), immediately add its vars to all environments before deploying.
+
+**Warning signs:**
+- App starting successfully in production but webhook or payment endpoints throwing runtime errors.
+- `process.env.SOME_VAR` returning `undefined` in production logs.
+- JWT auth accepting or rejecting all requests uniformly (indicates empty secret being used as key).
+
+**Phase to address:**
+Infrastructure setup phase — env validation must be added before any production credentials are configured.
+
+---
+
+### Pitfall 18: GitHub Actions CI Deploys Staging and Production with Same Environment
+
+**Severity:** MAJOR
+
+**What goes wrong:**
+A CI/CD pipeline configured to deploy on `push to main` uses the same GitHub Actions secrets for both staging and production builds. When a developer merges a PR that was tested against staging, the production build reuses the staging Stripe webhook secret, staging Neon database URL, or staging Twilio credentials. Production payments go unrecorded, notifications go undelivered, and the issue is invisible until real users report problems.
+
+**Why it happens:**
+GitHub Actions secrets are set at the repository level. Developers add `STRIPE_SECRET_KEY` as a single secret without environment scoping. The pipeline uses the same secret for both staging and production deployments.
+
+**How to avoid:**
+- Use GitHub Actions Environments (Settings → Environments) to create separate `staging` and `production` environments with different secret values.
+- Use `environment: staging` and `environment: production` in the workflow `jobs` to scope secret access.
+- Add required reviewers to the `production` environment — no direct push-to-production without approval.
+- Deploy staging on every PR merge; deploy production only on explicit version tag or manual approval.
+- Verify environment-specific secrets with different key prefixes (e.g., `sk_test_...` for staging, `sk_live_...` for production Stripe) and fail the build if the wrong prefix is detected in the wrong environment.
+
+**Warning signs:**
+- Single `STRIPE_SECRET_KEY` secret in GitHub without environment scoping.
+- CI/CD using `sk_test_...` keys in production or `sk_live_...` keys in staging.
+- No deployment environment separation in GitHub Actions workflow.
+
+**Phase to address:**
+CI/CD setup phase — environment separation must be established before staging environment is validated.
+
+---
+
+### Pitfall 19: Expo Background GPS — Foreground Service Not Configured for Android
+
+**Severity:** MAJOR
+
+**What goes wrong:**
+On Android, background location tracking with `expo-location` requires a foreground service with a persistent notification. Without it, Android 10+ OS will kill the background task within minutes. The washer app's GPS stops transmitting while the washer is driving to the customer — customer sees "GPS lost" mid-tracking.
+
+The Expo `app.json` configuration for background location is required but not automatically enforced. If the `expo-location` plugin configuration in `app.json` is missing `isAndroidForegroundServiceEnabled: true`, the foreground service is not registered and background tracking silently stops.
+
+**Why it happens:**
+Background GPS works in Expo Go during development (Expo Go runs its own foreground service). The production build does not inherit this — it requires explicit app.json configuration. This only surfaces in a production build on a real device.
+
+**How to avoid:**
+- In `app.json`, configure the location plugin:
+  ```json
+  {
+    "expo": {
+      "plugins": [
+        [
+          "expo-location",
+          {
+            "locationWhenInUsePermission": "$(PRODUCT_NAME) needs your location to show your position to customers.",
+            "locationAlwaysAndWhenInUsePermission": "$(PRODUCT_NAME) needs background location for active jobs.",
+            "isAndroidBackgroundLocationEnabled": true,
+            "isAndroidForegroundServiceEnabled": true
+          }
+        ]
+      ]
+    }
+  }
+  ```
+- Test background GPS on a physical Android device (not emulator) with screen off for 10+ minutes.
+- Test specifically on Samsung Galaxy (most aggressive power management in the Gulf region market).
+- Consider `react-native-background-geolocation` by Transistor Software if expo-location proves unreliable — it is the production-hardened library for this use case.
+
+**Warning signs:**
+- Background GPS only tested in Expo Go or iOS.
+- `isAndroidForegroundServiceEnabled` not in app.json.
+- No foreground notification appearing on Android when washer starts a job.
+
+**Phase to address:**
+EAS Build + washer app production testing phase — must be tested on physical Samsung device before beta distribution.
 
 ---
 
@@ -279,14 +662,14 @@ Phase 0 (Scope Definition) — The launch sequence and which surfaces are critic
 
 | Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
 |----------|-------------------|----------------|-----------------|
-| Skip RTL in early components, "add later" | Faster initial UI build | Full UI rewrite to replace `left/right` with `start/end` — estimated 2-3x original build time | Never — must be day 1 |
-| Single Socket.io server without Redis adapter | No Redis setup needed | Cannot horizontally scale; all connections must hit one server; breaks on any multi-instance deploy | Never in production |
-| Transfer payout immediately on payment | Simpler payment flow | Platform absorbs full refund/dispute losses after payout; no reclamation path | Never — payout delay is mandatory |
-| Use Expo managed workflow for GPS tracking | Faster iteration | Background tracking unreliable on production devices; GPS lost mid-job | Acceptable in development only |
-| Hard-code AED currency | One less config variable | Blocks KSA/Egypt expansion; requires code changes for multi-currency | Acceptable for Phase 1-2 MVP |
-| Skip BullMQ worker graceful shutdown | Simpler worker code | Duplicate notifications, double Stripe transfers on deploy | Never — implement from first worker |
-| Admin panel built in parallel with core flow | Feels more "complete" | Critical path apps (customer/washer) are under-tested at launch | Never — sequence surfaces by criticality |
-| Global Prisma client without singleton check | Standard `new PrismaClient()` pattern | Connection pool exhaustion under load in serverless | Never in serverless/Next.js contexts |
+| Worker fly.toml copied from API fly.toml | One config to maintain | Worker gets autostopped mid-job; stalled jobs; duplicate notifications | Never — worker needs distinct fly.toml |
+| Single DATABASE_URL for both migration and runtime | One env var to manage | `prepared statement already exists` errors on migrations via pooler | Never — always use directUrl for migrations |
+| Skip `turbo.json` env declarations | Build is simpler | Staging build served to production via cache hit | Never — env declarations are required |
+| Skip startup env validation | Faster boot | Silent undefined errors on missing secrets | Never in production |
+| One GitHub secret per credential (no environment scoping) | Simpler CI setup | Staging credentials leak into production | Never — must use GitHub Environments |
+| Test push notifications only in Expo Go | No EAS build needed | Production push silently fails (APNs sandbox vs. prod) | Acceptable in early development only |
+| `min_machines_running = 0` (scale to zero API) | Lower cost | Socket.io connections dropped during sleep; cold starts break first request | Acceptable for worker isolation test only |
+| Stripe webhook no idempotency store | Simpler handler code | Duplicate Stripe transfers on webhook retry | Never — idempotency is mandatory |
 
 ---
 
@@ -294,16 +677,19 @@ Phase 0 (Scope Definition) — The launch sequence and which surfaces are critic
 
 | Integration | Common Mistake | Correct Approach |
 |-------------|----------------|------------------|
-| Stripe Connect UAE | Assume self-serve Express onboarding works | Contact Stripe before building; design for manual onboarding step; use `destination_charges` not `on_behalf_of` |
-| Stripe Connect payouts | Transfer immediately after payment capture | Delay transfer 7-14 days post-completion; implement `transfer_reversal` in refund flow |
-| Stripe webhooks | Handle only `payment_intent.succeeded` | Handle `charge.dispute.created`, `account.updated`, `payout.failed`, `transfer.reversed` — all critical for marketplace |
-| Expo Location background | Test in Expo Go | Test only in production builds on real devices with battery saver enabled |
-| Socket.io scaling | Deploy to Vercel Serverless | Deploy to persistent process host (Railway/Render); add Redis adapter before first deployment |
-| Neon/Prisma serverless | `new PrismaClient()` in handler | Singleton PrismaClient for long-running processes; Neon HTTP adapter for serverless functions |
-| BullMQ/Redis | Default `maxmemory-policy` | Set `maxmemory-policy noeviction` on Redis; set `maxRetriesPerRequest: null` in ioredis config |
-| Cloudflare R2 uploads | Proxy uploads through API server | Presigned URLs for direct client-to-R2 upload; multipart for files over 5MB |
-| i18next Arabic | Use `ar` locale code only | Use `ar-AE` for UAE (affects date formats, number formatting); test on Arabic-locale device, not simulator |
-| next-intl / App Router | Use Pages Router built-in i18n | App Router removed built-in i18n; use `next-intl` or `next-i18n-router` for route-based locale detection |
+| Fly.io + BullMQ worker | `auto_stop_machines` left default | Set `auto_stop_machines = "off"` explicitly in worker fly.toml |
+| Fly.io + Socket.io | Default fly.toml with HTTP handler strips upgrade headers | Verify WebSocket upgrade works from production domain; check for polling fallback in logs |
+| Fly.io health check | No `/health` endpoint or slow health check with DB ping | Lightweight `/health` endpoint; `grace_period = "10s"` in fly.toml |
+| Vercel + Turborepo | Root directory set to monorepo root | Root directory = specific app; build command = `cd ../.. && pnpm turbo run build --filter=app` |
+| Turborepo cache | Env vars not in `turbo.json` | Declare all build-affecting env vars in `turbo.json` `env` array |
+| Next.js `NEXT_PUBLIC_*` | Expecting runtime behavior | Variables are inlined at build time; redeploy after any change |
+| Neon + Prisma | Single DATABASE_URL for all | `directUrl` for migrations, `url` (pooled) for runtime |
+| Neon migrations | Running `migrate deploy` against production directly | Create Neon branch → migrate branch → validate → promote |
+| Upstash + BullMQ | `redisOptsFromUrl` without `tls: {}` | Always construct ioredis options manually with explicit `tls: {}` |
+| Stripe + Fastify | Global JSON body parser intercepts webhook route | Register raw buffer parser specifically for `/webhooks/stripe` route |
+| Stripe + Connect | Using `payment_intent.succeeded` for order activation | Use `checkout.session.completed` which contains metadata |
+| Expo EAS | Push credentials only configured for development | Run `eas credentials` to verify production APNs p8 is configured |
+| GitHub Actions | Single secret for staging and production | Use GitHub Environments with separate scoped secrets |
 
 ---
 
@@ -311,12 +697,11 @@ Phase 0 (Scope Definition) — The launch sequence and which surfaces are critic
 
 | Trap | Symptoms | Prevention | When It Breaks |
 |------|----------|------------|----------------|
-| GPS location updates every 1-2 seconds per washer | Database overwhelmed with location writes; high mobile battery drain | 10-second interval minimum; write to Redis first, persist to DB every 30s; only persist if distance delta > 50m | 10+ active washers simultaneously |
-| Loading all company listings without geographic filtering | Slow initial load; irrelevant results for customer | Filter by GPS-detected city before returning company list; paginate results | 50+ companies on platform |
-| Eager-loading all order history in company dashboard | Dashboard load time > 3s | Paginate order history; lazy-load stats separately | 1000+ orders per company |
-| Socket.io events without rooms — broadcast to all | Network and CPU overhead scales with total connections | Always use `orderId` rooms; never broadcast to entire socket namespace | 100+ concurrent orders |
-| Prisma N+1 queries in order detail view | Slow order page; many DB roundtrips | Use Prisma `include` with explicit relation selection; never fetch relations in a loop | 50+ concurrent order loads |
-| R2 presigned URL generated on every page render | Unnecessary Stripe/R2 API calls; slow photo display | Cache presigned URLs with TTL matching URL expiry (1 hour); or use R2 public bucket with signed tokens | High-traffic order history views |
+| Fly.io machine starts from cold every GPS update | 2-5 second delays on first customer request after sleep | `min_machines_running = 1`; keep machine warm | Any time machine scales to zero |
+| Socket.io HTTP long-polling fallback | GPS updates 300-600ms latency instead of <50ms | Verify WebSocket upgrade in fly.toml; check logs for transport type | Always if upgrade fails |
+| Prisma cold start with full schema load | First request after deploy takes 3-5 seconds | Neon HTTP adapter for serverless; singleton PrismaClient for API | Every cold start |
+| BullMQ queue inspection in tight loop | High Redis read costs on Upstash fixed plan | Only use `getJobCounts()` for dashboards, not in hot paths | When monitoring code added to every request |
+| Vercel build rebuilding all apps | Build takes 15+ minutes; unnecessary rebuilds | `turbo.json` with proper `inputs` and `outputs`; Turborepo remote cache | Every deploy without proper filtering |
 
 ---
 
@@ -324,43 +709,29 @@ Phase 0 (Scope Definition) — The launch sequence and which surfaces are critic
 
 | Mistake | Risk | Prevention |
 |---------|------|------------|
-| Exposing Stripe secret key in frontend or mobile app | Full account takeover, fraudulent charges | Stripe secret key lives only in backend; use publishable key in frontend; enforce env var validation at startup |
-| Allowing customers to submit their own final order amount | Revenue fraud — customer submits AED 1 for a AED 200 service | Prices always computed server-side from package IDs; never accept amount from client |
-| Not verifying Stripe webhook signatures | Fake webhook injection — malicious payout triggers | Verify every webhook with `stripe.webhooks.constructEvent(rawBody, sig, webhookSecret)` before processing |
-| Trusting `washer_id` from mobile app request | Order hijacking — washer claims another washer's job | Derive washer identity from authenticated JWT, never from request body |
-| Signed R2 URLs with no expiry | Anyone with a URL can access private photos indefinitely | Set R2 presigned URL TTL to 1 hour; regenerate on each legitimate access |
-| No rate limiting on OTP SMS endpoint | AED cost attack — thousands of OTP SMSs sent to arbitrary numbers | Rate limit OTP to 3 per phone number per 15 minutes; use CAPTCHA on web |
-| Company dashboard showing other companies' orders | Data isolation failure — company A sees company B's business | Always scope all queries with `WHERE company_id = $authenticated_company_id` |
-| Unrestricted file type upload for photos | Malware upload via photo endpoint | Validate MIME type server-side (not just extension); accept only `image/jpeg` and `image/png` for the photo evidence system |
-
----
-
-## UX Pitfalls
-
-| Pitfall | User Impact | Better Approach |
-|---------|-------------|-----------------|
-| GPS tracking UI shows spinner when washer GPS is lost | Customer assumes nothing is happening; contacts support | Show "Last seen X minutes ago at [location]" with a visual indicator that tracking is temporarily unavailable |
-| Order cancellation with no explanation of policy | Customer confusion; support tickets | Show cancellation window clearly ("Free cancellation within 30 minutes of booking"); show fee if cancelling after washer is en route |
-| Arabic text in English layout (English font, LTR spacing) | Text visually broken; Arabic feels like an afterthought | Use Arabic-specific font (Cairo, Tajawal); verify Arabic text rendering on real iOS/Android before shipping |
-| Company onboarding 10-step form before they can do anything | High abandonment; companies give up before seeing value | Progressive onboarding — company can browse after step 1; unlock each feature as they complete more steps |
-| No "washer is on the way" push notification | Customers don't know service is starting; miss the washer | Send push notification when washer status changes to "en route"; include ETA |
-| Photo evidence checklist shown after job is complete | Washer forgets required photos | Show checklist in-context during the job, not as a post-completion form |
-| English-only error messages in Arabic UI | Breaks trust with Arabic-first users | All error messages must have Arabic translations; default to Arabic for UAE-locale devices |
+| `NEXT_PUBLIC_STRIPE_SECRET_KEY` or similar | Secret exposed in client JS bundle; full account compromise | Audit all `NEXT_PUBLIC_*` and `VITE_*` variables; only public values allowed |
+| Stripe webhook without signature verification | Fake payment events accepted; fraudulent order activation | `stripe.webhooks.constructEvent()` with raw Buffer body; fail on any verification error |
+| Same Stripe webhook secret for staging and production | Staging webhook events processed as production orders | Separate webhook endpoints with separate secrets per environment |
+| Missing env var validation at startup | App starts with `undefined` JWT secret; all tokens valid or all rejected | Zod env schema validation at startup; `process.exit(1)` on failure |
+| Fly.io secrets vs. `.env` files | `.env` committed to git exposes all production credentials | Use `fly secrets set` for all sensitive vars; `.env` only for local dev; `.env` in `.gitignore` |
+| Neon database direct URL in `DATABASE_URL` (no pooler) | Connection exhaustion under load; denial of service | Pooled URL for runtime; direct URL only for CI migration step |
 
 ---
 
 ## "Looks Done But Isn't" Checklist
 
-- [ ] **Stripe Connect payouts:** Onboarding works in test mode — verify with actual UAE company account, not a default test account with US details.
-- [ ] **RTL layout:** Looks correct in English — switch device to Arabic locale and verify every screen. Component using `marginLeft` will break visually in RTL.
-- [ ] **Background GPS:** Tracks correctly in Expo Go — build a production APK/IPA and test with the screen off, battery saver on, app force-closed and reopened.
-- [ ] **Order state transitions:** Single-user flow works — test concurrent requests (two washers accepting the same order simultaneously) against a test database.
-- [ ] **Photo upload:** Works on fast WiFi — test on a throttled 3G connection with app backgrounded mid-upload, then re-opened.
-- [ ] **Push notifications:** Arrive in development — verify on a physical device that has revoked then re-granted notification permissions.
-- [ ] **Socket.io tracking:** Works on single server — deploy two instances behind a load balancer and verify updates still reach the customer.
-- [ ] **BullMQ jobs:** Process correctly in normal flow — kill the worker mid-job and verify the job is retried exactly once, not duplicated.
-- [ ] **Arabic number formatting:** Displays in Western numerals — verify AED prices don't render in Eastern Arabic numerals (٢٠٠) on Arabic-locale devices unless intended.
-- [ ] **Company payout after refund:** Refund flow tested in isolation — test: payment made, transfer executed, then customer refund issued. Verify platform account is not over-debited.
+- [ ] **Fly.io worker deployment:** `fly status` shows worker machine running AND a test job is processed within 30 seconds of enqueueing.
+- [ ] **Socket.io production transport:** Browser DevTools Network tab shows WebSocket connection (not XHR polling) when connected to production domain.
+- [ ] **Fly.io health check:** `fly deploy` completes without rollback AND `/health` returns 200 within grace_period.
+- [ ] **Vercel build commands:** First Vercel deploy for each app (customer-web, admin-web) succeeds without `Cannot find module 'turbo'` errors.
+- [ ] **Turborepo env cache:** Build a staging version, change `NEXT_PUBLIC_API_URL`, build again — verify Turborepo does NOT use a cache hit.
+- [ ] **Neon two-URL setup:** `prisma migrate deploy` runs in CI without `prepared statement` errors AND app handles 20 concurrent requests without `P1001` errors.
+- [ ] **Stripe webhook raw body:** Stripe dashboard shows webhook delivered with 200 response (not 400) on first live test event.
+- [ ] **BullMQ TLS:** Enqueue a test job from the API → worker logs show "active" then "completed" (not stuck in "waiting").
+- [ ] **Push notifications production:** TestFlight build receives a push notification sent via Expo Push API (verifies production APNs credentials).
+- [ ] **Env validation:** Unset one required env var in staging → app fails to start with a clear error naming the missing variable (not a cryptic runtime error).
+- [ ] **Secret audit:** `grep -r "NEXT_PUBLIC_" apps/customer-web/.env.example` shows no secrets; same for `VITE_` in company-web.
+- [ ] **GitHub Environment separation:** Production deployment requires manual approval; staging deploys automatically on merge.
 
 ---
 
@@ -368,14 +739,15 @@ Phase 0 (Scope Definition) — The launch sequence and which surfaces are critic
 
 | Pitfall | Recovery Cost | Recovery Steps |
 |---------|---------------|----------------|
-| RTL retrofit (built LTR first) | HIGH | Audit every component for `left`/`right` properties; replace with `start`/`end`; retest all screens in Arabic locale; expect 2-4 weeks |
-| Stripe Connect UAE onboarding broken | MEDIUM | Contact Stripe support; rebuild onboarding UI to accommodate manual activation; implement pending state for companies |
-| Socket.io no Redis adapter (production multi-instance) | MEDIUM | Add `@socket.io/redis-adapter`; redeploy; existing sessions reconnect automatically; no data loss |
-| Stripe double-transfer on dispute | HIGH | Manual Stripe dashboard reconciliation; implement `transfer_reversal` webhook handler; audit all historical transfers; may require Stripe support |
-| GPS background tracking lost | MEDIUM | Add foreground service notification; switch to `react-native-background-geolocation`; rebuild GPS module; resubmit to app stores |
-| Order race condition in production | HIGH | Hotfix: add `FOR UPDATE` to order transition query; audit and resolve stuck orders manually; retroactive version column migration |
-| BullMQ duplicate jobs in production | MEDIUM | Add idempotency keys to all Stripe calls; add "already notified" DB check to notification jobs; manually investigate and reverse duplicate transfers |
-| Prisma connection exhaustion | LOW | Enable Neon pooler; update connection string; redeploy — no data loss, pure configuration fix |
+| Worker autostopped, jobs piled up | LOW | Add `auto_stop_machines = "off"` to worker fly.toml; redeploy; jobs will drain automatically |
+| Socket.io in polling fallback mode | LOW | Debug fly.toml service configuration; verify upgrade headers pass; redeploy |
+| Turborepo cache poisoning (staging build in production) | LOW | Run `turbo run build --force --filter=affected-app` to force rebuild; add env to turbo.json |
+| Neon migration failed mid-apply | HIGH | Use `prisma migrate resolve --rolled-back <migration-name>` to mark as rolled back; fix migration; create Neon branch to test fix; reapply |
+| Stripe webhook body parser conflict | LOW | Exempt webhook route from global body parser; redeploy; resend failed events from Stripe dashboard |
+| BullMQ duplicate jobs (crash recovery) | MEDIUM | Audit processed events in `processed_webhook_events` table; manually reverse any duplicate Stripe transfers via dashboard |
+| Push notifications failing in production | MEDIUM | Run `eas credentials`; regenerate APNs p8 if needed; rebuild and redistribute via TestFlight |
+| Secret leaked in client bundle | HIGH | Rotate compromised secret immediately; audit for unauthorized usage; rebuild and redeploy all affected apps |
+| Missing env var in production | LOW | Add via Fly secrets / Vercel dashboard; redeploy; no code changes needed |
 
 ---
 
@@ -383,40 +755,54 @@ Phase 0 (Scope Definition) — The launch sequence and which surfaces are critic
 
 | Pitfall | Prevention Phase | Verification |
 |---------|------------------|--------------|
-| Stripe Connect UAE restrictions | Phase 1: Foundation | Stripe account created; UAE Connect capability confirmed with Stripe support; test company onboarding complete |
-| Refund/dispute clawback | Phase 2: Payments | Dispute webhook handler implemented; payout delay configured; refund flow tested with transfer_reversal |
-| RTL/Arabic from day 1 | Phase 1: Foundation | All shared UI components use `start`/`end`; Arabic locale device test passes on first component |
-| GPS background tracking | Phase 3: Real-Time | Production build tested on Samsung Galaxy and iPhone with battery saver; GPS survives app background for 10+ minutes |
-| Order state machine race conditions | Phase 2: Order Management | Concurrent acceptance test passes; version column in schema; FOR UPDATE in transition queries |
-| Socket.io single-instance trap | Phase 3: Real-Time | Redis adapter installed and tested; two-instance load balancer test passes before building any real-time feature |
-| Photo upload reliability | Phase 4: Service Completion | Upload retry tested on 3G-throttled connection; app-killed-mid-upload recovery tested; presigned URL flow verified |
-| Prisma/Neon connection exhaustion | Phase 1: Foundation | PrismaClient singleton established in shared package; pooled connection string used; connection count verified under load |
-| BullMQ stalled jobs | Phase 2: Async Infrastructure | SIGTERM handler implemented; idempotency keys on all Stripe calls; Redis maxmemory-policy confirmed `noeviction` |
-| Solo developer scope creep | Phase 0: Planning | Launch surface sequence defined; non-critical features explicitly flagged as Phase 3; critical path end-to-end tested before any polish work |
+| Worker autostop kills BullMQ jobs | Worker deployment setup | `fly status` + test job processed |
+| Machine sleep drops Socket.io | Fly API deployment config | `min_machines_running = 1` confirmed; keep-alive health check working |
+| WebSocket upgrade fails | Fly API deployment + integration test | DevTools shows `websocket` transport in production |
+| Fly health check deployment loop | Initial Fly deploy | `fly deploy` succeeds; rollback history clean |
+| Vercel monorepo root directory | Vercel project setup | All apps deploy successfully with correct output |
+| Turborepo cache env poisoning | CI/CD setup | `turbo.json` env array reviewed; staging→production build forces rebuild |
+| NEXT_PUBLIC_ build-time inlining | First production build | Env vars updated → redeploy triggered → new values confirmed |
+| Neon two connection strings | Database configuration | Both URLs set; `prisma migrate deploy` tested in staging CI |
+| Prisma migrate deploy without backup | CI/CD pipeline setup | Neon branch created before every migration in pipeline |
+| BullMQ TLS silent failure | Worker deployment | Test job enqueued → processed → completed confirmed |
+| BullMQ worker uncaught errors | Worker error handling | Ioredis error event handled; Sentry capturing worker errors |
+| Stripe webhook body parser conflict | Stripe integration setup | Stripe dashboard shows 200 on first webhook delivery |
+| Stripe event ordering | Stripe integration setup | `checkout.session.completed` handler tested with Stripe CLI replay |
+| Expo push credentials | EAS Build setup | TestFlight push notification received successfully |
+| Expo SDK mismatch | EAS Build initial run | Production build installed + GPS + camera confirmed on physical device |
+| Env var in client bundle | First production deploy | `grep NEXT_PUBLIC_ .env.example` audit passes; no secrets found |
+| Silent startup env failures | API/worker deployment | Env validation added; unset var causes clean startup failure |
+| Staging credentials in production | CI/CD GitHub Actions setup | GitHub Environments configured; production requires approval |
+| Android background GPS | EAS washer-mobile production build | Samsung Galaxy GPS tracking survives screen-off for 10 minutes |
 
 ---
 
 ## Sources
 
-- [Stripe Connect availability in the UAE](https://support.stripe.com/questions/connect-availability-in-the-uae)
-- [Stripe Connect for Payouts — lessons from multi-vendor flow](https://fordewind.io/stripe-connect-for-payouts-what-we-learned-integrating-a-multi-vendor-flow/)
-- [Scaling Socket.IO — real-world challenges](https://ably.com/topic/scaling-socketio)
-- [Socket.IO scaling for high-performance systems](https://medium.com/devmap/how-to-scale-socket-io-for-high-performance-real-time-systems-7da745f69202)
-- [React Native background GPS tracking without timeout](https://itnext.io/react-native-background-location-tracking-without-timeout-and-with-app-killed-3dbfbc80ad01)
-- [Expo background task limitations guide](https://flexapp.ai/blog/expo-background-tasks-guide)
-- [Track user location without killing battery — React Native](https://medium.com/@mohantaankit2002/track-user-location-without-killing-their-battery-a-react-native-guide-d57f29fd2ebe)
-- [RTL support for React Native apps](https://reactnative.dev/blog/2016/08/19/right-to-left-support-for-react-native-apps)
-- [forceRTL iOS/Android device language issue](https://github.com/facebook/react-native/issues/39414)
-- [Solving race conditions in booking systems](https://hackernoon.com/how-to-solve-race-conditions-in-a-booking-system)
-- [Double-booking disaster in distributed systems](https://medium.com/@shivanshgaur28/the-double-booking-disaster-defeating-race-conditions-in-distributed-systems-9dca7b7344ba)
-- [Cloudflare R2 intermittent 500 errors](https://community.cloudflare.com/t/r2-intermittent-500-errors-on-put/485134)
-- [BullMQ stalled jobs documentation](https://docs.bullmq.io/guide/workers/stalled-jobs)
-- [BullMQ at scale — millions of jobs](https://medium.com/@kaushalsinh73/bullmq-at-scale-queueing-millions-of-jobs-without-breaking-ba4c24ddf104)
-- [Prisma connection pooling in serverless environments](https://dev.to/prisma/using-prisma-to-address-connection-pooling-issues-in-serverless-environments-3g66)
-- [Connect from Prisma to Neon](https://neon.com/docs/guides/prisma)
-- [WebSocket reconnection strategies](https://oneuptime.com/blog/post/2026-01-27-websocket-reconnection-logic/view)
-- [Secure marketplace payments — multi-party fraud](https://www.rapyd.net/blog/secure-payments-marketplace/)
+- [Fly.io Autostop/Autostart Machines](https://fly.io/docs/launch/autostop-autostart/) — autostop behavior, BullMQ worker implications
+- [Fly.io Queue/Worker with Autostop discussion](https://community.fly.io/t/queue-worker-architecture-with-autostop-autostart-machines/22157) — confirmed autostop must be disabled for queue workers
+- [Fly.io Machine Suspend and Resume](https://fly.io/docs/reference/suspend-resume/) — suspend vs stop latency differences
+- [Fly.io Seamless Deployments](https://fly.io/docs/blueprints/seamless-deployments/) — health check grace_period configuration
+- [Fly.io Socket.io community thread](https://community.fly.io/t/fly-toml-configuration-for-a-very-simple-socket-io-server/11723) — real-world Socket.io fly.toml config
+- [Fly.io WebSocket upgrade issues](https://community.fly.io/t/fixing-an-intermittent-websocket-issue/26931) — proxy header behavior
+- [Vercel Turborepo deployment docs](https://vercel.com/docs/monorepos/turborepo) — root directory and build command config
+- [Vercel buildCommand ignored in pnpm monorepo](https://community.vercel.com/t/buildcommand-ignored-in-pnpm-monorepo-with-turborepo/18299) — confirmed navigation workaround
+- [Turborepo environment variable cache docs](https://turborepo.dev/docs/crafting-your-repository/using-environment-variables) — env array in turbo.json
+- [Turborepo cache poisoning issue](https://github.com/vercel/turborepo/issues/10690) — confirmed globalEnv not always invalidating cache
+- [Neon Prisma migration guide](https://neon.com/docs/guides/prisma-migrations) — two-URL setup, directUrl for migrations
+- [Prisma PgBouncer configuration](https://www.prisma.io/docs/orm/prisma-client/setup-and-configuration/databases-connections/pgbouncer) — `?pgbouncer=true` and directUrl
+- [BullMQ Upstash documentation](https://upstash.com/docs/redis/integrations/bullmq) — TLS config, maxRetriesPerRequest, Fixed Plan requirement
+- [BullMQ TLS issue — redisOptsFromUrl](https://github.com/OptimalBits/bull/issues/2325) — confirmed `tls: {}` must be explicit
+- [BullMQ going to production guide](https://docs.bullmq.io/guide/going-to-production) — maxRetriesPerRequest, error handling
+- [Stripe webhooks handling](https://docs.stripe.com/webhooks) — signature verification, event ordering
+- [Stripe webhook best practices](https://www.stigg.io/blog-posts/best-practices-i-wish-we-knew-when-integrating-stripe-webhooks) — idempotency, event ordering anti-patterns
+- [Vite env variable security issue](https://www.sprocketsecurity.com/blog/hunting-secrets-in-javascript-at-scale-how-a-vite-misconfiguration-lead-to-full-ci-cd-compromise) — real-world VITE_ secret leak
+- [Next.js env var edge runtime issue](https://github.com/vercel/next.js/discussions/44628) — NEXT_PUBLIC_ build-time inlining behavior
+- [Expo push notifications FAQ](https://docs.expo.dev/push-notifications/faq/) — APNs sandbox vs production
+- [Expo p8 vs p12 credentials](https://medium.com/@anshikapathak06/p8-vs-p12-in-ios-what-you-really-need-to-know-8d0de1364608) — p8 recommended for production
+- [Expo background location config](https://docs.expo.dev/versions/latest/sdk/location/) — isAndroidForegroundServiceEnabled requirement
+- [Expo background location Android issue](https://github.com/expo/expo/issues/33911) — background permission configuration
 
 ---
-*Pitfalls research for: On-demand cleaning services marketplace (Gulf region, AR/EN, 5 surfaces)*
-*Researched: 2026-03-30*
+*Pitfalls research for: Cleanly platform — v1.1 deployment to production (Fly.io + Vercel + EAS Build)*
+*Researched: 2026-04-09*
