@@ -138,13 +138,69 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (filled by roadmapper) | | |
+| ACCT-01 | Phase 8 | Pending |
+| ACCT-02 | Phase 8 | Pending |
+| ACCT-03 | Phase 8 | Pending |
+| ACCT-04 | Phase 8 | Pending |
+| ACCT-05 | Phase 8 | Pending |
+| ACCT-06 | Phase 8 | Pending |
+| ACCT-07 | Phase 8 | Pending |
+| ACCT-08 | Phase 8 | Pending |
+| ACCT-09 | Phase 8 | Pending |
+| ACCT-10 | Phase 8 | Pending |
+| ACCT-11 | Phase 8 | Pending |
+| ACCT-12 | Phase 8 | Pending |
+| ACCT-13 | Phase 8 | Pending |
+| ACCT-14 | Phase 8 | Pending |
+| ENV-01 | Phase 8 | Pending |
+| ENV-02 | Phase 8 | Pending |
+| ENV-03 | Phase 8 | Pending |
+| ENV-04 | Phase 8 | Pending |
+| ENV-05 | Phase 8 | Pending |
+| FLY-01 | Phase 9 | Pending |
+| FLY-02 | Phase 9 | Pending |
+| FLY-03 | Phase 9 | Pending |
+| FLY-04 | Phase 9 | Pending |
+| FLY-05 | Phase 9 | Pending |
+| FLY-06 | Phase 9 | Pending |
+| FLY-07 | Phase 9 | Pending |
+| FLY-08 | Phase 9 | Pending |
+| FLY-09 | Phase 9 | Pending |
+| VCL-01 | Phase 9 | Pending |
+| VCL-02 | Phase 9 | Pending |
+| VCL-03 | Phase 9 | Pending |
+| VCL-04 | Phase 9 | Pending |
+| VCL-05 | Phase 9 | Pending |
+| VCL-06 | Phase 9 | Pending |
+| CI-01 | Phase 10 | Pending |
+| CI-02 | Phase 10 | Pending |
+| CI-03 | Phase 10 | Pending |
+| CI-04 | Phase 10 | Pending |
+| CI-05 | Phase 10 | Pending |
+| MON-01 | Phase 10 | Pending |
+| MON-02 | Phase 10 | Pending |
+| MON-03 | Phase 10 | Pending |
+| MON-04 | Phase 10 | Pending |
+| MON-05 | Phase 10 | Pending |
+| MON-06 | Phase 10 | Pending |
+| MOB-01 | Phase 11 | Pending |
+| MOB-02 | Phase 11 | Pending |
+| MOB-03 | Phase 11 | Pending |
+| MOB-04 | Phase 11 | Pending |
+| MOB-05 | Phase 11 | Pending |
+| MOB-06 | Phase 11 | Pending |
+| STG-01 | Phase 11 | Pending |
+| STG-02 | Phase 11 | Pending |
+| STG-03 | Phase 11 | Pending |
+| STG-04 | Phase 11 | Pending |
+| STG-05 | Phase 11 | Pending |
+| STG-06 | Phase 11 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 51 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 51
+- Mapped to phases: 51
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-09*
-*Last updated: 2026-04-09*
+*Last updated: 2026-04-09 — traceability filled by roadmapper*
