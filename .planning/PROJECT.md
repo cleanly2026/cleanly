@@ -8,6 +8,20 @@ On-demand mobile cleaning services marketplace for the Gulf region (UAE, Saudi A
 
 A customer can book a cleaning service, pay securely, and track their washer arriving in real-time — the full end-to-end booking-to-completion flow must work flawlessly.
 
+## Current Milestone: v1.1 Ship to Production
+
+**Goal:** Take the complete v1.0 codebase from local development to a deployed, testable, and production-ready platform — with all third-party accounts configured, staging environment validated, and mobile apps distributed to beta testers.
+
+**Target features:**
+- Third-party account setup (Stripe, Twilio, Neon, 360dialog, Vercel, Fly.io, Cloudflare, Resend, Sentry, Expo EAS)
+- Deployment infrastructure (Fly.io Bahrain for API/workers, Vercel for web apps, Cloudflare DNS)
+- CI/CD pipeline (GitHub Actions: lint, typecheck, test, deploy on merge)
+- Staging environment with test data + Stripe test mode
+- Mobile app distribution via EAS Build (TestFlight + Android internal testing)
+- .env.example files and deployment documentation
+- Production environment promotion after staging validation
+- Real device testing (GPS background, push notifications)
+
 ## Current State (v1.0 shipped)
 
 - **Shipped:** 2026-04-09 — 7 phases, 47 plans, ~22,400 LOC TypeScript
@@ -61,11 +75,20 @@ A customer can book a cleaning service, pay securely, and track their washer arr
 
 ### Active
 
+- [ ] Third-party account configuration (Stripe, Twilio, Neon, 360dialog, etc.)
+- [ ] Deployment infrastructure (Fly.io, Vercel, Cloudflare)
+- [ ] CI/CD pipeline (GitHub Actions)
+- [ ] Staging environment with E2E validation
+- [ ] Mobile app distribution (EAS Build, TestFlight, Android internal)
+- [ ] Production environment launch
+- [ ] Map label Arabic switching (human verification needed)
+- [ ] GPS background tracking device testing (Samsung + iPhone)
+
+### Deferred to v1.2+
+
 - [ ] Loyalty points and wallet system
 - [ ] Promo codes and discount engine
 - [ ] Analytics dashboards for companies
-- [ ] Map label Arabic switching (human verification needed)
-- [ ] GPS background tracking device testing (Samsung + iPhone)
 
 ### Out of Scope
 
@@ -83,7 +106,7 @@ A customer can book a cleaning service, pay securely, and track their washer arr
 - **Business model**: Marketplace — 15-20% platform commission per order via Stripe Connect.
 - **Prior experience**: Builder has experience with similar stack from Zooli.ai (Node.js, Neon, BullMQ, Cloudflare R2, Claude).
 - **Blueprint**: Comprehensive 22-page Platform Blueprint + 15-page Vibe Coding Guide.
-- **Third-party accounts**: Need production setup — Stripe, Twilio, Neon, 360dialog, Vercel, Fly.io.
+- **Third-party accounts**: None created yet — all need setup from scratch (Stripe, Twilio, Neon, 360dialog, Vercel, Fly.io, Cloudflare, Resend, Sentry, Expo EAS).
 - **Timeline**: v1.0 shipped in 10 days. Quality over speed.
 - **Supply side**: Companies ready to join.
 
@@ -135,4 +158,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-09 after v1.0 milestone completion*
+*Last updated: 2026-04-09 — milestone v1.1 Ship to Production started*
