@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Ship to Production
-status: roadmap_ready
-stopped_at: null
-last_updated: "2026-04-09T05:00:00.000Z"
-last_activity: 2026-04-09
+status: executing
+stopped_at: Completed 09-01-PLAN.md
+last_updated: "2026-04-11T14:53:26.073Z"
+last_activity: 2026-04-11
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 4
+  completed_plans: 1
   percent: 0
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-09)
 
 **Core value:** A customer can book a cleaning service, pay securely, and track their washer arriving in real-time — the full end-to-end booking-to-completion flow must work flawlessly.
-**Current focus:** Milestone v1.1 — Ship to Production
+**Current focus:** Phase 09 — infrastructure-deployment
 
 ## Current Position
 
-Phase: Phase 8 — Accounts & Environment (not started)
-Plan: —
-Status: Roadmap created, ready for planning
-Last activity: 2026-04-09 — v1.1 roadmap created (4 phases, 51 requirements mapped)
+Phase: 09 (infrastructure-deployment) — EXECUTING
+Plan: 2 of 4
+Status: Ready to execute
+Last activity: 2026-04-11
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -68,6 +68,10 @@ Recent decisions affecting current work:
 - [v1.1]: Turborepo env vars must be declared in turbo.json to prevent cache poisoning with NEXT_PUBLIC_*/VITE_* vars
 - [v1.1]: Stripe webhook endpoint requires raw body handler (not Fastify JSON parser) for signature verification
 - [v1.1]: APNs sandbox credentials will fail silently in production — use p8 key with production environment
+- [Phase 09-infrastructure-deployment]: Worker process group has no [[services]] block so Fly Proxy cannot auto-stop it (09-01)
+- [Phase 09-infrastructure-deployment]: Rate limiter skipOnError: false + nameSpace per env.NODE_ENV — fail-closed on Redis outage to block OTP abuse (09-01)
+- [Phase 09-infrastructure-deployment]: /healthz uses Promise.allSettled (not Promise.all) and returns 503 on any dep failure so Fly routes elsewhere (09-01)
+- [Phase 09-infrastructure-deployment]: Single fly.toml for staging+production — differ only by --app flag at deploy time (09-01)
 
 ### Pending Todos
 
@@ -84,6 +88,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-09
-Stopped at: v1.1 roadmap created — ready to plan Phase 8
+Last session: 2026-04-11T14:53:13.369Z
+Stopped at: Completed 09-01-PLAN.md
 Resume file: None

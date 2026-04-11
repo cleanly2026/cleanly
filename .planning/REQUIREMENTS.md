@@ -34,13 +34,13 @@ Requirements for shipping v1.0 code to production. Each maps to roadmap phases.
 
 ### API Deployment (Fly.io)
 
-- [ ] **FLY-01**: Dockerfile using `turbo prune api` for minimal production image
-- [ ] **FLY-02**: fly.toml with two process groups: `api` (HTTP, port 8080) and `worker` (BullMQ, no HTTP)
-- [ ] **FLY-03**: BullMQ worker machine has `auto_stop_machines = "off"` — never auto-stopped
-- [ ] **FLY-04**: API machine has `min_machines_running = 1` — always available
-- [ ] **FLY-05**: Health check endpoint (`/healthz`) returning DB + Redis connectivity status
+- [x] **FLY-01**: Dockerfile using `turbo prune api` for minimal production image
+- [x] **FLY-02**: fly.toml with two process groups: `api` (HTTP, port 8080) and `worker` (BullMQ, no HTTP)
+- [x] **FLY-03**: BullMQ worker machine has `auto_stop_machines = "off"` — never auto-stopped
+- [x] **FLY-04**: API machine has `min_machines_running = 1` — always available
+- [x] **FLY-05**: Health check endpoint (`/healthz`) returning DB + Redis connectivity status
 - [ ] **FLY-06**: Socket.io WebSocket connections verified working through Fly.io proxy
-- [ ] **FLY-07**: Rate limiting backed by Upstash Redis (not in-memory) — survives deploys
+- [x] **FLY-07**: Rate limiting backed by Upstash Redis (not in-memory) — survives deploys
 - [ ] **FLY-08**: Staging API deployed and reachable at `cleanly-api-staging.fly.dev`
 - [ ] **FLY-09**: Production API deployed and reachable at `cleanly-api.fly.dev`
 
@@ -49,7 +49,7 @@ Requirements for shipping v1.0 code to production. Each maps to roadmap phases.
 - [ ] **VCL-01**: Customer-web Vercel project with Root Directory `apps/customer-web` and `turbo-ignore` build step
 - [ ] **VCL-02**: Admin-web Vercel project with Root Directory `apps/admin-web` and `turbo-ignore` build step
 - [ ] **VCL-03**: Company-web Vercel project with Root Directory `apps/company-web` and `turbo-ignore` build step
-- [ ] **VCL-04**: Turborepo env declarations in turbo.json for all NEXT_PUBLIC_* and VITE_* vars (prevents cache poisoning)
+- [x] **VCL-04**: Turborepo env declarations in turbo.json for all NEXT_PUBLIC_* and VITE_* vars (prevents cache poisoning)
 - [ ] **VCL-05**: CORS production config on API allows only deployed Vercel origins
 - [ ] **VCL-06**: Cloudflare R2 CORS policy uses explicit `content-type` header (not wildcard `*`)
 
@@ -157,19 +157,19 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ENV-03 | Phase 8 | Pending |
 | ENV-04 | Phase 8 | Pending |
 | ENV-05 | Phase 8 | Pending |
-| FLY-01 | Phase 9 | Pending |
-| FLY-02 | Phase 9 | Pending |
-| FLY-03 | Phase 9 | Pending |
-| FLY-04 | Phase 9 | Pending |
-| FLY-05 | Phase 9 | Pending |
+| FLY-01 | Phase 9 | Complete |
+| FLY-02 | Phase 9 | Complete |
+| FLY-03 | Phase 9 | Complete |
+| FLY-04 | Phase 9 | Complete |
+| FLY-05 | Phase 9 | Complete |
 | FLY-06 | Phase 9 | Pending |
-| FLY-07 | Phase 9 | Pending |
+| FLY-07 | Phase 9 | Complete |
 | FLY-08 | Phase 9 | Pending |
 | FLY-09 | Phase 9 | Pending |
 | VCL-01 | Phase 9 | Pending |
 | VCL-02 | Phase 9 | Pending |
 | VCL-03 | Phase 9 | Pending |
-| VCL-04 | Phase 9 | Pending |
+| VCL-04 | Phase 9 | Complete |
 | VCL-05 | Phase 9 | Pending |
 | VCL-06 | Phase 9 | Pending |
 | CI-01 | Phase 10 | Pending |
