@@ -1,9 +1,37 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalEnv": [
+    "NODE_ENV",
+    "VERCEL_ENV",
+    "VERCEL_URL"
+  ],
+  "globalPassThroughEnv": [
+    "PATH",
+    "HOME",
+    "NODE_OPTIONS"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "dist/**", ".expo/**", "node_modules/.cache/expo-env-info/**"]
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**",
+        "dist/**",
+        ".expo/**",
+        "node_modules/.cache/expo-env-info/**"
+      ],
+      "env": [
+        "NEXT_PUBLIC_API_URL",
+        "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
+        "NEXT_PUBLIC_SENTRY_DSN",
+        "NEXTAUTH_SECRET",
+        "NEXTAUTH_URL",
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_SECRET",
+        "ADMIN_EXCHANGE_SECRET",
+        "VITE_API_URL",
+        "VITE_SENTRY_DSN"
+      ]
     },
     "dev": {
       "cache": false,

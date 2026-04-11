@@ -27,6 +27,7 @@ import { stripeWebhookRoutes } from './routes/payments/webhook.js'
 import washerStatusRoutes from './routes/washers/status.js'
 import photoUploadUrlRoutes from './routes/photos/upload-url.js'
 import orderPhotosRoutes from './routes/orders/photos.js'
+import { healthRoutes } from './routes/health.js'
 
 // Initialize Sentry before anything else
 initSentry()
@@ -49,11 +50,8 @@ await server.register(zodPlugin)
 // rawBody needed by Stripe webhook route (Plan 08) — global: false means opt-in per route
 await server.register(rawBody, { field: 'rawBody', global: false, runFirst: true })
 
-// Health check (no auth required)
-server.get('/health', async () => ({
-  status: 'ok',
-  timestamp: new Date().toISOString(),
-}))
+// Health check (no auth required) — FLY-05: /healthz checks DB + Redis liveness
+await server.register(healthRoutes)
 
 // Auth routes — Plan 06: phone OTP (customers) and OTP+PIN (washers)
 await server.register(otpRoutes, { prefix: '/api/auth/otp' })
