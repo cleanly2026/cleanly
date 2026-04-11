@@ -1,0 +1,65 @@
+# fly.toml — deploy with:
+#   fly deploy --app cleanly-api-staging --config fly.toml
+#   fly deploy --app cleanly-api            --config fly.toml
+# The `app` key below is a default for `fly deploy` without --app.
+app = "cleanly-api-staging"
+primary_region = "bom"   # Mumbai — closest Fly region to Gulf users. Fly has no Middle East region; STATE.md logs this decision.
+kill_signal = "SIGINT"
+kill_timeout = 30
+
+[build]
+  dockerfile = "apps/api/Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "8080"
+  HOST = "0.0.0.0"
+  LOG_LEVEL = "info"
+
+# --- Process groups (FLY-02) ---
+# `api`    — HTTP server; receives Fly Proxy traffic on 8080
+# `worker` — BullMQ worker. INTENTIONALLY has NO [[services]] block and is NOT
+#            listed in [http_service.processes]. A machine with no services
+#            is invisible to Fly Proxy, so Fly cannot auto-stop it.
+#            This is how FLY-03 ("worker never auto-stopped") is satisfied —
+#            do NOT add `auto_stop_machines = "off"` under [[services]] for the
+#            worker, because doing so would require inventing a fake services
+#            block, which creates more risk than it removes.
+[processes]
+  api    = "node apps/api/dist/server.js"
+  worker = "node apps/api/dist/workers/index.js"
+
+# --- HTTP service (API only — FLY-02, FLY-04, FLY-06) ---
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 1       # FLY-04 — API always available
+  processes = ["api"]            # Only api receives HTTP; worker is excluded
+
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 200
+    hard_limit = 250
+
+  # --- Fly-side health check (FLY-05) ---
+  [[http_service.checks]]
+    interval     = "15s"
+    timeout      = "5s"
+    grace_period = "20s"
+    method       = "GET"
+    path         = "/healthz"
+
+# --- VM sizing ---
+[[vm]]
+  processes = ["api"]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1
+
+[[vm]]
+  processes = ["worker"]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1
