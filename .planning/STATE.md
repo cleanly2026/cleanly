@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 Phase: 09 (infrastructure-deployment) — EXECUTING
 Plan: 2 of 4
 Status: Ready to execute
-Last activity: 2026-04-11
+Last activity: 2026-04-11 - Completed quick task 260411-qng: fix pre-existing TypeScript errors in apps/api so 09-02 can run strict tsc --noEmit at deploy time
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -85,6 +85,12 @@ Recent decisions affecting current work:
 - 360dialog: WhatsApp template pre-approval takes 1-2 weeks — start early
 - GPS background tracking: Needs real Samsung device with battery saver enabled for STG-05
 - EAS Build: Requires Apple Developer ($99/yr) + Google Play Console ($25 one-time) accounts
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260411-qng | fix pre-existing TypeScript errors in apps/api so 09-02 can run strict tsc --noEmit at deploy time | 2026-04-11 | 4aa4ed6 | [260411-qng-fix-pre-existing-typescript-errors-in-ap](./quick/260411-qng-fix-pre-existing-typescript-errors-in-ap/) |
 
 ## Session Continuity
 
