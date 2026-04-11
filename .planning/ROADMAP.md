@@ -51,7 +51,11 @@
   3. All 3 web apps (customer-web, admin-web, company-web) load on Vercel without build errors
   4. A Socket.io WebSocket connection from a browser client to the staging API establishes and stays open through Fly.io proxy
   5. Rate limiting on OTP endpoints survives an API restart (backed by Upstash Redis, not in-memory)
-**Plans**: TBD
+**Plans:** 4 plans
+- [ ] 09-01-PLAN.md — Infra scaffolding: Dockerfile, fly.toml, /healthz route, rate-limit nameSpace, turbo.json env declarations (FLY-01,02,03,04,05,07, VCL-04)
+- [ ] 09-02-PLAN.md — Fly deploy: create staging+prod apps, import secrets, deploy, verify /healthz + Socket.io + rate-limit restart survival (FLY-06,07,08,09)
+- [ ] 09-03-PLAN.md — Vercel deploy: 3 projects (2 Next.js + 1 Vite), env vars, turbo-ignore, verify builds (VCL-01,02,03)
+- [ ] 09-04-PLAN.md — R2 CORS + API CORS allowlist wiring after Vercel URLs known (VCL-05,06)
 
 ### Phase 10: CI/CD & Monitoring
 **Goal**: Every merge to staging or main triggers automated lint, typecheck, test, and deploy — and all errors in production are captured and alerted
