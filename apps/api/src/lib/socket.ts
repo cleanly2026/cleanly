@@ -51,11 +51,16 @@ export function setupSocketHandlers(httpServer: HttpServer) {
     if (token) {
       try {
         // Decode JWT payload without crypto verification — lightweight, no dep needed
-        const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64url').toString())
-        if (payload.role === 'washer' && payload.sub) {
-          socket.join(`washer:${payload.sub}`)
-          ;(socket as any).userId = payload.sub
+        const parts = token.split('.')
+        const payloadSegment = parts[1]
+        if (payloadSegment) {
+          const payload = JSON.parse(Buffer.from(payloadSegment, 'base64url').toString())
+          if (payload.role === 'washer' && payload.sub) {
+            socket.join(`washer:${payload.sub}`)
+            ;(socket as any).userId = payload.sub
+          }
         }
+        // Malformed JWT (no payload segment) — skip, washer:join-order still works as fallback
       } catch {
         // Invalid or malformed token — no-op, washer:join-order still works as fallback
       }

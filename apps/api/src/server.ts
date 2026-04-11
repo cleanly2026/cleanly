@@ -1,4 +1,5 @@
 import Fastify from 'fastify'
+import type { Server as HttpServer } from 'node:http'
 import rawBody from 'fastify-raw-body'
 // Validate env vars BEFORE any other import that reads process.env
 import { env } from './lib/env.js'
@@ -35,9 +36,7 @@ initSentry()
 const server = Fastify({
   logger: {
     level: env.LOG_LEVEL,
-    transport: env.NODE_ENV === 'development'
-      ? { target: 'pino-pretty' }
-      : undefined,
+    ...(env.NODE_ENV === 'development' ? { transport: { target: 'pino-pretty' } } : {}),
   },
 })
 
@@ -117,7 +116,7 @@ try {
   await server.listen({ port, host })
   console.log(`[API] Server running on http://${host}:${port}`)
   // Attach Socket.io to the underlying HTTP server after listen
-  setupSocketHandlers(server.server)
+  setupSocketHandlers(server.server as HttpServer)
   console.log('[API] Socket.io attached')
 } catch (err) {
   server.log.error(err)
