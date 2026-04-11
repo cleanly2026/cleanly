@@ -1,4 +1,5 @@
 import { FastifyInstance } from 'fastify'
+import type { JWTPayload } from '@cleanly/types'
 import { prisma } from '../../lib/prisma.js'
 
 export default async function washerStatusRoutes(fastify: FastifyInstance) {
@@ -14,7 +15,7 @@ export default async function washerStatusRoutes(fastify: FastifyInstance) {
     },
   }, async (request, reply) => {
     const { online } = request.body as { online: boolean }
-    const userId = (request.user as { id: string }).id
+    const userId = (request.user as JWTPayload).sub
 
     // Use upsert — WasherProfile row may not exist yet (open question 4 from research)
     await prisma.washerProfile.upsert({

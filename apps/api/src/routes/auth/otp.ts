@@ -25,6 +25,7 @@ export async function otpRoutes(fastify: FastifyInstance) {
       response: {
         200: z.object({ success: z.boolean() }),
         429: z.object({ statusCode: z.number(), error: z.string(), message: z.string() }),
+        503: z.object({ statusCode: z.number(), error: z.string(), message: z.string() }),
       },
     },
     handler: async (request, reply) => {

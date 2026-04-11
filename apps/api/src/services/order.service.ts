@@ -74,7 +74,7 @@ export async function transitionOrderStatus(
       where: { id: orderId },
       data: {
         status: targetStatus,
-        completed_at: targetStatus === OrderStatus.completed ? new Date() : undefined,
+        ...(targetStatus === OrderStatus.completed ? { completed_at: new Date() } : {}),
       },
     })
   })

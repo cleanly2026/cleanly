@@ -61,7 +61,9 @@ describe('Company orders scoping (D-04 test 3)', () => {
     )
 
     // Verify it was NOT called with COMPANY_B
-    const callArgs = mockFindMany.mock.calls[0][0]
+    const firstCall = mockFindMany.mock.calls[0]
+    expect(firstCall).toBeDefined()
+    const callArgs = firstCall![0] as { where: { company_id: string } }
     expect(callArgs.where.company_id).toBe(COMPANY_A)
     expect(callArgs.where.company_id).not.toBe(COMPANY_B)
   })

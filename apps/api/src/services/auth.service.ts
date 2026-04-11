@@ -19,7 +19,9 @@ export async function createTokenPair(
     ...(companyId ? { companyId } : {}),
   }
 
-  const accessToken = await fastify.jwt.sign(payload)
+  // Cast: fastify.jwt.sign fills in iat/exp at runtime — passing a partial payload
+  // is correct, but the augmented FastifyJWT.payload type requires them.
+  const accessToken = await fastify.jwt.sign(payload as unknown as JWTPayload)
 
   // Opaque refresh token: 32 random bytes as hex
   const refreshToken = crypto.randomBytes(32).toString('hex')

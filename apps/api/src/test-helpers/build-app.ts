@@ -22,7 +22,7 @@ export async function buildTestApp(
   app.setSerializerCompiler(() => (data) => JSON.stringify(data))
 
   // Mock auth: read x-test-user header and parse as JSON into request.user
-  app.decorateRequest('user', null)
+  app.decorateRequest('user', null as unknown as import('@cleanly/types').JWTPayload)
   app.addHook('preHandler', async (request) => {
     const header = request.headers['x-test-user']
     if (header && typeof header === 'string') {
