@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.cleanly.customer"
@@ -24,9 +26,13 @@
       "package": "com.cleanly.customer",
       "config": {
         "googleMaps": {
-          "apiKey": "GOOGLE_MAPS_API_KEY_PLACEHOLDER"
+          "apiKey": "SET_IN_APP_CONFIG_JS_FROM_ENV"
         }
-      }
+      },
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -43,8 +49,10 @@
     "scheme": "cleanly-customer",
     "extra": {
       "eas": {
-        "projectId": "EXPO_PROJECT_ID_PLACEHOLDER"
-      }
-    }
+        "projectId": "4b6cf4d4-8d8f-41a4-bf1d-346cbdad706b"
+      },
+      "router": {}
+    },
+    "owner": "cleanly2026"
   }
 }

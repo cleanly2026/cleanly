@@ -1,5 +1,7 @@
 import Fastify from 'fastify'
 import rawBody from 'fastify-raw-body'
+// Validate env vars BEFORE any other import that reads process.env
+import { env } from './lib/env.js'
 import { initSentry } from './lib/sentry.js'
 import authPlugin from './plugins/auth.js'
 import corsPlugin from './plugins/cors.js'
@@ -31,8 +33,8 @@ initSentry()
 
 const server = Fastify({
   logger: {
-    level: process.env.LOG_LEVEL ?? 'info',
-    transport: process.env.NODE_ENV === 'development'
+    level: env.LOG_LEVEL,
+    transport: env.NODE_ENV === 'development'
       ? { target: 'pino-pretty' }
       : undefined,
   },
@@ -110,8 +112,8 @@ await server.register(import('./routes/users/push-token.js'), { prefix: '/api/us
 // IMPORTANT: Must NOT be behind fastify.authenticate — Stripe sends the webhook, not an authenticated user
 await server.register(stripeWebhookRoutes, { prefix: '/api/webhooks/stripe' })
 
-const port = parseInt(process.env.PORT ?? '3000', 10)
-const host = process.env.HOST ?? '0.0.0.0'
+const port = parseInt(env.PORT, 10)
+const host = env.HOST
 
 try {
   await server.listen({ port, host })

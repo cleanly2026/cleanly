@@ -23,7 +23,7 @@
       "package": "com.cleanly.washer",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyDb6LcRhu5SRzLFs5VMtE17svUrvpDxAdc"
+          "apiKey": "SET_IN_APP_CONFIG_JS_FROM_ENV"
         }
       },
       "permissions": [
@@ -31,7 +31,8 @@
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.ACCESS_BACKGROUND_LOCATION",
         "android.permission.FOREGROUND_SERVICE",
-        "android.permission.FOREGROUND_SERVICE_LOCATION"
+        "android.permission.FOREGROUND_SERVICE_LOCATION",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {
@@ -59,9 +60,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "fd7a87a6-b015-4ae3-bc9a-3ce3576de40f"
+        "projectId": "3ab3cf7e-8a25-4ce5-84b4-b96a2cd6d34e"
       }
     },
-    "owner": "rashino"
+    "owner": "cleanly2026"
   }
 }

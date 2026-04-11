@@ -3,6 +3,12 @@ node_modules/
 dist/
 .next/
 .expo/
-*.env
-*.env.local
+
+# Environment files — never commit secrets
+.env
+.env.*
+!.env.example
+
+# OS
 .DS_Store
+Thumbs.db
