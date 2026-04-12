@@ -40,8 +40,8 @@
   4. Neon production database branch is accessible in Bahrain region via both pooled URL (runtime) and direct URL (migrations)
   5. All third-party service dashboards are accessible: Stripe live+test mode, Twilio, 360dialog, Resend, Sentry, Cloudflare R2, Fly.io, Vercel, Expo EAS, Apple Developer, Google Play Console
 **Plans:** 4 plans
-- [ ] 08-01-PLAN.md — Provider setup docs: 13 runbook files under docs/accounts/ (11 instant + 2 deferred placeholders)
-- [ ] 08-02-PLAN.md — Env validation: extend env.ts with WHATSAPP_ENABLED + BYPASS_SENTRY, migrate 15+ process.env violations to env singleton
+- [x] 08-01-PLAN.md — Provider setup docs: 13 runbook files under docs/accounts/ (11 instant + 2 deferred placeholders)
+- [x] 08-02-PLAN.md — Env validation: extend env.ts with WHATSAPP_ENABLED + BYPASS_SENTRY, migrate 15+ process.env violations to env singleton
 - [ ] 08-03-PLAN.md — Env scaffolding: .env.example audit + turbo.json EXPO_PUBLIC fix + .env.op.tpl files + setup:env script + SETUP.md
 - [ ] 08-04-PLAN.md — Live provisioning: create 11 provider accounts, store secrets in 1Password, GitHub Environments, 360dialog template submission
 

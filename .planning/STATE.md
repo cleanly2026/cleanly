@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Ship to Production
 status: executing
-stopped_at: Phase 8 planned (4 plans)
-last_updated: "2026-04-12T05:49:14.580Z"
-last_activity: "2026-04-11 - Completed quick task 260411-qng: fix pre-existing TypeScript errors in apps/api so 09-02 can run strict tsc --noEmit at deploy time"
+stopped_at: Completed 08-02-PLAN.md
+last_updated: "2026-04-12T06:07:48.127Z"
+last_activity: 2026-04-12
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 8
-  completed_plans: 1
+  completed_plans: 3
   percent: 0
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-09)
 
 **Core value:** A customer can book a cleaning service, pay securely, and track their washer arriving in real-time — the full end-to-end booking-to-completion flow must work flawlessly.
-**Current focus:** Phase 09 — infrastructure-deployment
+**Current focus:** Phase 08 — accounts-environment
 
 ## Current Position
 
-Phase: 09 (infrastructure-deployment) — EXECUTING
-Plan: 2 of 4
+Phase: 08 (accounts-environment) — EXECUTING
+Plan: 3 of 4
 Status: Ready to execute
-Last activity: 2026-04-11 - Completed quick task 260411-qng: fix pre-existing TypeScript errors in apps/api so 09-02 can run strict tsc --noEmit at deploy time
+Last activity: 2026-04-12
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -72,6 +72,7 @@ Recent decisions affecting current work:
 - [Phase 09-infrastructure-deployment]: Rate limiter skipOnError: false + nameSpace per env.NODE_ENV — fail-closed on Redis outage to block OTP abuse (09-01)
 - [Phase 09-infrastructure-deployment]: /healthz uses Promise.allSettled (not Promise.all) and returns 503 on any dep failure so Fly routes elsewhere (09-01)
 - [Phase 09-infrastructure-deployment]: Single fly.toml for staging+production — differ only by --app flag at deploy time (09-01)
+- [Phase 08]: Chained fullSchema superRefine for WHATSAPP_ENABLED gate (applies all envs)
 
 ### Pending Todos
 
@@ -91,9 +92,10 @@ Recent decisions affecting current work:
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260411-qng | fix pre-existing TypeScript errors in apps/api so 09-02 can run strict tsc --noEmit at deploy time | 2026-04-11 | 4aa4ed6 | [260411-qng-fix-pre-existing-typescript-errors-in-ap](./quick/260411-qng-fix-pre-existing-typescript-errors-in-ap/) |
+| Phase 08 P02 | 4min | 2 tasks | 17 files |
 
 ## Session Continuity
 
-Last session: 2026-04-12T05:49:14.573Z
-Stopped at: Phase 8 planned (4 plans)
-Resume file: .planning/phases/08-accounts-environment/08-01-PLAN.md
+Last session: 2026-04-12T06:07:35.070Z
+Stopped at: Completed 08-02-PLAN.md
+Resume file: None

@@ -27,9 +27,9 @@ Requirements for shipping v1.0 code to production. Each maps to roadmap phases.
 ### Environment & Secrets
 
 - [ ] **ENV-01**: .env.example files created for every app and package documenting all required variables
-- [ ] **ENV-02**: Zod startup validation schema for API server — missing required env var causes clean crash with descriptive error
+- [x] **ENV-02**: Zod startup validation schema for API server — missing required env var causes clean crash with descriptive error
 - [ ] **ENV-03**: GitHub Environments created (staging + production) with scoped secrets
-- [ ] **ENV-04**: Neon two-URL configuration: pooled URL for runtime, direct URL for migrations
+- [x] **ENV-04**: Neon two-URL configuration: pooled URL for runtime, direct URL for migrations
 - [ ] **ENV-05**: All secrets stored in GitHub Environments and Fly.io secrets (never in repo)
 
 ### API Deployment (Fly.io)
@@ -153,9 +153,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ACCT-13 | Phase 8 | Pending |
 | ACCT-14 | Phase 8 | Pending |
 | ENV-01 | Phase 8 | Pending |
-| ENV-02 | Phase 8 | Pending |
+| ENV-02 | Phase 8 | Complete |
 | ENV-03 | Phase 8 | Pending |
-| ENV-04 | Phase 8 | Pending |
+| ENV-04 | Phase 8 | Complete |
 | ENV-05 | Phase 8 | Pending |
 | FLY-01 | Phase 9 | Complete |
 | FLY-02 | Phase 9 | Complete |
