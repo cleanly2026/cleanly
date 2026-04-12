@@ -8,6 +8,7 @@ dist/
 .env
 .env.*
 !.env.example
+!.env.op.tpl
 
 # OS
 .DS_Store
