@@ -1,10 +1,11 @@
 import Twilio from 'twilio'
+import { env } from '../lib/env.js'
 
 const client = Twilio(
-  process.env.TWILIO_ACCOUNT_SID!,
-  process.env.TWILIO_AUTH_TOKEN!
+  env.TWILIO_ACCOUNT_SID,
+  env.TWILIO_AUTH_TOKEN
 )
-const VERIFY_SID = process.env.TWILIO_VERIFY_SERVICE_SID!
+const VERIFY_SID = env.TWILIO_VERIFY_SERVICE_SID
 
 export async function sendOtp(phone: string): Promise<{ success: boolean; error?: string }> {
   try {

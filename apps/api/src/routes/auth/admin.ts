@@ -2,6 +2,7 @@ import type { FastifyInstance } from 'fastify'
 import { z } from 'zod'
 import { createTokenPair } from '../../services/auth.service.js'
 import { prisma } from '../../lib/prisma.js'
+import { env } from '../../lib/env.js'
 import crypto from 'node:crypto'
 
 // Shared secret between admin-web and Fastify API.
@@ -31,7 +32,7 @@ export async function adminRoutes(fastify: FastifyInstance) {
     schema: { body: ExchangeRequestSchema },
     handler: async (request, reply) => {
       // Lazy env check: return 503 if secret is not configured rather than crashing at import
-      const secret = process.env.ADMIN_EXCHANGE_SECRET
+      const secret = env.ADMIN_EXCHANGE_SECRET
       if (!secret) {
         fastify.log.warn('[admin] ADMIN_EXCHANGE_SECRET not set — admin exchange disabled')
         return reply.status(503).send({

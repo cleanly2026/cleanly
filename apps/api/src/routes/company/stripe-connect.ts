@@ -1,5 +1,6 @@
 import type { FastifyInstance } from 'fastify'
 import { prisma } from '../../lib/prisma.js'
+import { env } from '../../lib/env.js'
 import { createConnectAccount, createAccountLink } from '../../services/stripe.service.js'
 
 export async function stripeConnectRoutes(fastify: FastifyInstance) {
@@ -31,8 +32,8 @@ export async function stripeConnectRoutes(fastify: FastifyInstance) {
     }
 
     // Create AccountLink for hosted onboarding
-    const refreshUrl = `${process.env.COMPANY_WEB_URL || 'http://localhost:3002'}/onboarding/stripe-connect?refresh=true`
-    const returnUrl = `${process.env.COMPANY_WEB_URL || 'http://localhost:3002'}/onboarding/stripe-connect?success=true`
+    const refreshUrl = `${env.COMPANY_WEB_URL}/onboarding/stripe-connect?refresh=true`
+    const returnUrl = `${env.COMPANY_WEB_URL}/onboarding/stripe-connect?success=true`
 
     const url = await createAccountLink(stripeAccountId, refreshUrl, returnUrl)
     return { url }

@@ -1,5 +1,6 @@
 import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { env } from './env.js'
 
 // Cloudflare R2 uses S3-compatible API at:
 // https://{accountId}.r2.cloudflarestorage.com
@@ -9,29 +10,20 @@ let r2Client: S3Client | null = null
 function getR2Client(): S3Client {
   if (r2Client) return r2Client
 
-  const accountId   = process.env.R2_ACCOUNT_ID
-  const accessKeyId = process.env.R2_ACCESS_KEY_ID
-  const secretKey   = process.env.R2_SECRET_ACCESS_KEY
-
-  if (!accountId || !accessKeyId || !secretKey) {
-    console.warn('[R2] R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, or R2_SECRET_ACCESS_KEY not set — R2 client unavailable')
-    throw new Error('R2 credentials not configured')
-  }
-
   r2Client = new S3Client({
     region: 'auto',
-    endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
+    endpoint: `https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
     credentials: {
-      accessKeyId,
-      secretAccessKey: secretKey,
+      accessKeyId: env.R2_ACCESS_KEY_ID,
+      secretAccessKey: env.R2_SECRET_ACCESS_KEY,
     },
   })
 
   return r2Client
 }
 
-const BUCKET = process.env.R2_BUCKET_NAME ?? 'cleanly-photos'
-const PUBLIC_URL = process.env.R2_PUBLIC_URL ?? ''
+const BUCKET = env.R2_BUCKET_NAME
+const PUBLIC_URL = env.R2_PUBLIC_URL
 const UPLOAD_URL_TTL = 300  // seconds — presigned PUT URL expires in 300s (5 min for poor mobile connections)
 
 // Generate a presigned PUT URL for direct client upload.

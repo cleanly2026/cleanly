@@ -1,8 +1,9 @@
 import Redis from 'ioredis'
+import { env } from './env.js'
 
 // maxRetriesPerRequest: null is REQUIRED for BullMQ (documented requirement).
 // tls: {} is REQUIRED for Upstash (all Upstash Redis requires TLS).
-export const redis = new Redis(process.env.UPSTASH_REDIS_URL!, {
+export const redis = new Redis(env.UPSTASH_REDIS_URL, {
   maxRetriesPerRequest: null,
   enableReadyCheck: false,
   tls: {},

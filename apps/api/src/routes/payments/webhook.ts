@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify'
 import { stripe } from '../../services/stripe.service.js'
 import { prisma } from '../../lib/prisma.js'
+import { env } from '../../lib/env.js'
 import type Stripe from 'stripe'
 
 export async function stripeWebhookRoutes(fastify: FastifyInstance) {
@@ -21,7 +22,7 @@ export async function stripeWebhookRoutes(fastify: FastifyInstance) {
       event = stripe.webhooks.constructEvent(
         (request as any).rawBody!, // Raw bytes — NOT request.body (Pitfall 4)
         sig,
-        process.env.STRIPE_WEBHOOK_SECRET!,
+        env.STRIPE_WEBHOOK_SECRET!,
       )
     } catch (err: any) {
       fastify.log.error(`Webhook signature verification failed: ${err.message}`)

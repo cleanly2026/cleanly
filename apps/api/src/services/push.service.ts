@@ -1,7 +1,8 @@
 import { Expo, type ExpoPushMessage } from 'expo-server-sdk'
+import { env } from '../lib/env.js'
 
 const expo = new Expo({
-  ...(process.env.EXPO_ACCESS_TOKEN ? { accessToken: process.env.EXPO_ACCESS_TOKEN } : {}),
+  ...(env.EXPO_ACCESS_TOKEN ? { accessToken: env.EXPO_ACCESS_TOKEN } : {}),
 })
 
 export async function sendPushNotification(params: {

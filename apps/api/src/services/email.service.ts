@@ -1,8 +1,9 @@
 import { Resend } from 'resend'
 import { OrderReceiptEmail } from '../emails/order-receipt.js'
 import { CompanyRejectionEmail } from '../emails/company-rejection.js'
+import { env } from '../lib/env.js'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = new Resend(env.RESEND_API_KEY)
 
 export async function sendOrderReceipt(params: {
   to: string
@@ -15,7 +16,7 @@ export async function sendOrderReceipt(params: {
   companyName: string
   completedAt: string // ISO date string
 }): Promise<void> {
-  if (!process.env.RESEND_API_KEY) {
+  if (!env.RESEND_API_KEY) {
     console.warn('[Email] RESEND_API_KEY not set -- skipping email')
     return
   }
@@ -35,7 +36,7 @@ export async function sendCompanyRejectionEmail(params: {
   reason: string
   language: 'en' | 'ar'
 }): Promise<void> {
-  if (!process.env.RESEND_API_KEY) {
+  if (!env.RESEND_API_KEY) {
     console.warn('[Email] RESEND_API_KEY not set -- skipping email')
     return
   }

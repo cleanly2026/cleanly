@@ -2,6 +2,7 @@ import { Server as SocketServer } from 'socket.io'
 import type { Server as HttpServer } from 'http'
 import { createAdapter } from '@socket.io/redis-adapter'
 import Redis from 'ioredis'
+import { env } from './env.js'
 import { redis } from './redis.js'
 import { registerJobDispatchHandlers } from './job-dispatch.js'
 
@@ -11,10 +12,10 @@ export function setupSocketHandlers(httpServer: HttpServer) {
   io = new SocketServer(httpServer, {
     cors: {
       origin: [
-        process.env.CUSTOMER_WEB_URL || 'http://localhost:3001',
-        process.env.COMPANY_WEB_URL || 'http://localhost:3002',
-        process.env.CUSTOMER_MOBILE_URL || 'http://localhost:8081',
-        process.env.WASHER_MOBILE_URL || 'http://localhost:8082',
+        env.CUSTOMER_WEB_URL,
+        env.COMPANY_WEB_URL,
+        env.CUSTOMER_MOBILE_URL,
+        env.WASHER_MOBILE_URL,
       ],
       credentials: true,
     },
@@ -26,7 +27,7 @@ export function setupSocketHandlers(httpServer: HttpServer) {
   // RT-04: Redis adapter for horizontal scaling — use separate pub/sub clients
   // Do NOT reuse the existing `redis` singleton — BullMQ requires maxRetriesPerRequest:null
   // which conflicts with pub/sub adapter usage pattern.
-  const pubClient = new Redis(process.env.UPSTASH_REDIS_URL!, {
+  const pubClient = new Redis(env.UPSTASH_REDIS_URL, {
     tls: {},
     retryStrategy(times) {
       if (times > 10) return null

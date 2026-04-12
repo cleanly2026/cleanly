@@ -1,10 +1,18 @@
+import { env } from '../lib/env.js'
+
 export async function sendWhatsAppTemplate(params: {
   to: string // E.164 format
   templateName: string // pre-approved Meta template name
   language: 'en' | 'ar'
   components?: unknown[]
 }): Promise<void> {
-  const apiKey = process.env.DIALOG360_API_KEY
+  // WHATSAPP_ENABLED gate: skip entirely when disabled
+  if (!env.WHATSAPP_ENABLED) {
+    console.warn('WhatsApp disabled — WHATSAPP_ENABLED is false, skipping send')
+    return
+  }
+
+  const apiKey = env.DIALOG360_API_KEY
   if (!apiKey) {
     console.warn('[WhatsApp] DIALOG360_API_KEY not set -- skipping WhatsApp')
     return

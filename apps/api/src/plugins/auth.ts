@@ -2,6 +2,7 @@ import fp from 'fastify-plugin'
 import jwt from '@fastify/jwt'
 import type { JWTPayload } from '@cleanly/types'
 import type { FastifyRequest, FastifyReply } from 'fastify'
+import { env } from '../lib/env.js'
 
 // Extend Fastify types so request.user is typed as JWTPayload
 declare module '@fastify/jwt' {
@@ -19,7 +20,7 @@ declare module 'fastify' {
 
 export default fp(async (fastify) => {
   await fastify.register(jwt, {
-    secret: process.env.JWT_SECRET!,
+    secret: env.JWT_SECRET,
     sign: { expiresIn: '15m' },
   })
 

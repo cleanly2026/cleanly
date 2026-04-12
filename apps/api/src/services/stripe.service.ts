@@ -1,13 +1,11 @@
 import Stripe from 'stripe'
+import { env } from '../lib/env.js'
 
 let _stripe: Stripe | undefined
 
 function getStripe(): Stripe {
   if (!_stripe) {
-    if (!process.env.STRIPE_SECRET_KEY) {
-      throw new Error('STRIPE_SECRET_KEY is not set — add it to apps/api/.env')
-    }
-    _stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    _stripe = new Stripe(env.STRIPE_SECRET_KEY, {
       apiVersion: '2026-03-25.dahlia',
     })
   }
