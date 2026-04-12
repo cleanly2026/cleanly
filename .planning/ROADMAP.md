@@ -57,7 +57,7 @@
   5. Rate limiting on OTP endpoints survives an API restart (backed by Upstash Redis, not in-memory)
 **Plans:** 4 plans
 - [x] 09-01-PLAN.md — Infra scaffolding: Dockerfile, fly.toml, /healthz route, rate-limit nameSpace, turbo.json env declarations (FLY-01,02,03,04,05,07, VCL-04)
-- [ ] 09-02-PLAN.md — Fly deploy: create staging+prod apps, import secrets, deploy, verify /healthz + Socket.io + rate-limit restart survival (FLY-06,07,08,09)
+- [x] 09-02-PLAN.md — Fly deploy: runbook + rate-limit test created; actual deploy blocked by sandbox (FLY-06,07,08,09)
 - [ ] 09-03-PLAN.md — Vercel deploy: 3 projects (2 Next.js + 1 Vite), env vars, turbo-ignore, verify builds (VCL-01,02,03)
 - [ ] 09-04-PLAN.md — R2 CORS + API CORS allowlist wiring after Vercel URLs known (VCL-05,06)
 
