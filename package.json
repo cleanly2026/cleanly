@@ -7,7 +7,8 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "setup:env": "op inject -i apps/api/.env.op.tpl -o apps/api/.env && op inject -i apps/customer-web/.env.op.tpl -o apps/customer-web/.env.local && op inject -i apps/admin-web/.env.op.tpl -o apps/admin-web/.env.local && op inject -i apps/company-web/.env.op.tpl -o apps/company-web/.env.local && op inject -i apps/customer-mobile/.env.op.tpl -o apps/customer-mobile/.env && op inject -i apps/washer-mobile/.env.op.tpl -o apps/washer-mobile/.env && op inject -i packages/db/.env.op.tpl -o packages/db/.env"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
