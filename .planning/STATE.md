@@ -79,8 +79,12 @@ Recent decisions affecting current work:
 - [Phase 09-infrastructure-deployment]: /healthz uses Promise.allSettled (not Promise.all) and returns 503 on any dep failure so Fly routes elsewhere (09-01)
 - [Phase 09-infrastructure-deployment]: Single fly.toml for staging+production — differ only by --app flag at deploy time (09-01)
 - [Phase 08]: Chained fullSchema superRefine for WHATSAPP_ENABLED gate (applies all envs)
+<<<<<<< Updated upstream
 - [Phase 08]: Added !.env.op.tpl to .gitignore — .env.* glob was blocking template commits
 - [Phase 08]: op://Cleanly/<Item>/<field> naming convention for 1Password vault references
+=======
+- [Phase 08]: Per-provider runbook format: 8-section docs under docs/accounts/ with 1Password layout, secret destination map, billing alerts
+>>>>>>> Stashed changes
 
 ### Pending Todos
 
@@ -101,9 +105,15 @@ Recent decisions affecting current work:
 |---|-------------|------|--------|-----------|
 | 260411-qng | fix pre-existing TypeScript errors in apps/api so 09-02 can run strict tsc --noEmit at deploy time | 2026-04-11 | 4aa4ed6 | [260411-qng-fix-pre-existing-typescript-errors-in-ap](./quick/260411-qng-fix-pre-existing-typescript-errors-in-ap/) |
 | Phase 08 P02 | 4min | 2 tasks | 17 files |
+| Phase 08 P01 | 5min | 2 tasks | 13 files |
 
 ## Session Continuity
 
+<<<<<<< Updated upstream
 Last session: 2026-04-12T06:38:48Z
 Stopped at: Completed 08-03-PLAN.md
+=======
+Last session: 2026-04-12T06:07:55.194Z
+Stopped at: Completed 08-01-PLAN.md
+>>>>>>> Stashed changes
 Resume file: None
