@@ -81,26 +81,52 @@ const envSchema = z.object({
 
   // --- Admin SSO exchange secret ---
   ADMIN_EXCHANGE_SECRET: z.string().min(16, 'ADMIN_EXCHANGE_SECRET must be at least 16 chars'),
+
+  // --- Feature Flags ---
+  WHATSAPP_ENABLED: z
+    .string()
+    .default('false')
+    .transform((v) => v === 'true'),
+  BYPASS_SENTRY: z
+    .string()
+    .default('false')
+    .transform((v) => v === 'true'),
 })
 
 // Production-only strictness: some optional vars become required in production
-const prodSchema = envSchema.superRefine((env, ctx) => {
-  if (env.NODE_ENV !== 'production' && env.NODE_ENV !== 'staging') return
+const prodSchema = envSchema.superRefine((data, ctx) => {
+  if (data.NODE_ENV !== 'production' && data.NODE_ENV !== 'staging') return
 
-  const prodRequired = [
-    ['STRIPE_WEBHOOK_SECRET', env.STRIPE_WEBHOOK_SECRET],
-    ['RESEND_API_KEY', env.RESEND_API_KEY],
-    ['SENTRY_DSN', env.SENTRY_DSN],
-  ] as const
+  const prodRequired: Array<[string, unknown]> = [
+    ['STRIPE_WEBHOOK_SECRET', data.STRIPE_WEBHOOK_SECRET],
+    ['RESEND_API_KEY', data.RESEND_API_KEY],
+  ]
+
+  // BYPASS_SENTRY: honored only in staging, ignored in production
+  const sentryBypassActive = data.BYPASS_SENTRY && data.NODE_ENV !== 'production'
+  if (!sentryBypassActive) {
+    prodRequired.push(['SENTRY_DSN', data.SENTRY_DSN])
+  }
 
   for (const [name, value] of prodRequired) {
     if (!value) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: `${name} is required in ${env.NODE_ENV}`,
+        message: `${name} is required in ${data.NODE_ENV}`,
         path: [name],
       })
     }
+  }
+})
+
+// WHATSAPP_ENABLED gate — applies in ALL environments (not just prod/staging)
+const fullSchema = prodSchema.superRefine((data, ctx) => {
+  if (data.WHATSAPP_ENABLED && !data.DIALOG360_API_KEY) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'DIALOG360_API_KEY is required when WHATSAPP_ENABLED=true',
+      path: ['DIALOG360_API_KEY'],
+    })
   }
 })
 
@@ -111,16 +137,21 @@ export type Env = z.infer<typeof envSchema>
  * Crashes the process with a readable error on validation failure.
  */
 function loadEnv(): Env {
-  const result = prodSchema.safeParse(process.env)
+  const result = fullSchema.safeParse(process.env)
 
   if (!result.success) {
-    console.error('\n❌ Environment validation failed:\n')
+    console.error('\n Environment validation failed:\n')
     for (const issue of result.error.issues) {
       const key = issue.path.join('.')
-      console.error(`  • ${key}: ${issue.message}`)
+      console.error(`  - ${key}: ${issue.message}`)
     }
     console.error('\nFix the .env file and restart. See .env.example for reference.\n')
     process.exit(1)
+  }
+
+  // Emit warning when Sentry bypass is active (non-production only)
+  if (result.data.BYPASS_SENTRY && result.data.NODE_ENV !== 'production') {
+    console.warn(`\nWARN: Sentry bypassed in ${result.data.NODE_ENV} — error tracking disabled\n`)
   }
 
   return result.data
