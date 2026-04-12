@@ -30,7 +30,12 @@
         "GOOGLE_CLIENT_SECRET",
         "ADMIN_EXCHANGE_SECRET",
         "VITE_API_URL",
-        "VITE_SENTRY_DSN"
+        "VITE_SENTRY_DSN",
+        "EXPO_PUBLIC_API_URL",
+        "EXPO_PUBLIC_PROJECT_ID",
+        "EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY",
+        "EXPO_PUBLIC_SENTRY_DSN",
+        "EXPO_PUBLIC_GOOGLE_MAPS_API_KEY"
       ]
     },
     "dev": {
