@@ -39,7 +39,11 @@
   3. GitHub Environments (staging + production) exist with scoped secrets — no credentials exist in the repository
   4. Neon production database branch is accessible in Bahrain region via both pooled URL (runtime) and direct URL (migrations)
   5. All third-party service dashboards are accessible: Stripe live+test mode, Twilio, 360dialog, Resend, Sentry, Cloudflare R2, Fly.io, Vercel, Expo EAS, Apple Developer, Google Play Console
-**Plans**: TBD
+**Plans:** 4 plans
+- [ ] 08-01-PLAN.md — Provider setup docs: 13 runbook files under docs/accounts/ (11 instant + 2 deferred placeholders)
+- [ ] 08-02-PLAN.md — Env validation: extend env.ts with WHATSAPP_ENABLED + BYPASS_SENTRY, migrate 15+ process.env violations to env singleton
+- [ ] 08-03-PLAN.md — Env scaffolding: .env.example audit + turbo.json EXPO_PUBLIC fix + .env.op.tpl files + setup:env script + SETUP.md
+- [ ] 08-04-PLAN.md — Live provisioning: create 11 provider accounts, store secrets in 1Password, GitHub Environments, 360dialog template submission
 
 ### Phase 9: Infrastructure Deployment
 **Goal**: The API, BullMQ worker, and all three web apps are deployed to staging and production environments and are reachable over the internet
@@ -93,7 +97,7 @@
 | 5. Wire Washer Job Dispatch | v1.0 | 1/1 | Complete | 2026-04-08 |
 | 6. Fix Route & Socket Wiring | v1.0 | 3/3 | Complete | 2026-04-08 |
 | 7. Auth Guards & Housekeeping | v1.0 | 2/2 | Complete | 2026-04-09 |
-| 8. Accounts & Environment | v1.1 | 0/? | Not started | - |
-| 9. Infrastructure Deployment | v1.1 | 0/? | Not started | - |
+| 8. Accounts & Environment | v1.1 | 0/4 | Not started | - |
+| 9. Infrastructure Deployment | v1.1 | 1/4 | In progress | - |
 | 10. CI/CD & Monitoring | v1.1 | 0/? | Not started | - |
 | 11. Mobile Distribution & Staging Validation | v1.1 | 0/? | Not started | - |
