@@ -43,7 +43,7 @@
 - [x] 08-01-PLAN.md — Provider setup docs: 13 runbook files under docs/accounts/ (11 instant + 2 deferred placeholders)
 - [x] 08-02-PLAN.md — Env validation: extend env.ts with WHATSAPP_ENABLED + BYPASS_SENTRY, migrate 15+ process.env violations to env singleton
 - [x] 08-03-PLAN.md — Env scaffolding: .env.example audit + turbo.json EXPO_PUBLIC fix + .env.op.tpl files + setup:env script + SETUP.md
-- [ ] 08-04-PLAN.md — Live provisioning: create 11 provider accounts, store secrets in 1Password, GitHub Environments, 360dialog template submission
+- [x] 08-04-PLAN.md — Live provisioning: create 11 provider accounts, store secrets in 1Password, GitHub Environments, 360dialog template submission
 
 ### Phase 9: Infrastructure Deployment
 **Goal**: The API, BullMQ worker, and all three web apps are deployed to staging and production environments and are reachable over the internet

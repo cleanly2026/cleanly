@@ -4,13 +4,13 @@ milestone: v1.1
 milestone_name: Ship to Production
 status: executing
 stopped_at: Completed 08-03-PLAN.md
-last_updated: "2026-04-12T06:38:48Z"
+last_updated: "2026-04-12T17:08:03.765Z"
 last_activity: 2026-04-12
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 8
-  completed_plans: 4
+  completed_plans: 5
   percent: 50
 ---
 
@@ -25,8 +25,8 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 
 ## Current Position
 
-Phase: 08 (accounts-environment) — EXECUTING
-Plan: 4 of 4
+Phase: 09
+Plan: Not started
 Status: Ready to execute
 Last activity: 2026-04-12
 
@@ -79,12 +79,10 @@ Recent decisions affecting current work:
 - [Phase 09-infrastructure-deployment]: /healthz uses Promise.allSettled (not Promise.all) and returns 503 on any dep failure so Fly routes elsewhere (09-01)
 - [Phase 09-infrastructure-deployment]: Single fly.toml for staging+production — differ only by --app flag at deploy time (09-01)
 - [Phase 08]: Chained fullSchema superRefine for WHATSAPP_ENABLED gate (applies all envs)
-<<<<<<< Updated upstream
+
 - [Phase 08]: Added !.env.op.tpl to .gitignore — .env.* glob was blocking template commits
 - [Phase 08]: op://Cleanly/<Item>/<field> naming convention for 1Password vault references
-=======
 - [Phase 08]: Per-provider runbook format: 8-section docs under docs/accounts/ with 1Password layout, secret destination map, billing alerts
->>>>>>> Stashed changes
 
 ### Pending Todos
 
