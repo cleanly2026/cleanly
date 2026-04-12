@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Ship to Production
 status: executing
-stopped_at: Completed 08-02-PLAN.md
-last_updated: "2026-04-12T06:07:48.127Z"
+stopped_at: Completed 08-03-PLAN.md
+last_updated: "2026-04-12T06:38:48Z"
 last_activity: 2026-04-12
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 8
-  completed_plans: 3
-  percent: 0
+  completed_plans: 4
+  percent: 50
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 ## Current Position
 
 Phase: 08 (accounts-environment) — EXECUTING
-Plan: 3 of 4
+Plan: 4 of 4
 Status: Ready to execute
 Last activity: 2026-04-12
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█████░░░░░] 50%
 
 ## Phase Index (v1.1)
 
@@ -45,9 +45,15 @@ Progress: [░░░░░░░░░░] 0%
 
 **Velocity (v1.1):**
 
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: —
+- Total plans completed: 4
+- Average duration: ~5min
+- Total execution time: ~19min
+
+| Phase | Plan | Duration | Tasks | Files |
+|-------|------|----------|-------|-------|
+| 08 | 01 | 5min | 2 | 13 |
+| 08 | 02 | 4min | 2 | 17 |
+| 08 | 03 | 5min | 3 | 12 |
 
 *Updated after each plan completion*
 
@@ -73,6 +79,8 @@ Recent decisions affecting current work:
 - [Phase 09-infrastructure-deployment]: /healthz uses Promise.allSettled (not Promise.all) and returns 503 on any dep failure so Fly routes elsewhere (09-01)
 - [Phase 09-infrastructure-deployment]: Single fly.toml for staging+production — differ only by --app flag at deploy time (09-01)
 - [Phase 08]: Chained fullSchema superRefine for WHATSAPP_ENABLED gate (applies all envs)
+- [Phase 08]: Added !.env.op.tpl to .gitignore — .env.* glob was blocking template commits
+- [Phase 08]: op://Cleanly/<Item>/<field> naming convention for 1Password vault references
 
 ### Pending Todos
 
@@ -96,6 +104,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-12T06:07:35.070Z
-Stopped at: Completed 08-02-PLAN.md
+Last session: 2026-04-12T06:38:48Z
+Stopped at: Completed 08-03-PLAN.md
 Resume file: None
