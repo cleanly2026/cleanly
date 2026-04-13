@@ -25,7 +25,7 @@ export async function companyServicesRoutes(fastify: FastifyInstance) {
     const body = request.body as any
 
     // Delete existing and recreate (simple replace pattern)
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       await tx.companyService.deleteMany({ where: { company_id: companyId } })
 
       const records = body.categories.map((category: string) => ({

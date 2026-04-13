@@ -39,7 +39,7 @@ export async function discoveryRoutes(fastify: FastifyInstance) {
     })
 
     // Map to response shape with starting_price
-    const items = companies.map(c => ({
+    const items = companies.map((c: any) => ({
       id: c.id,
       name_en: c.name_en,
       name_ar: c.name_ar,
@@ -93,7 +93,7 @@ export async function discoveryRoutes(fastify: FastifyInstance) {
       review_count: company.review_count,
       city_id: company.city_id,
       carpet_lead_time_days: company.carpet_lead_time_days,
-      packages: company.packages.map(p => ({
+      packages: company.packages.map((p: any) => ({
         id: p.id,
         category: p.category,
         name_en: p.name_en,
@@ -101,14 +101,14 @@ export async function discoveryRoutes(fastify: FastifyInstance) {
         description_en: p.description_en,
         description_ar: p.description_ar,
         base_price: p.base_price,
-        add_ons: p.add_ons.map(a => ({
+        add_ons: p.add_ons.map((a: any) => ({
           id: a.id,
           name_en: a.name_en,
           name_ar: a.name_ar,
           price: a.price,
         })),
       })),
-      reviews: reviews.map(r => ({
+      reviews: reviews.map((r: any) => ({
         id: r.id,
         rating: r.rating,
         comment: r.comment,

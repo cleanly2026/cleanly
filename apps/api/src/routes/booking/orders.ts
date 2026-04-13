@@ -27,7 +27,7 @@ export async function bookingRoutes(fastify: FastifyInstance) {
     }
 
     // 2. Create order with PostGIS geography point for service_location
-    const order = await prisma.$transaction(async (tx) => {
+    const order = await prisma.$transaction(async (tx: any) => {
       const ord = await tx.order.create({
         data: {
           type: 'on_site',
@@ -105,7 +105,7 @@ export async function bookingRoutes(fastify: FastifyInstance) {
     const pickupTime = new Date(body.pickup_time)
     const returnDate = await computeCarpetReturnDate(pricing.companyId, pickupTime)
 
-    const order = await prisma.$transaction(async (tx) => {
+    const order = await prisma.$transaction(async (tx: any) => {
       const ord = await tx.order.create({
         data: {
           type: 'carpet',

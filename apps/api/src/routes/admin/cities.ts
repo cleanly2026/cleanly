@@ -11,7 +11,7 @@ export default async function adminCityRoutes(fastify: FastifyInstance) {
       distinct: ['category'],
       select: { category: true },
     })
-    return categories.map((c) => c.category)
+    return categories.map((c: { category: string }) => c.category)
   })
 
   // GET / -- list all cities (ADM-03)

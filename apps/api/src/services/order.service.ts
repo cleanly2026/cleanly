@@ -28,7 +28,7 @@ export async function computeOrderTotal(params: {
   })
 
   const packagePrice = pkg.base_price * params.quantity
-  const addOnsTotal = pkg.add_ons.reduce((sum, a) => sum + a.price, 0)
+  const addOnsTotal = pkg.add_ons.reduce((sum: number, a: any) => sum + a.price, 0)
   const amountSubtotal = packagePrice + addOnsTotal
   const platformFee = Math.round((amountSubtotal * pkg.company.commission_rate) / 100)
   const amountTotal = amountSubtotal + platformFee
@@ -59,7 +59,7 @@ export async function transitionOrderStatus(
   orderId: string,
   targetStatus: OrderStatus,
 ): Promise<void> {
-  await prisma.$transaction(async (tx) => {
+  await prisma.$transaction(async (tx: any) => {
     // Acquire row-level lock — prevents concurrent transitions
     await tx.$executeRaw`SELECT id FROM "Order" WHERE id = ${orderId} FOR UPDATE`
 

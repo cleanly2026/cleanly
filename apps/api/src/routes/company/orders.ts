@@ -68,7 +68,7 @@ export async function companyOrdersRoute(fastify: FastifyInstance) {
     ])
 
     return {
-      orders: orders.map((o) => ({
+      orders: orders.map((o: any) => ({
         id: o.id,
         // order_number not in schema — use id prefix as display reference
         order_number: `CLN-${o.id.slice(0, 8).toUpperCase()}`,
@@ -107,7 +107,7 @@ export async function companyOrdersRoute(fastify: FastifyInstance) {
     })
 
     return {
-      washers: washers.map((w) => ({
+      washers: washers.map((w: any) => ({
         id: w.id,
         first_name: w.phone ?? w.id,
         last_name: '',

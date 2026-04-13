@@ -10,7 +10,7 @@ WORKDIR /app
 # Uses `turbo prune` to produce a minimal workspace subset for the api filter.
 FROM base AS prune
 COPY . .
-RUN pnpm dlx turbo@2.9.1 prune api --docker
+RUN pnpm dlx turbo@2.9.1 prune @cleanly/api --docker
 
 # ---- installer (only package.jsons + lockfile) ----
 FROM base AS installer
@@ -22,6 +22,7 @@ RUN pnpm install --frozen-lockfile
 FROM base AS builder
 COPY --from=installer /app .
 COPY --from=prune /app/out/full/ .
+COPY --from=prune /app/tsconfig.base.json ./tsconfig.base.json
 RUN pnpm --filter @cleanly/db exec prisma generate
 RUN pnpm turbo run build --filter=@cleanly/api
 
