@@ -23,6 +23,7 @@ FROM base AS builder
 COPY --from=installer /app .
 COPY --from=prune /app/out/full/ .
 COPY --from=prune /app/tsconfig.base.json ./tsconfig.base.json
+COPY --from=prune /app/packages/db/schema.prisma ./packages/db/schema.prisma
 RUN pnpm exec prisma generate --schema=packages/db/schema.prisma
 RUN pnpm turbo run build --filter=@cleanly/api
 
