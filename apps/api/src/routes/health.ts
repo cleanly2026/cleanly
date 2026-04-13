@@ -22,6 +22,10 @@ export const healthRoutes: FastifyPluginAsync = async (fastify) => {
 
     const db    = dbResult.status    === 'fulfilled' ? 'ok' : 'error'
     const cache = redisResult.status === 'fulfilled' ? 'ok' : 'error'
+
+    // Temporary: log health check errors to fly logs for debugging
+    if (db === 'error') console.error('[healthz] DB error:', dbResult.status === 'rejected' ? dbResult.reason : 'unknown')
+    if (cache === 'error') console.error('[healthz] Redis error:', redisResult.status === 'rejected' ? redisResult.reason : 'unknown')
     const ok    = db === 'ok' && cache === 'ok'
 
     const body = {
