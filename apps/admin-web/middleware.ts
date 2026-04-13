@@ -1,23 +1,12 @@
 import createMiddleware from 'next-intl/middleware'
-import { auth } from './auth'
 import { routing } from './src/i18n/routing'
 
+// next-intl locale routing only — auth guard removed from middleware
+// to avoid Edge Runtime 'eval' error with next-auth v4.
+// Auth protection is handled in layout.tsx via getServerSession() instead.
 const intlMiddleware = createMiddleware(routing)
 
-// Chain next-intl locale routing with auth.js session guard
-export default auth((req) => {
-  const isAuthPage = req.nextUrl.pathname.startsWith('/en/auth') ||
-    req.nextUrl.pathname.startsWith('/ar/auth')
-  const isAuthenticated = !!req.auth
-
-  if (!isAuthenticated && !isAuthPage) {
-    const signInUrl = new URL('/en/auth/signin', req.url)
-    signInUrl.searchParams.set('callbackUrl', req.nextUrl.pathname)
-    return Response.redirect(signInUrl)
-  }
-
-  return intlMiddleware(req)
-})
+export default intlMiddleware
 
 export const config = {
   matcher: ['/((?!api|_next|_vercel|.*\\..*).*)'],
