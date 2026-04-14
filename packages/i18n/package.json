@@ -6,8 +6,8 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./locales/*.json": "./locales/*.json",
-    "./locales/*": "./locales/*"
+    "./locales/en.json": "./locales/en.json",
+    "./locales/ar.json": "./locales/ar.json"
   },
   "scripts": {
     "build": "tsc",
