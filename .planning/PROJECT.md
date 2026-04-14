@@ -30,6 +30,11 @@ A customer can book a cleaning service, pay securely, and track their washer arr
 - **84 requirements:** 81 code-verified, 2 need human testing (map labels AR, GPS background), 1 N/A (wallet balance scoped out)
 - **Known tech debt:** Active Washers admin stat is stub (0), wallet balance deferred, 360dialog/Stripe accounts need production setup
 
+### v1.1 Progress
+
+- **Phase 8 complete** (2026-04-13) — Third-party account setup documented; Neon, Stripe, Twilio, Cloudflare, Resend, Sentry, Expo EAS, R2 provisioned
+- **Phase 9 complete** (2026-04-14) — Infrastructure deployed: Fly.io Bahrain (cleanly-api + cleanly-api-staging) + Vercel (customer/admin/company-web) + R2 CORS + API CORS allowlist. Staging Vercel surfaces + staging R2 bucket deferred as MVP scope cut; 5 browser-origin E2E checks tracked in 09-HUMAN-UAT.md
+
 ## Requirements
 
 ### Validated
@@ -158,4 +163,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-09 — milestone v1.1 Ship to Production started*
+*Last updated: 2026-04-14 — Phase 9 Infrastructure Deployment complete*
