@@ -16,15 +16,13 @@ only piece of the plan the human must execute by hand.
 ## Prerequisites
 
 - Admin access to the GitHub repo Settings page.
-- Fly.io API tokens available in 1Password:
-  - `op://Cleanly/Fly API Token Staging`
-  - `op://Cleanly/Fly API Token Production`
-- Neon direct URLs in 1Password:
-  - `op://Cleanly/Neon DIRECT_URL Staging`
-  - `op://Cleanly/Neon DIRECT_URL Production`
-- Sentry auth tokens in 1Password:
-  - `op://Cleanly/Sentry Auth Token Staging`
-  - `op://Cleanly/Sentry Auth Token Production`
+- Fly.io account with `flyctl` installed locally — tokens are generated
+  on-demand in Step 3 via `flyctl tokens create deploy`.
+- Neon account with `cleanly-staging` and `cleanly-production` projects
+  provisioned (Phase 01) — direct connection strings pulled from the Neon
+  dashboard in Step 3.
+- Sentry account with the `cleanly` organization — auth tokens created
+  on-demand in Step 3 via Sentry Settings → Developer Settings → Auth Tokens.
 - Vercel project-owner access to all three web projects (`customer-web`,
   `admin-web`, `company-web`) — Deploy Hook URLs are **created** in Step 1
   below.
@@ -32,6 +30,17 @@ only piece of the plan the human must execute by hand.
   (set during Phase 09). Confirm via GitHub → Settings → Secrets and variables
   → Actions → Repository secrets. Do **not** duplicate these into
   Environments; repo secrets are automatically visible to every Environment.
+
+### Secret storage model (solo dev)
+
+GitHub Environment secrets are the **single source of truth**. They are
+encrypted at rest by GitHub and scoped per environment. No external password
+manager is required for this checkpoint.
+
+If you want offline disaster-recovery copies (recommended but optional), keep
+them in whatever you already use — 1Password, Bitwarden, a GPG-encrypted
+local file, or your browser's password manager. The runbook does not assume
+any specific tool.
 
 ## Step 1 — Create Vercel Deploy Hooks (3 × 2 = 6 hooks)
 
@@ -44,17 +53,13 @@ For each Vercel project (`customer-web`, `admin-web`, `company-web`), create
    - Name: `staging` (first pass) or `production` (second pass).
    - Branch: `staging` (first pass) or `main` (second pass).
 4. Click **Create Hook**, then **Copy URL**.
-5. Store in 1Password as
-   `op://Cleanly/Vercel Deploy Hook <project> <Env>` — for example
-   `op://Cleanly/Vercel Deploy Hook customer-web Staging`.
+5. Keep the URL on the clipboard — you will paste it directly into a GitHub
+   Environment secret in Step 3. Don't close the Vercel tab between hooks;
+   creating all 6 in one sitting is faster than looking them up again.
 
-After completing this step you should have six URLs stashed in 1Password:
-
-| Project        | Staging hook ref                                           | Production hook ref                                          |
-| -------------- | ---------------------------------------------------------- | ------------------------------------------------------------ |
-| `customer-web` | `op://Cleanly/Vercel Deploy Hook customer-web Staging`     | `op://Cleanly/Vercel Deploy Hook customer-web Production`    |
-| `admin-web`    | `op://Cleanly/Vercel Deploy Hook admin-web Staging`        | `op://Cleanly/Vercel Deploy Hook admin-web Production`       |
-| `company-web`  | `op://Cleanly/Vercel Deploy Hook company-web Staging`      | `op://Cleanly/Vercel Deploy Hook company-web Production`     |
+If you want an offline backup: paste each URL into your password manager of
+choice at this point. Otherwise, GitHub Environment secrets store them
+encrypted at rest and are the only copy that matters for deploys.
 
 ## Step 2 — Create GitHub Environments
 
@@ -75,22 +80,26 @@ Create two environments:
      workflow manually.
    - Save.
 
-## Step 3 — Add secrets to each Environment
+## Step 3 — Generate secrets and paste into each Environment
 
 For **both** `staging` and `production`, add these **Environment** secrets
-(GitHub → Settings → Environments → `<env>` → **Environment secrets**).
-Copy values from the 1Password references listed below; the secret *names*
-are identical across both environments — only the values differ.
+(GitHub → Settings → Environments → `<env>` → **Environment secrets → Add
+secret**). The secret *names* are identical across both environments —
+only the values differ.
 
-| Secret                              | 1Password source                                       |
-| ----------------------------------- | ------------------------------------------------------ |
-| `FLY_API_TOKEN`                     | `op://Cleanly/Fly API Token <Env>`                     |
-| `DIRECT_URL`                        | `op://Cleanly/Neon DIRECT_URL <Env>`                   |
-| `SENTRY_AUTH_TOKEN`                 | `op://Cleanly/Sentry Auth Token <Env>`                 |
-| `SENTRY_ORG`                        | `op://Cleanly/Sentry Org Slug` (typically `cleanly`; set the same value in both envs unless orgs diverge) |
-| `VERCEL_DEPLOY_HOOK_CUSTOMER_WEB`   | `op://Cleanly/Vercel Deploy Hook customer-web <Env>`   |
-| `VERCEL_DEPLOY_HOOK_ADMIN_WEB`      | `op://Cleanly/Vercel Deploy Hook admin-web <Env>`      |
-| `VERCEL_DEPLOY_HOOK_COMPANY_WEB`    | `op://Cleanly/Vercel Deploy Hook company-web <Env>`    |
+Generate each value on-demand from its source system and paste it directly
+into GitHub. GitHub encrypts Environment secrets at rest, so this is the
+canonical copy.
+
+| Secret                              | How to generate the value                                       |
+| ----------------------------------- | --------------------------------------------------------------- |
+| `FLY_API_TOKEN`                     | `flyctl tokens create deploy --org <cleanly-org>` — run once per env, paste the output. Org-scoped tokens survive user session rotation; user-scoped tokens silently break. |
+| `DIRECT_URL`                        | Neon dashboard → `cleanly-<env>` project → **Connection Details** → copy the **direct** connection string (not the pooled one). Format: `postgres://...neon.tech/...` without `-pooler`. |
+| `SENTRY_AUTH_TOKEN`                 | Sentry → **Settings → Developer Settings → Auth Tokens → Create New Token**. Scopes: `project:releases`, `org:read`. Generate one token per env to keep revocation blast radius small. |
+| `SENTRY_ORG`                        | The Sentry org slug (typically `cleanly`). Same value in both envs unless orgs diverge. |
+| `VERCEL_DEPLOY_HOOK_CUSTOMER_WEB`   | Deploy Hook URL from Step 1 for `customer-web <Env>`.           |
+| `VERCEL_DEPLOY_HOOK_ADMIN_WEB`      | Deploy Hook URL from Step 1 for `admin-web <Env>`.              |
+| `VERCEL_DEPLOY_HOOK_COMPANY_WEB`    | Deploy Hook URL from Step 1 for `company-web <Env>`.            |
 
 Notes:
 
@@ -100,6 +109,11 @@ Notes:
 - Later plans will add more secrets to these environments — Plan 10-05/06
   introduces Sentry DSNs per surface; Plan 10-07 introduces Better Stack
   tokens. Leave room; don't pre-create placeholder secrets.
+- Optional offline backup: after pasting into GitHub, also store each value
+  in a password manager (1Password, Bitwarden, Keepass, etc.) so you can
+  rebuild the environment if the GitHub repo is ever deleted. Skipping this
+  is fine for a solo developer — you can always regenerate Fly/Sentry tokens
+  and look up Neon URLs and Vercel hooks from their respective dashboards.
 
 ## Step 4 — Apply branch protection on `main` (and `staging`)
 
