@@ -29,15 +29,17 @@ Staging Vercel URLs (`*-staging.vercel.app`): **deferred** — add to both `r2-c
 
 ## Step 1 — Apply R2 CORS to Both Buckets
 
-**Preferred — wrangler CLI:**
+**Preferred — wrangler CLI (v4.x syntax):**
 ```bash
 # Requires: pnpm add -g wrangler && wrangler login (with R2:Edit scope)
-wrangler r2 bucket cors put cleanly-photos-staging \
+wrangler r2 bucket cors set cleanly-photos-staging \
   --file .planning/phases/09-infrastructure-deployment/r2-cors.json
 
-wrangler r2 bucket cors put cleanly-photos \
+wrangler r2 bucket cors set cleanly-photos \
   --file .planning/phases/09-infrastructure-deployment/r2-cors.json
 ```
+
+> Older wrangler v3.x used `put` and `get` subcommands. v4.x renamed them to `set` and `list`.
 
 **Fallback — Cloudflare dashboard:**
 Cloudflare dashboard → R2 → `<bucket>` → Settings → CORS Policy → Edit → paste the contents of `r2-cors.json` → Save. Repeat for both buckets.
@@ -45,8 +47,8 @@ Cloudflare dashboard → R2 → `<bucket>` → Settings → CORS Policy → Edit
 ## Step 2 — Verify R2 CORS Applied
 
 ```bash
-wrangler r2 bucket cors get cleanly-photos-staging
-wrangler r2 bucket cors get cleanly-photos
+wrangler r2 bucket cors list cleanly-photos-staging
+wrangler r2 bucket cors list cleanly-photos
 ```
 
 Both outputs MUST contain `"content-type"` under `AllowedHeaders`. If either shows `"*"` — ABORT and re-apply; Safari uploads will fail preflight.
