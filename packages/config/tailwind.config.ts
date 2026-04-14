@@ -2,7 +2,6 @@ import type { Config } from 'tailwindcss'
 
 // Per UI-SPEC: brand colors, Cairo font variable, logical property classes
 export const sharedTailwindConfig = {
-  content: [],
   theme: {
     extend: {
       colors: {

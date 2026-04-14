@@ -2,6 +2,10 @@
   "name": "@cleanly/config",
   "version": "0.0.1",
   "private": true,
+  "exports": {
+    "./tailwind.config": "./tailwind.config.ts",
+    "./eslint.config": "./eslint.config.js"
+  },
   "scripts": {
     "typecheck": "echo 'config has no ts to check'"
   },

@@ -284,6 +284,9 @@ importers:
 
   apps/customer-web:
     dependencies:
+      '@cleanly/config':
+        specifier: workspace:^
+        version: link:../../packages/config
       '@cleanly/i18n':
         specifier: workspace:^
         version: link:../../packages/i18n
