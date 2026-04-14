@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Ship to Production
 status: executing
-stopped_at: Completed 09-02-PLAN.md (partial - deploy blocked by sandbox)
-last_updated: "2026-04-14T13:32:03.264Z"
+stopped_at: Completed 10-03-PLAN.md (webhook idempotency, MON-05)
+last_updated: "2026-04-14T15:52:16.309Z"
 last_activity: 2026-04-14
 progress:
   total_phases: 4
   completed_phases: 2
-  total_plans: 8
-  completed_plans: 8
+  total_plans: 16
+  completed_plans: 9
   percent: 50
 ---
 
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-09)
 
 **Core value:** A customer can book a cleaning service, pay securely, and track their washer arriving in real-time — the full end-to-end booking-to-completion flow must work flawlessly.
-**Current focus:** Phase 09 — infrastructure-deployment
+**Current focus:** Phase 10 — ci-cd-monitoring
 
 ## Current Position
 
-Phase: 10
-Plan: Not started
-Status: Executing Phase 09
+Phase: 10 (ci-cd-monitoring) — EXECUTING
+Plan: 2 of 8
+Status: Ready to execute
 Last activity: 2026-04-14
 
 Progress: [█████░░░░░] 50%
@@ -58,6 +58,7 @@ Progress: [█████░░░░░] 50%
 | 09 | 02 | 8min | 4 | 3 |
 
 *Updated after each plan completion*
+| Phase 10 P03 | 6min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -85,6 +86,8 @@ Recent decisions affecting current work:
 - [Phase 08]: Added !.env.op.tpl to .gitignore — .env.* glob was blocking template commits
 - [Phase 08]: op://Cleanly/<Item>/<field> naming convention for 1Password vault references
 - [Phase 08]: Per-provider runbook format: 8-section docs under docs/accounts/ with 1Password layout, secret destination map, billing alerts
+- [Phase 10]: Stripe webhook idempotency uses Postgres ProcessedStripeEvent table + createMany skipDuplicates (not Redis, not upsert, not try/catch P2002) for durable auditable exactly-once processing (10-03)
+- [Phase 10]: Migration folder 20260414154646_add_processed_stripe_events constructed manually (not via prisma migrate dev) because db was initialized with db push and drift blocks --create-only (10-03)
 
 ### Pending Todos
 
@@ -110,6 +113,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-12T18:45:00Z
-Stopped at: Completed 09-02-PLAN.md (partial - deploy blocked by sandbox)
+Last session: 2026-04-14T15:52:16.298Z
+Stopped at: Completed 10-03-PLAN.md (webhook idempotency, MON-05)
 Resume file: None

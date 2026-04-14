@@ -76,7 +76,7 @@ Requirements for shipping v1.0 code to production. Each maps to roadmap phases.
 - [ ] **MON-02**: Better Stack (or equivalent) uptime monitoring on API health endpoint + all 3 web apps
 - [ ] **MON-03**: Structured log aggregation from Fly.io to Better Stack (or equivalent)
 - [ ] **MON-04**: Stripe webhook endpoint uses raw body handler (not Fastify's JSON parser) for signature verification
-- [ ] **MON-05**: Stripe webhook handlers are idempotent (duplicate events don't double-process)
+- [x] **MON-05**: Stripe webhook handlers are idempotent (duplicate events don't double-process)
 - [ ] **MON-06**: Rollback runbook documented (how to revert API, web, and mobile deploys)
 
 ### Staging Validation
@@ -181,7 +181,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MON-02 | Phase 10 | Pending |
 | MON-03 | Phase 10 | Pending |
 | MON-04 | Phase 10 | Pending |
-| MON-05 | Phase 10 | Pending |
+| MON-05 | Phase 10 | Complete |
 | MON-06 | Phase 10 | Pending |
 | MOB-01 | Phase 11 | Pending |
 | MOB-02 | Phase 11 | Pending |

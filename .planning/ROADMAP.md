@@ -71,7 +71,15 @@
   3. A Stripe test webhook sent with an invalid signature is rejected — a valid webhook with a duplicate event ID does not double-process
   4. A thrown error in any of the 6 app surfaces appears in Sentry with a resolved source-mapped stack trace
   5. An API downtime event triggers a Better Stack (or equivalent) alert within 2 minutes
-**Plans**: TBD
+**Plans:** 1/8 plans executed
+- [ ] 10-01-PLAN.md — Deploy workflow skeleton + GitHub Environments runbook (CI-01, CI-02, CI-05)
+- [ ] 10-02-PLAN.md — Prisma migrate CI job + ci.yml schema validation (CI-03, CI-04)
+- [x] 10-03-PLAN.md — Stripe webhook idempotency (ProcessedStripeEvent model + handler + tests) (MON-04, MON-05)
+- [ ] 10-04-PLAN.md — Daily BullMQ cleanup worker (30-day retention) (MON-04)
+- [ ] 10-05-PLAN.md — Sentry wiring for 4 remaining surfaces + release tagging (MON-01, MON-03)
+- [ ] 10-06-PLAN.md — Source map upload step in deploy.yml (CI-04, MON-01)
+- [ ] 10-07-PLAN.md — Better Stack uptime monitors + Fly log drain + Sentry Discord routing (MON-02, MON-03)
+- [ ] 10-08-PLAN.md — Rollback runbook + one-command scripts (MON-06)
 
 ### Phase 11: Mobile Distribution & Staging Validation
 **Goal**: Beta testers can install the mobile apps from TestFlight and Google Play internal testing, and the full booking-to-completion flow works end-to-end on staging with real devices
@@ -99,5 +107,5 @@
 | 7. Auth Guards & Housekeeping | v1.0 | 2/2 | Complete | 2026-04-09 |
 | 8. Accounts & Environment | v1.1 | 3/4 | In progress | - |
 | 9. Infrastructure Deployment | v1.1 | 1/4 | In progress | - |
-| 10. CI/CD & Monitoring | v1.1 | 0/? | Not started | - |
+| 10. CI/CD & Monitoring | v1.1 | 1/8 | In Progress|  |
 | 11. Mobile Distribution & Staging Validation | v1.1 | 0/? | Not started | - |
