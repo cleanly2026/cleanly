@@ -1,0 +1,7 @@
+.planning
+.claude
+**/*.test.ts
+**/*.test.tsx
+**/__tests__/**
+coverage
+.turbo
