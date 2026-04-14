@@ -1,0 +1,102 @@
+# .github/workflows/deploy.yml
+name: Deploy
+
+on:
+  push:
+    branches: [staging, main]
+
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  setup:
+    name: Derive environment + release SHA
+    runs-on: ubuntu-latest
+    outputs:
+      env_name: ${{ steps.derive.outputs.env_name }}
+      sha: ${{ steps.derive.outputs.sha }}
+      fly_app_api: ${{ steps.derive.outputs.fly_app_api }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - id: derive
+        name: Derive env_name + fly_app_api + 7-char SHA
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "env_name=production" >> "$GITHUB_OUTPUT"
+            echo "fly_app_api=cleanly-api" >> "$GITHUB_OUTPUT"
+          else
+            echo "env_name=staging" >> "$GITHUB_OUTPUT"
+            echo "fly_app_api=cleanly-api-staging" >> "$GITHUB_OUTPUT"
+          fi
+          echo "sha=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+  # migrate: filled in by Plan 10-02.
+  # Will use DATABASE_URL=$DIRECT_URL + `prisma migrate deploy` and gate deploy_api / deploy_web via `needs: [setup, migrate]`.
+
+  deploy_api:
+    name: Deploy API to Fly
+    needs: [setup]   # 10-02 will change this to [setup, migrate]
+    runs-on: ubuntu-latest
+    environment: ${{ needs.setup.outputs.env_name }}
+    env:
+      SENTRY_RELEASE: ${{ needs.setup.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Deploy API to Fly
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          flyctl deploy \
+            --app "${{ needs.setup.outputs.fly_app_api }}" \
+            --image-label "$SENTRY_RELEASE" \
+            --remote-only \
+            --strategy rolling
+
+  deploy_web:
+    name: Deploy web (${{ matrix.app }})
+    needs: [setup]   # 10-02 will change this to [setup, migrate]
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [customer-web, admin-web, company-web]
+    runs-on: ubuntu-latest
+    environment: ${{ needs.setup.outputs.env_name }}
+    env:
+      SENTRY_RELEASE: ${{ needs.setup.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+          NEXT_PUBLIC_SENTRY_RELEASE: ${{ needs.setup.outputs.sha }}
+          VITE_SENTRY_RELEASE: ${{ needs.setup.outputs.sha }}
+        run: pnpm --filter "@cleanly/${{ matrix.app }}" build
+      # Source map upload step: added by Plan 10-06. Keep placeholder here.
+      - name: Trigger Vercel deploy hook
+        run: |
+          case "${{ matrix.app }}" in
+            customer-web)  HOOK="${{ secrets.VERCEL_DEPLOY_HOOK_CUSTOMER_WEB }}" ;;
+            admin-web)     HOOK="${{ secrets.VERCEL_DEPLOY_HOOK_ADMIN_WEB }}" ;;
+            company-web)   HOOK="${{ secrets.VERCEL_DEPLOY_HOOK_COMPANY_WEB }}" ;;
+          esac
+          if [ -z "$HOOK" ]; then
+            echo "::error::No deploy hook configured for ${{ matrix.app }} in ${{ needs.setup.outputs.env_name }}"
+            exit 1
+          fi
+          curl -fsS -X POST "$HOOK"
