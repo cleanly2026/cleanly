@@ -1,12 +1,7 @@
-import NextAuth from 'next-auth'
+import { type NextAuthOptions } from 'next-auth'
 import Google from 'next-auth/providers/google'
 
-export const {
-  handlers: { GET, POST },
-  auth,
-  signIn,
-  signOut,
-} = NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -15,7 +10,6 @@ export const {
   ],
   callbacks: {
     async signIn({ profile }) {
-      // AUTH-06: Restrict to Cleanly Google Workspace domain ONLY
       const email = profile?.email ?? ''
       if (!email.endsWith('@cleanly.ae')) {
         console.warn(`[Auth] Rejected sign-in attempt from non-workspace email: ${email}`)
@@ -24,7 +18,6 @@ export const {
       return true
     },
     async session({ session }) {
-      // Attach the exchange token so admin-web can call Fastify API
       return session
     },
   },
@@ -32,4 +25,4 @@ export const {
     signIn: '/auth/signin',
     error: '/auth/error',
   },
-})
+}
