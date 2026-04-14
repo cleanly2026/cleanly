@@ -1,7 +1,6 @@
 import { adminFetch } from '../../src/lib/api'
 import { StatCard } from '../../src/components/stat-card'
-import { DataTable } from '../../src/components/data-table'
-import { StatusBadge } from '../../src/components/status-badge'
+import { RecentOrdersTable } from './recent-orders-table'
 
 interface Order {
   id: string
@@ -25,7 +24,6 @@ interface DisputesResponse {
   total: number
 }
 
-// Stat icons as inline SVG
 function OrdersIcon() {
   return (
     <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden="true">
@@ -82,22 +80,6 @@ async function getStats() {
   }
 }
 
-function formatOrderId(id: string): string {
-  return `CLN-${id.slice(0, 8).toUpperCase()}`
-}
-
-function formatDate(dateStr: string): string {
-  try {
-    return new Date(dateStr).toLocaleDateString('en-AE', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    })
-  } catch {
-    return dateStr
-  }
-}
-
 export default async function DashboardPage() {
   const stats = await getStats().catch(() => ({
     ordersToday: 0,
@@ -107,38 +89,10 @@ export default async function DashboardPage() {
     openDisputes: 0,
   }))
 
-  const orderColumns = [
-    {
-      key: 'id',
-      label: 'Order ID',
-      render: (row: Order) => (
-        <span className="font-mono text-label text-brand-navy">{formatOrderId(row.id)}</span>
-      ),
-    },
-    { key: 'service_type', label: 'Type' },
-    {
-      key: 'status',
-      label: 'Status',
-      render: (row: Order) => <StatusBadge status={row.status} />,
-    },
-    { key: 'company_name', label: 'Company', render: (row: Order) => row.company_name ?? '—' },
-    {
-      key: 'amount_total',
-      label: 'Amount',
-      render: (row: Order) => `AED ${Number(row.amount_total).toFixed(2)}`,
-    },
-    {
-      key: 'created_at',
-      label: 'Date',
-      render: (row: Order) => formatDate(row.created_at),
-    },
-  ]
-
   return (
     <div className="space-y-lg">
       <h1 className="text-heading font-semibold text-brand-navy">Dashboard</h1>
 
-      {/* 4 stat cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md">
         <StatCard label="Orders Today" value={stats.ordersToday} icon={<OrdersIcon />} />
         <StatCard label="Active Washers" value={0} icon={<WasherIcon />} />
@@ -146,14 +100,9 @@ export default async function DashboardPage() {
         <StatCard label="Open Disputes" value={stats.openDisputes} icon={<DisputesIcon />} />
       </div>
 
-      {/* Recent orders table */}
       <section>
         <h2 className="text-heading font-semibold text-brand-navy mb-md">Recent Orders</h2>
-        <DataTable
-          columns={orderColumns as Parameters<typeof DataTable>[0]['columns']}
-          data={stats.recentOrders as unknown as Record<string, unknown>[]}
-          emptyMessage="No orders yet today. New bookings will appear here."
-        />
+        <RecentOrdersTable data={stats.recentOrders} />
       </section>
     </div>
   )
