@@ -29,6 +29,34 @@ export async function stripeWebhookRoutes(fastify: FastifyInstance) {
       return reply.status(400).send({ error: 'Webhook signature verification failed' })
     }
 
+    // Idempotency check (MON-05): attempt to record this event. If createMany
+    // reports count=0, another process (or a Stripe retry) already handled it.
+    // NOTE: The switch-block side effects below MUST remain idempotent at the
+    // domain level (e.g., `update payment_status = 'paid'` is safe to repeat).
+    // See .planning/phases/10-ci-cd-monitoring/10-RESEARCH.md §Pitfall 4.
+    const orderIdForMarker =
+      'object' in event.data && (event.data.object as any)?.metadata?.order_id
+        ? String((event.data.object as any).metadata.order_id)
+        : null
+
+    const inserted = await prisma.processedStripeEvent.createMany({
+      data: [
+        {
+          event_id: event.id,
+          event_type: event.type,
+          order_id: orderIdForMarker,
+        },
+      ],
+      skipDuplicates: true,
+    })
+
+    if (inserted.count === 0) {
+      fastify.log.info(
+        `[stripe-webhook] Duplicate event ${event.id} (${event.type}) — skipping; already processed`,
+      )
+      return reply.status(200).send({ received: true, duplicate: true })
+    }
+
     switch (event.type) {
       case 'payment_intent.succeeded': {
         const pi = event.data.object as Stripe.PaymentIntent
