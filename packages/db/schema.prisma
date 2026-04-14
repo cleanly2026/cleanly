@@ -320,3 +320,19 @@ model AuditLog {
   @@index([admin_id])
   @@index([entity, entity_id])
 }
+
+/// Stripe webhook idempotency marker (MON-05).
+/// One row per successfully-verified inbound Stripe event. Insert-before-process
+/// pattern: if createMany({skipDuplicates:true}) returns count=0, the event is a
+/// duplicate (already handled) and the webhook returns 200 without re-executing
+/// side effects. Retention: 30 days, enforced by daily BullMQ cleanup job
+/// (apps/api/src/workers/cleanup.worker.ts, Plan 10-04).
+model ProcessedStripeEvent {
+  event_id     String   @id                          // Stripe event ID, e.g. "evt_1PQ..."
+  event_type   String                                 // e.g. "payment_intent.succeeded"
+  order_id     String?                                // Optional correlation to Order (nullable for non-order events)
+  processed_at DateTime @default(now())
+
+  @@index([processed_at])
+  @@map("processed_stripe_events")
+}
