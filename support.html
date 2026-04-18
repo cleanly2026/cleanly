@@ -1,0 +1,1001 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-locale="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title data-i18n="meta.title">Cleanly — Help center</title>
+<meta name="description" data-i18n="meta.desc" content="The rules Cleanly actually follows — refunds, insurance, disputes, cancellation, privacy. Written in plain language." />
+<meta name="theme-color" content="#1A2744" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="shared.css" />
+<script src="shared.js" defer></script>
+<style>
+  html { scroll-padding-top: 128px; }
+
+  /* Page head — soft, not a sales pitch */
+  .page-head { padding: 120px 0 48px; }
+  .page-head::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(520px 300px at 85% 0%, rgba(201,168,76,0.07), transparent 60%);
+    pointer-events: none;
+  }
+  .page-head__human {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 600;
+    color: rgba(248,247,244,0.72);
+    margin-top: 18px;
+    padding: 8px 14px;
+    border: 1px solid rgba(248,247,244,0.14);
+    border-radius: 999px;
+    transition: border-color 150ms ease, color 150ms ease, background 150ms ease;
+  }
+  .page-head__human:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201,168,76,0.06);
+  }
+  .page-head__human svg { color: var(--gold); }
+
+  /* Tighter rhythm */
+  .section { padding: 56px 0; scroll-margin-top: 128px; }
+  .section__heading { margin: 0 0 24px; }
+  .section__intro {
+    font-size: 15px; line-height: 1.65;
+    color: var(--ink-muted);
+    max-width: 720px;
+    margin: 0 0 28px;
+  }
+
+  /* ───── Policy cards (scenario → outcome) ───── */
+  .policies {
+    display: grid; grid-template-columns: 1fr; gap: 14px;
+  }
+  @media (min-width: 768px) { .policies { grid-template-columns: 1fr 1fr; gap: 16px; } }
+
+  .policy {
+    padding: 20px 22px;
+    background: #fff;
+    border-radius: var(--r-card);
+    box-shadow: var(--shadow);
+    border-inline-start: 3px solid var(--sand);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .policy--good { border-inline-start-color: var(--success); }
+  .policy--warn { border-inline-start-color: var(--warn); }
+  .policy__title { font-size: 15px; font-weight: 600; color: var(--navy); margin: 0; line-height: 1.3; }
+  .policy__body { font-size: 14px; line-height: 1.55; color: var(--ink-muted); margin: 0; }
+  .policy__turn {
+    margin-top: auto;
+    padding-block-start: 10px;
+    font-size: 12px; font-style: italic; font-weight: 600;
+    color: var(--gold-deep);
+    border-block-start: 1px dashed var(--sand);
+  }
+
+  /* ───── How-to steps row (refund path, cancel path) ───── */
+  .how {
+    margin-top: 28px;
+    padding: 22px;
+    background: rgba(201,168,76,0.05);
+    border-radius: var(--r-card);
+    border: 1px dashed rgba(201,168,76,0.35);
+  }
+  .how__title {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--gold-deep);
+    margin: 0 0 12px;
+  }
+  .how__steps {
+    display: flex; flex-direction: column; gap: 10px;
+    counter-reset: how-step;
+    margin: 0; padding: 0; list-style: none;
+  }
+  @media (min-width: 768px) { .how__steps { flex-direction: row; gap: 20px; } }
+  .how__steps li {
+    flex: 1;
+    position: relative;
+    padding-inline-start: 36px;
+    font-size: 14px;
+    color: var(--navy);
+    line-height: 1.5;
+    counter-increment: how-step;
+  }
+  .how__steps li::before {
+    content: counter(how-step);
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: -2px;
+    width: 24px; height: 24px;
+    border-radius: 999px;
+    background: var(--navy);
+    color: var(--gold);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+  .how__note { font-size: 12px; color: var(--ink-muted); margin: 14px 0 0; font-style: italic; }
+
+  /* ───── Covered / not-covered 2-col ───── */
+  .cov-grid {
+    display: grid; grid-template-columns: 1fr; gap: 16px;
+    margin-bottom: 24px;
+  }
+  @media (min-width: 768px) { .cov-grid { grid-template-columns: 1fr 1fr; gap: 24px; } }
+  .cov-col {
+    padding: 24px;
+    background: #fff;
+    border-radius: var(--r-card);
+    box-shadow: var(--shadow);
+  }
+  .cov-col--yes { border-block-start: 3px solid var(--success); }
+  .cov-col--no  { border-block-start: 3px solid var(--danger); }
+  .cov-col__title {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-muted);
+    margin: 0 0 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .cov-col--yes .cov-col__title { color: var(--success); }
+  .cov-col--no .cov-col__title { color: var(--danger); }
+  .cov-col__list {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: 10px;
+    font-size: 14px; color: var(--navy);
+  }
+  .cov-col__list li {
+    display: flex; align-items: flex-start; gap: 10px;
+    line-height: 1.5;
+  }
+  .cov-col__list svg { flex-shrink: 0; margin-block-start: 3px; }
+  .cov-col--yes .cov-col__list svg { color: var(--success); }
+  .cov-col--no .cov-col__list svg { color: var(--danger); }
+
+  .limit-callout {
+    padding: 18px 20px;
+    background: linear-gradient(180deg, var(--navy), #0f1a30);
+    color: var(--on-navy);
+    border-radius: var(--r-card);
+    display: grid; grid-template-columns: 1fr; gap: 16px;
+    margin-bottom: 20px;
+  }
+  @media (min-width: 640px) { .limit-callout { grid-template-columns: 1fr 1fr; } }
+  .limit-callout__block { display: flex; flex-direction: column; gap: 2px; }
+  .limit-callout__label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: rgba(248,247,244,0.58);
+  }
+  .limit-callout__value {
+    font-size: 22px; font-weight: 600;
+    color: var(--gold);
+    font-variant-numeric: tabular-nums;
+  }
+  .limit-callout__sub { font-size: 13px; color: rgba(248,247,244,0.78); line-height: 1.5; }
+
+  .section__note {
+    font-size: 14px; line-height: 1.6;
+    color: var(--ink-muted);
+    max-width: 720px;
+    margin: 0;
+  }
+  .section__note strong { color: var(--navy); font-weight: 600; }
+
+  /* ───── Compare table overrides (used by disputes + cancellation) ───── */
+  .compare { min-width: 540px; }
+  .compare thead th { font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .compare tbody tr:hover td,
+  .compare tbody tr:hover th { background: rgba(201,168,76,0.04); }
+  .compare__out {
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .compare__fee {
+    font-weight: 600;
+    color: var(--gold-deep);
+    font-variant-numeric: tabular-nums;
+  }
+  .compare__free {
+    font-weight: 600;
+    color: var(--success);
+  }
+
+  .bad-faith {
+    margin-top: 20px;
+    padding: 16px 20px;
+    background: rgba(217,119,6,0.06);
+    border-inline-start: 3px solid var(--warn);
+    border-radius: var(--r-card);
+    font-size: 14px; line-height: 1.6;
+    color: var(--navy);
+    max-width: 760px;
+  }
+  .bad-faith strong { font-weight: 600; }
+
+  /* ───── Still stuck row (navy) ───── */
+  .stuck {
+    display: grid; grid-template-columns: 1fr; gap: 16px;
+    margin-bottom: 16px;
+  }
+  @media (min-width: 768px) { .stuck { grid-template-columns: repeat(3, 1fr); gap: 20px; } }
+  .stuck-card {
+    padding: 22px;
+    background: rgba(248,247,244,0.03);
+    border: 1px solid rgba(248,247,244,0.10);
+    border-radius: var(--r-card);
+    display: flex; flex-direction: column; gap: 8px;
+    transition: border-color 180ms ease;
+  }
+  .stuck-card:hover { border-color: rgba(201,168,76,0.45); }
+  .stuck-card__icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: rgba(201,168,76,0.14);
+    color: var(--gold);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .stuck-card__title { font-size: 14px; font-weight: 600; color: var(--on-navy); margin: 4px 0 0; }
+  .stuck-card__body { font-size: 13px; line-height: 1.5; color: rgba(248,247,244,0.72); margin: 0; }
+  .stuck-card__action {
+    margin-top: 4px;
+    font-size: 13px; font-weight: 600;
+    color: var(--gold);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .stuck-card__action svg { transition: transform 150ms ease; }
+  .stuck-card:hover .stuck-card__action svg { transform: translateX(3px); }
+  [dir="rtl"] .stuck-card:hover .stuck-card__action svg { transform: translateX(-3px); }
+
+  .stuck-hours {
+    padding: 14px 16px;
+    background: rgba(22,163,74,0.08);
+    border-inline-start: 3px solid var(--success);
+    border-radius: var(--r-btn);
+    font-size: 13px;
+    color: rgba(248,247,244,0.92);
+    max-width: 560px;
+  }
+  .stuck-hours strong { color: var(--on-navy); font-weight: 600; }
+</style>
+</head>
+<body data-nav="solid">
+
+<!-- ───── Nav ───── -->
+<nav class="nav" aria-label="Primary">
+  <div class="container nav__inner">
+    <a href="index.html" class="logo" aria-label="Cleanly home">Cleanly</a>
+    <div class="nav__right">
+      <a class="nav__link--ghost" href="become-a-partner.html" data-i18n="nav.partner">Become a partner</a>
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button class="lang-toggle__opt" data-lang="ar" aria-pressed="false">AR</button>
+        <button class="lang-toggle__opt" data-lang="en" aria-pressed="true">EN</button>
+      </div>
+      <a class="btn btn--outline" href="#" data-i18n="nav.signin">Sign in</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ───── Page head ───── -->
+<header class="page-head">
+  <div class="container page-head__inner">
+    <p class="page-head__kicker" data-i18n="head.kicker">Help center</p>
+    <h1 class="page-head__title" data-i18n="head.title">Answers, not runarounds.</h1>
+    <p class="page-head__sub" data-i18n="head.sub">The rules Cleanly actually follows — refunds, insurance, disputes, cancellation, privacy. If the answer is here, you don't need to open a ticket.</p>
+    <a href="#stuck" class="page-head__human">
+      <svg class="rtl-flip" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l1-2.5A5 5 0 1 1 4 9z"/></svg>
+      <span data-i18n="head.human">Still need to talk to us?</span>
+    </a>
+  </div>
+</header>
+
+<!-- ───── Sticky tab switcher ───── -->
+<div class="switcher-wrap" role="navigation" aria-label="Help sections">
+  <div class="container">
+    <div class="switcher" role="tablist">
+      <button class="switcher__tab" role="tab" aria-current="true"  data-target="refunds" data-i18n="tabs.refunds">Refunds</button>
+      <button class="switcher__tab" role="tab" aria-current="false" data-target="insurance" data-i18n="tabs.insurance">Insurance</button>
+      <button class="switcher__tab" role="tab" aria-current="false" data-target="disputes" data-i18n="tabs.disputes">Disputes</button>
+      <button class="switcher__tab" role="tab" aria-current="false" data-target="cancellation" data-i18n="tabs.cancellation">Cancellation</button>
+      <button class="switcher__tab" role="tab" aria-current="false" data-target="privacy" data-i18n="tabs.privacy">Privacy</button>
+    </div>
+  </div>
+</div>
+
+<!-- ───── Refunds ───── -->
+<section id="refunds" class="section section--light">
+  <div class="container">
+    <p class="section__kicker fade-up" data-i18n="ref.kicker">Refunds</p>
+    <h2 class="section__heading fade-up" data-i18n="ref.heading">When we refund, and how long it takes.</h2>
+    <p class="section__intro fade-up" data-i18n="ref.intro">Every refund scenario below is written from the app's actual policy, not a generic template. Payment is held at Stripe, so when a refund is triggered, the money comes back from escrow — not from us chasing the partner company for it.</p>
+
+    <div class="policies">
+      <article class="policy policy--good fade-up">
+        <h3 class="policy__title" data-i18n="ref.r1.t">Washer didn't arrive</h3>
+        <p class="policy__body" data-i18n="ref.r1.b">Full refund, automatic. You don't need to open a ticket — the app knows they never started the job.</p>
+        <span class="policy__turn" data-i18n="ref.r1.turn">Turnaround: within 24 hours</span>
+      </article>
+
+      <article class="policy fade-up">
+        <h3 class="policy__title" data-i18n="ref.r2.t">Service was incomplete</h3>
+        <p class="policy__body" data-i18n="ref.r2.b">Open a dispute in-app with a photo showing the issue. If verified against the washer's before/after photos, we refund you. If evidence is mixed, we coach the company and give you credit.</p>
+        <span class="policy__turn" data-i18n="ref.r2.turn">Turnaround: 48 hours</span>
+      </article>
+
+      <article class="policy policy--warn fade-up">
+        <h3 class="policy__title" data-i18n="ref.r3.t">Damage to your property</h3>
+        <p class="policy__body" data-i18n="ref.r3.b">Not a refund — an insurance claim. See the Insurance section. Photos required within 24 hours of job completion.</p>
+        <span class="policy__turn" data-i18n="ref.r3.turn">See: Insurance</span>
+      </article>
+
+      <article class="policy policy--good fade-up">
+        <h3 class="policy__title" data-i18n="ref.r4.t">You canceled late, but we hadn't dispatched</h3>
+        <p class="policy__body" data-i18n="ref.r4.b">Full refund. The washer never left, so there's no trip to compensate.</p>
+        <span class="policy__turn" data-i18n="ref.r4.turn">Turnaround: immediate</span>
+      </article>
+
+      <article class="policy fade-up">
+        <h3 class="policy__title" data-i18n="ref.r5.t">Carpet returned late</h3>
+        <p class="policy__body" data-i18n="ref.r5.b"><strong><span class="num">24+ hr late:</span></strong> 25% auto-refund. <strong><span class="num">48+ hr late:</span></strong> 50%. <strong><span class="num">72+ hr late:</span></strong> full refund — and the carpet is still returned.</p>
+        <span class="policy__turn" data-i18n="ref.r5.turn">Turnaround: auto-applied on return</span>
+      </article>
+    </div>
+
+    <div class="how fade-up" role="region" aria-labelledby="ref-how">
+      <p id="ref-how" class="how__title" data-i18n="ref.how.title">How to request a refund</p>
+      <ol class="how__steps">
+        <li data-i18n="ref.how.s1">Open the order in the Cleanly app.</li>
+        <li data-i18n="ref.how.s2">Tap <strong>Report issue</strong>. Select the scenario that fits.</li>
+        <li data-i18n="ref.how.s3">Upload photos if the app asks. Submit.</li>
+      </ol>
+      <p class="how__note" data-i18n="ref.how.note">No phone number required. No hold music. That's intentional.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Insurance ───── -->
+<section id="insurance" class="section" style="background: var(--sand);">
+  <div class="container">
+    <p class="section__kicker fade-up" data-i18n="ins.kicker">Insurance</p>
+    <h2 class="section__heading fade-up" data-i18n="ins.heading">What's covered, and what isn't.</h2>
+    <p class="section__intro fade-up" data-i18n="ins.intro">Cleanly's platform insurance is supplemental to each partner company's own public liability policy. If something goes wrong, we route the claim — you don't deal with the company or the insurer directly.</p>
+
+    <div class="cov-grid">
+      <div class="cov-col cov-col--yes fade-up">
+        <div class="cov-col__title">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5 5.5-6"/></svg>
+          <span data-i18n="ins.cov.title">Covered</span>
+        </div>
+        <ul class="cov-col__list">
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="ins.cov.a">Accidental damage to your property during a service</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="ins.cov.b">Damage to carpets during pickup, transport, or cleaning</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="ins.cov.c">Washer injury on your property (no liability on you)</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="ins.cov.d">Loss of carpet while in our facility's custody</span></li>
+        </ul>
+      </div>
+
+      <div class="cov-col cov-col--no fade-up">
+        <div class="cov-col__title">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 3.5l7 7M10.5 3.5l-7 7"/></svg>
+          <span data-i18n="ins.not.title">Not covered</span>
+        </div>
+        <ul class="cov-col__list">
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l8 8M12 4l-8 8"/></svg><span data-i18n="ins.not.a">Pre-existing damage (before the washer arrived)</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l8 8M12 4l-8 8"/></svg><span data-i18n="ins.not.b">Items marked "fragile" that weren't disclosed at booking</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l8 8M12 4l-8 8"/></svg><span data-i18n="ins.not.c">Property owned by someone else (landlord's shared furniture, etc.)</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l8 8M12 4l-8 8"/></svg><span data-i18n="ins.not.d">Valuables over <span class="num">AED 5,000</span> not declared before the job</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="limit-callout fade-up">
+      <div class="limit-callout__block">
+        <span class="limit-callout__label" data-i18n="ins.lim.l1">Coverage cap per incident</span>
+        <span class="limit-callout__value"><span class="num">AED 10,000</span></span>
+        <span class="limit-callout__sub" data-i18n="ins.lim.s1">Applies to a single job. Items declared at booking can have individual higher limits.</span>
+      </div>
+      <div class="limit-callout__block">
+        <span class="limit-callout__label" data-i18n="ins.lim.l2">Annual cap per customer</span>
+        <span class="limit-callout__value"><span class="num">AED 50,000</span></span>
+        <span class="limit-callout__sub" data-i18n="ins.lim.s2">Across all jobs in a calendar year. Reset every January.</span>
+      </div>
+    </div>
+
+    <p class="section__note fade-up" data-i18n="ins.claims"><strong>Claims process:</strong> Take photos immediately. Open the dispute in-app. We handle the claim with the insurer — you don't talk to the partner company, you don't talk to the insurer. Expect a decision within <span class="num">5</span> business days.</p>
+  </div>
+</section>
+
+<!-- ───── Disputes ───── -->
+<section id="disputes" class="section section--light">
+  <div class="container">
+    <p class="section__kicker fade-up" data-i18n="dis.kicker">Disputes</p>
+    <h2 class="section__heading fade-up" data-i18n="dis.heading">How we decide who's right.</h2>
+    <p class="section__intro fade-up" data-i18n="dis.intro">Disputes are resolved on evidence, not on volume. The photos the washer uploaded + whatever you can upload are the record. We read both, apply the rules below, and decide in <span class="num">24</span> hours.</p>
+
+    <div class="compare-wrap fade-up">
+      <table class="compare">
+        <thead>
+          <tr>
+            <th scope="col" data-i18n="dis.col1">What happened</th>
+            <th scope="col" data-i18n="dis.col2">Evidence needed</th>
+            <th scope="col" data-i18n="dis.col3">Outcome</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row" data-i18n="dis.r1.t">Service quality dispute</th>
+            <td data-i18n="dis.r1.e">Before/after photos + your detail in the ticket</td>
+            <td class="compare__out" data-i18n="dis.r1.o">Partial or full refund if photos support you</td>
+          </tr>
+          <tr>
+            <th scope="row" data-i18n="dis.r2.t">Damage claim</th>
+            <td data-i18n="dis.r2.e">Before/after photos + damage photos + repair quote</td>
+            <td class="compare__out" data-i18n="dis.r2.o">Insurance claim routed (see Insurance section)</td>
+          </tr>
+          <tr>
+            <th scope="row" data-i18n="dis.r3.t">Washer no-show</th>
+            <td data-i18n="dis.r3.e">Automatic — the app knows when they didn't start</td>
+            <td class="compare__out" data-i18n="dis.r3.o">Full refund + booking credit for the inconvenience</td>
+          </tr>
+          <tr>
+            <th scope="row" data-i18n="dis.r4.t">Cancellation mid-job</th>
+            <td data-i18n="dis.r4.e">App log shows when and why it ended</td>
+            <td class="compare__out" data-i18n="dis.r4.o">Refund proportional to work completed (<span class="num">20%</span> minimum floor)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="bad-faith fade-up" role="note">
+      <span data-i18n="dis.faith"><strong>One honest note:</strong> repeat bad-faith disputes — the kind where photo evidence clearly contradicts the claim — can lead to booking restrictions on your account. We don't talk about this much, but it's real. Our washers' livelihoods depend on the system working honestly for everyone.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Cancellation ───── -->
+<section id="cancellation" class="section" style="background: var(--sand);">
+  <div class="container">
+    <p class="section__kicker fade-up" data-i18n="can.kicker">Cancellation</p>
+    <h2 class="section__heading fade-up" data-i18n="can.heading">When you can cancel, and what it costs.</h2>
+
+    <div class="compare-wrap fade-up">
+      <table class="compare">
+        <thead>
+          <tr>
+            <th scope="col" data-i18n="can.col1">Service</th>
+            <th scope="col" data-i18n="can.col2">When</th>
+            <th scope="col" data-i18n="can.col3">Fee</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row" data-i18n="can.r1.t">Car wash / Sofa</th>
+            <td data-i18n="can.r1.w1">More than <span class="num">2</span> hrs before arrival</td>
+            <td class="compare__free" data-i18n="can.free">Free</td>
+          </tr>
+          <tr>
+            <th scope="row"></th>
+            <td data-i18n="can.r1.w2">Less than <span class="num">2</span> hrs before arrival</td>
+            <td class="compare__fee"><span class="num">50%</span> <span data-i18n="can.fee">fee</span></td>
+          </tr>
+          <tr>
+            <th scope="row"></th>
+            <td data-i18n="can.r1.w3">After washer is dispatched</td>
+            <td class="compare__fee"><span class="num">100%</span> <span data-i18n="can.fee">fee</span></td>
+          </tr>
+          <tr>
+            <th scope="row" data-i18n="can.r2.t">Carpet</th>
+            <td data-i18n="can.r2.w1">Before pickup</td>
+            <td class="compare__free" data-i18n="can.free">Free</td>
+          </tr>
+          <tr>
+            <th scope="row"></th>
+            <td data-i18n="can.r2.w2">During pickup window</td>
+            <td class="compare__fee"><span class="num">30%</span> <span data-i18n="can.fee">fee</span></td>
+          </tr>
+          <tr>
+            <th scope="row"></th>
+            <td data-i18n="can.r2.w3">After pickup (carpet at facility)</td>
+            <td class="compare__fee" data-i18n="can.r2.o3"><span class="num">50%</span> refund if you refuse return</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="section__note fade-up" style="margin-top: 24px;" data-i18n="can.why"><strong>Why the fees?</strong> The fee covers the washer's lost time — it's paid to the washer, not to Cleanly. The closer to the job you cancel, the more of their day was committed.</p>
+
+    <div class="how fade-up" role="region" aria-labelledby="can-how">
+      <p id="can-how" class="how__title" data-i18n="can.how.title">How to cancel</p>
+      <ol class="how__steps">
+        <li data-i18n="can.how.s1">Open the order in the Cleanly app.</li>
+        <li data-i18n="can.how.s2">Tap <strong>Cancel</strong>.</li>
+        <li data-i18n="can.how.s3">Confirm the fee shown (if any). Done.</li>
+      </ol>
+      <p class="how__note" data-i18n="can.how.note">You never need to call. If the fee seems wrong, open a dispute — we'll read the logs.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Privacy ───── -->
+<section id="privacy" class="section section--light">
+  <div class="container">
+    <p class="section__kicker fade-up" data-i18n="priv.kicker">Privacy</p>
+    <h2 class="section__heading fade-up" data-i18n="priv.heading">What we collect, what we don't.</h2>
+    <p class="section__intro fade-up" data-i18n="priv.intro">Short version: we collect what the job needs. We don't collect what the job doesn't. We never sell data. The full legal detail is in the Privacy Policy (link below).</p>
+
+    <div class="cov-grid">
+      <div class="cov-col cov-col--yes fade-up">
+        <div class="cov-col__title">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5 5.5-6"/></svg>
+          <span data-i18n="priv.collect.title">We collect</span>
+        </div>
+        <ul class="cov-col__list">
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="priv.collect.a">Your phone number (encrypted at rest; masked to washers)</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="priv.collect.b">Service address per booking (not shared beyond the assigned washer)</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="priv.collect.c">Payment method (held by Stripe, not us)</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="priv.collect.d">Job ratings and complaint history (to run the marketplace fairly)</span></li>
+        </ul>
+      </div>
+
+      <div class="cov-col cov-col--no fade-up">
+        <div class="cov-col__title">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 3.5l7 7M10.5 3.5l-7 7"/></svg>
+          <span data-i18n="priv.skip.title">We don't collect</span>
+        </div>
+        <ul class="cov-col__list">
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l8 8M12 4l-8 8"/></svg><span data-i18n="priv.skip.a">Your location when you're not actively booking</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l8 8M12 4l-8 8"/></svg><span data-i18n="priv.skip.b">Your contacts</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l8 8M12 4l-8 8"/></svg><span data-i18n="priv.skip.c">Photos from your phone gallery (beyond what you upload)</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l8 8M12 4l-8 8"/></svg><span data-i18n="priv.skip.d">Browsing data from other sites or apps</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="section__note fade-up" data-i18n="priv.washer"><strong>What the washer sees:</strong> your first name, service address, and job notes — only during the job window. Afterwards only the last <span class="num">4</span> digits of your address and your rating remain visible to them. They never see your full phone number.</p>
+
+    <p class="section__note fade-up" style="margin-top: 14px;">
+      <span data-i18n="priv.full">For legal detail, see the full </span><a href="#" data-i18n="priv.fullCta">Privacy Policy</a><span data-i18n="priv.fullEnd">.</span>
+    </p>
+
+    <p class="section__note fade-up" style="margin-top: 14px;">
+      <span data-i18n="priv.export">Data export or deletion requests (GDPR, PDPL, UAE federal data protection): email </span><a href="mailto:privacy@cleanly.ae">privacy@cleanly.ae</a><span data-i18n="priv.exportEnd">. We reply within 30 days.</span>
+    </p>
+  </div>
+</section>
+
+<!-- ───── Still stuck? ───── -->
+<section id="stuck" class="section section--navy" style="padding: 48px 0;">
+  <div class="container">
+    <p class="section__kicker fade-up" data-i18n="stuck.kicker">Still stuck?</p>
+    <h2 class="section__heading fade-up" data-i18n="stuck.heading">Talk to a human.</h2>
+
+    <div class="stuck">
+      <a class="stuck-card fade-up" href="#">
+        <div class="stuck-card__icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h14v10H6l-3 3z"/><path d="M7 8h6M7 11h4"/></svg>
+        </div>
+        <h3 class="stuck-card__title" data-i18n="stuck.c1.t">In-app chat</h3>
+        <p class="stuck-card__body" data-i18n="stuck.c1.b">Fastest. Open any order and tap Support — you're talking to us in seconds.</p>
+        <span class="stuck-card__action">
+          <span data-i18n="stuck.c1.cta">Open the app</span>
+          <svg class="rtl-flip" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h8M8 3l4 4-4 4"/></svg>
+        </span>
+      </a>
+
+      <a class="stuck-card fade-up" href="https://wa.me/971500000000">
+        <div class="stuck-card__icon" aria-hidden="true">
+          <svg class="rtl-flip" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l1.2-3.8A7.5 7.5 0 1 1 7 16z"/><path d="M7.5 8.5c.5 2 1.5 3 3.5 3.5l1.3-1 1.7.7-.4 1.7c-3.2.2-5.8-2.4-5.6-5.6l1.7-.4.7 1.7z"/></svg>
+        </div>
+        <h3 class="stuck-card__title" data-i18n="stuck.c2.t">WhatsApp</h3>
+        <p class="stuck-card__body" data-i18n="stuck.c2.b">Response within 1 hour during operating hours. Good for follow-ups on an existing ticket.</p>
+        <span class="stuck-card__action">
+          <span class="num">+971 50 000 0000</span>
+          <svg class="rtl-flip" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h8M8 3l4 4-4 4"/></svg>
+        </span>
+      </a>
+
+      <a class="stuck-card fade-up" href="mailto:support@cleanly.ae">
+        <div class="stuck-card__icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4.5" width="15" height="11" rx="1.5"/><path d="M3 6l7 5 7-5"/></svg>
+        </div>
+        <h3 class="stuck-card__title" data-i18n="stuck.c3.t">Email</h3>
+        <p class="stuck-card__body" data-i18n="stuck.c3.b">For anything that doesn't fit the chat flow. Response within 12 hours.</p>
+        <span class="stuck-card__action">
+          <span>support@cleanly.ae</span>
+          <svg class="rtl-flip" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h8M8 3l4 4-4 4"/></svg>
+        </span>
+      </a>
+    </div>
+
+    <p class="stuck-hours fade-up">
+      <strong data-i18n="stuck.hoursLabel">Support hours: </strong>
+      <span class="num" data-i18n="stuck.hoursTime">08:00–24:00 GST</span>
+      <span data-i18n="stuck.hoursDays">, 7 days a week. Emergency / safety reports are reviewed 24/7.</span>
+    </p>
+  </div>
+</section>
+
+<!-- ───── Footer ───── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__cols">
+      <div class="footer__col footer__brand">
+        <div class="footer__logo">Cleanly</div>
+        <p class="footer__tag" data-i18n="footer.tag">On-demand cleaning across the Gulf — verified, transparent, right to your door.</p>
+        <div class="footer__social" aria-label="Social">
+          <a href="#" aria-label="Instagram">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="14" height="14" rx="4"/><circle cx="10" cy="10" r="3.2"/><circle cx="14.2" cy="5.8" r="0.6" fill="currentColor"/></svg>
+          </a>
+          <a href="#" aria-label="TikTok">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v10a3.5 3.5 0 1 1-3.5-3.5M12 3c.5 2.5 2 4 4.5 4.5"/></svg>
+          </a>
+          <a href="#" aria-label="WhatsApp">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l1.2-3.8A7.5 7.5 0 1 1 7 16z"/><path d="M7.5 8.5c.5 2 1.5 3 3.5 3.5l1.3-1 1.7.7-.4 1.7c-3.2.2-5.8-2.4-5.6-5.6l1.7-.4.7 1.7z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer__col">
+        <h4 data-i18n="footer.customers">For customers</h4>
+        <ul>
+          <li><a href="how-it-works.html" data-i18n="footer.how">How it works</a></li>
+          <li><a href="services.html" data-i18n="footer.pricing">Pricing</a></li>
+          <li><a href="city-coverage.html" data-i18n="footer.coverage">Coverage</a></li>
+          <li><a href="support.html" data-i18n="footer.faq">FAQ</a></li>
+          <li><a href="support.html#stuck" data-i18n="footer.support">Support</a></li>
+        </ul>
+      </div>
+
+      <div class="footer__col">
+        <h4 data-i18n="footer.companies">For companies</h4>
+        <ul>
+          <li><a href="become-a-partner.html" data-i18n="footer.partner">Become a partner</a></li>
+          <li><a href="become-a-washer.html" data-i18n="footer.washerapp">Washer app</a></li>
+          <li><a href="#" data-i18n="footer.partnerterms">Partner terms</a></li>
+        </ul>
+      </div>
+
+      <div class="footer__col">
+        <h4 data-i18n="footer.company">Company</h4>
+        <ul>
+          <li><a href="about.html" data-i18n="footer.about">About</a></li>
+          <li><a href="#" data-i18n="footer.careers">Careers</a></li>
+          <li><a href="#" data-i18n="footer.privacy">Privacy</a></li>
+          <li><a href="#" data-i18n="footer.terms">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span data-i18n="footer.copy">© 2026 Cleanly · Made with care in the Gulf</span>
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button class="lang-toggle__opt" data-lang="ar" aria-pressed="false">AR</button>
+        <button class="lang-toggle__opt" data-lang="en" aria-pressed="true">EN</button>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const I18N = {
+    en: {
+      "meta.title": "Cleanly — Help center",
+      "meta.desc": "The rules Cleanly actually follows — refunds, insurance, disputes, cancellation, privacy. Written in plain language.",
+      "nav.partner": "Become a partner",
+      "nav.signin": "Sign in",
+
+      "head.kicker": "Help center",
+      "head.title": "Answers, not runarounds.",
+      "head.sub": "The rules Cleanly actually follows — refunds, insurance, disputes, cancellation, privacy. If the answer is here, you don't need to open a ticket.",
+      "head.human": "Still need to talk to us?",
+
+      "tabs.refunds": "Refunds",
+      "tabs.insurance": "Insurance",
+      "tabs.disputes": "Disputes",
+      "tabs.cancellation": "Cancellation",
+      "tabs.privacy": "Privacy",
+
+      "ref.kicker": "Refunds",
+      "ref.heading": "When we refund, and how long it takes.",
+      "ref.intro": "Every refund scenario below is written from the app's actual policy, not a generic template. Payment is held at Stripe, so when a refund is triggered, the money comes back from escrow — not from us chasing the partner company for it.",
+      "ref.r1.t": "Washer didn't arrive",
+      "ref.r1.b": "Full refund, automatic. You don't need to open a ticket — the app knows they never started the job.",
+      "ref.r1.turn": "Turnaround: within 24 hours",
+      "ref.r2.t": "Service was incomplete",
+      "ref.r2.b": "Open a dispute in-app with a photo showing the issue. If verified against the washer's before/after photos, we refund you. If evidence is mixed, we coach the company and give you credit.",
+      "ref.r2.turn": "Turnaround: 48 hours",
+      "ref.r3.t": "Damage to your property",
+      "ref.r3.b": "Not a refund — an insurance claim. See the Insurance section. Photos required within 24 hours of job completion.",
+      "ref.r3.turn": "See: Insurance",
+      "ref.r4.t": "You canceled late, but we hadn't dispatched",
+      "ref.r4.b": "Full refund. The washer never left, so there's no trip to compensate.",
+      "ref.r4.turn": "Turnaround: immediate",
+      "ref.r5.t": "Carpet returned late",
+      "ref.r5.b": "24+ hr late: 25% auto-refund. 48+ hr late: 50%. 72+ hr late: full refund — and the carpet is still returned.",
+      "ref.r5.turn": "Turnaround: auto-applied on return",
+      "ref.how.title": "How to request a refund",
+      "ref.how.s1": "Open the order in the Cleanly app.",
+      "ref.how.s2": "Tap Report issue. Select the scenario that fits.",
+      "ref.how.s3": "Upload photos if the app asks. Submit.",
+      "ref.how.note": "No phone number required. No hold music. That's intentional.",
+
+      "ins.kicker": "Insurance",
+      "ins.heading": "What's covered, and what isn't.",
+      "ins.intro": "Cleanly's platform insurance is supplemental to each partner company's own public liability policy. If something goes wrong, we route the claim — you don't deal with the company or the insurer directly.",
+      "ins.cov.title": "Covered",
+      "ins.cov.a": "Accidental damage to your property during a service",
+      "ins.cov.b": "Damage to carpets during pickup, transport, or cleaning",
+      "ins.cov.c": "Washer injury on your property (no liability on you)",
+      "ins.cov.d": "Loss of carpet while in our facility's custody",
+      "ins.not.title": "Not covered",
+      "ins.not.a": "Pre-existing damage (before the washer arrived)",
+      "ins.not.b": "Items marked \"fragile\" that weren't disclosed at booking",
+      "ins.not.c": "Property owned by someone else (landlord's shared furniture, etc.)",
+      "ins.not.d": "Valuables over AED 5,000 not declared before the job",
+      "ins.lim.l1": "Coverage cap per incident",
+      "ins.lim.s1": "Applies to a single job. Items declared at booking can have individual higher limits.",
+      "ins.lim.l2": "Annual cap per customer",
+      "ins.lim.s2": "Across all jobs in a calendar year. Reset every January.",
+      "ins.claims": "Claims process: Take photos immediately. Open the dispute in-app. We handle the claim with the insurer — you don't talk to the partner company, you don't talk to the insurer. Expect a decision within 5 business days.",
+
+      "dis.kicker": "Disputes",
+      "dis.heading": "How we decide who's right.",
+      "dis.intro": "Disputes are resolved on evidence, not on volume. The photos the washer uploaded + whatever you can upload are the record. We read both, apply the rules below, and decide in 24 hours.",
+      "dis.col1": "What happened",
+      "dis.col2": "Evidence needed",
+      "dis.col3": "Outcome",
+      "dis.r1.t": "Service quality dispute",
+      "dis.r1.e": "Before/after photos + your detail in the ticket",
+      "dis.r1.o": "Partial or full refund if photos support you",
+      "dis.r2.t": "Damage claim",
+      "dis.r2.e": "Before/after photos + damage photos + repair quote",
+      "dis.r2.o": "Insurance claim routed (see Insurance section)",
+      "dis.r3.t": "Washer no-show",
+      "dis.r3.e": "Automatic — the app knows when they didn't start",
+      "dis.r3.o": "Full refund + booking credit for the inconvenience",
+      "dis.r4.t": "Cancellation mid-job",
+      "dis.r4.e": "App log shows when and why it ended",
+      "dis.r4.o": "Refund proportional to work completed (20% minimum floor)",
+      "dis.faith": "One honest note: repeat bad-faith disputes — the kind where photo evidence clearly contradicts the claim — can lead to booking restrictions on your account. We don't talk about this much, but it's real. Our washers' livelihoods depend on the system working honestly for everyone.",
+
+      "can.kicker": "Cancellation",
+      "can.heading": "When you can cancel, and what it costs.",
+      "can.col1": "Service",
+      "can.col2": "When",
+      "can.col3": "Fee",
+      "can.free": "Free",
+      "can.fee": "fee",
+      "can.r1.t": "Car wash / Sofa",
+      "can.r1.w1": "More than 2 hrs before arrival",
+      "can.r1.w2": "Less than 2 hrs before arrival",
+      "can.r1.w3": "After washer is dispatched",
+      "can.r2.t": "Carpet",
+      "can.r2.w1": "Before pickup",
+      "can.r2.w2": "During pickup window",
+      "can.r2.w3": "After pickup (carpet at facility)",
+      "can.r2.o3": "50% refund if you refuse return",
+      "can.why": "Why the fees? The fee covers the washer's lost time — it's paid to the washer, not to Cleanly. The closer to the job you cancel, the more of their day was committed.",
+      "can.how.title": "How to cancel",
+      "can.how.s1": "Open the order in the Cleanly app.",
+      "can.how.s2": "Tap Cancel.",
+      "can.how.s3": "Confirm the fee shown (if any). Done.",
+      "can.how.note": "You never need to call. If the fee seems wrong, open a dispute — we'll read the logs.",
+
+      "priv.kicker": "Privacy",
+      "priv.heading": "What we collect, what we don't.",
+      "priv.intro": "Short version: we collect what the job needs. We don't collect what the job doesn't. We never sell data. The full legal detail is in the Privacy Policy (link below).",
+      "priv.collect.title": "We collect",
+      "priv.collect.a": "Your phone number (encrypted at rest; masked to washers)",
+      "priv.collect.b": "Service address per booking (not shared beyond the assigned washer)",
+      "priv.collect.c": "Payment method (held by Stripe, not us)",
+      "priv.collect.d": "Job ratings and complaint history (to run the marketplace fairly)",
+      "priv.skip.title": "We don't collect",
+      "priv.skip.a": "Your location when you're not actively booking",
+      "priv.skip.b": "Your contacts",
+      "priv.skip.c": "Photos from your phone gallery (beyond what you upload)",
+      "priv.skip.d": "Browsing data from other sites or apps",
+      "priv.washer": "What the washer sees: your first name, service address, and job notes — only during the job window. Afterwards only the last 4 digits of your address and your rating remain visible to them. They never see your full phone number.",
+      "priv.full": "For legal detail, see the full ",
+      "priv.fullCta": "Privacy Policy",
+      "priv.fullEnd": ".",
+      "priv.export": "Data export or deletion requests (GDPR, PDPL, UAE federal data protection): email ",
+      "priv.exportEnd": ". We reply within 30 days.",
+
+      "stuck.kicker": "Still stuck?",
+      "stuck.heading": "Talk to a human.",
+      "stuck.c1.t": "In-app chat",
+      "stuck.c1.b": "Fastest. Open any order and tap Support — you're talking to us in seconds.",
+      "stuck.c1.cta": "Open the app",
+      "stuck.c2.t": "WhatsApp",
+      "stuck.c2.b": "Response within 1 hour during operating hours. Good for follow-ups on an existing ticket.",
+      "stuck.c3.t": "Email",
+      "stuck.c3.b": "For anything that doesn't fit the chat flow. Response within 12 hours.",
+      "stuck.hoursLabel": "Support hours: ",
+      "stuck.hoursTime": "08:00–24:00 GST",
+      "stuck.hoursDays": ", 7 days a week. Emergency / safety reports are reviewed 24/7.",
+
+      "footer.tag": "On-demand cleaning across the Gulf — verified, transparent, right to your door.",
+      "footer.customers": "For customers",
+      "footer.how": "How it works",
+      "footer.pricing": "Pricing",
+      "footer.coverage": "Coverage",
+      "footer.faq": "FAQ",
+      "footer.support": "Support",
+      "footer.companies": "For companies",
+      "footer.partner": "Become a partner",
+      "footer.washerapp": "Washer app",
+      "footer.partnerterms": "Partner terms",
+      "footer.company": "Company",
+      "footer.about": "About",
+      "footer.careers": "Careers",
+      "footer.privacy": "Privacy",
+      "footer.terms": "Terms",
+      "footer.copy": "© 2026 Cleanly · Made with care in the Gulf"
+    },
+    ar: {
+      "meta.title": "كلين لي — مركز المساعدة",
+      "meta.desc": "القواعد اللي كلين لي تشتغل فيها فعلاً — استرداد، تأمين، نزاعات، إلغاء، خصوصية. بكلمات بسيطة.",
+      "nav.partner": "كن شريكًا",
+      "nav.signin": "تسجيل الدخول",
+
+      "head.kicker": "مركز المساعدة",
+      "head.title": "إجابات، بدون لف ودوران.",
+      "head.sub": "القواعد اللي كلين لي تشتغل فيها فعلاً — استرداد، تأمين، نزاعات، إلغاء، خصوصية. لو لقيت جوابك هنا، ما تحتاج تفتح تذكرة.",
+      "head.human": "تبي تكلّم إنسان؟",
+
+      "tabs.refunds": "استرداد",
+      "tabs.insurance": "تأمين",
+      "tabs.disputes": "نزاعات",
+      "tabs.cancellation": "إلغاء",
+      "tabs.privacy": "خصوصية",
+
+      "ref.kicker": "استرداد",
+      "ref.heading": "متى نرجّع المبلغ، وكم ياخذ وقت.",
+      "ref.intro": "كل حالة استرداد تحت مكتوبة من سياسة التطبيق الفعلية، مش قالب عام. الدفع محجوز عند Stripe، فلما يُطلق الاسترداد، الفلوس ترجع من الحجز — مش احنا نلاحق الشركة الشريكة عشانها.",
+      "ref.r1.t": "العامل ما حضر",
+      "ref.r1.b": "استرداد كامل، تلقائي. ما تحتاج تفتح تذكرة — التطبيق عارف إنه ما بدأ الوظيفة.",
+      "ref.r1.turn": "المدة: خلال 24 ساعة",
+      "ref.r2.t": "الخدمة ما اكتملت",
+      "ref.r2.b": "افتح نزاعًا داخل التطبيق مع صورة للمشكلة. لو تحققت مقارنةً بصور قبل/بعد العامل، نسترد لك. لو الدلائل مختلطة، نوجّه الشركة ونعطيك رصيدًا.",
+      "ref.r2.turn": "المدة: 48 ساعة",
+      "ref.r3.t": "ضرر في ممتلكاتك",
+      "ref.r3.b": "مش استرداد — مطالبة تأمين. شوف قسم التأمين. الصور مطلوبة خلال 24 ساعة من انتهاء الوظيفة.",
+      "ref.r3.turn": "راجع: التأمين",
+      "ref.r4.t": "ألغيت متأخّر، لكن ما أرسلنا العامل",
+      "ref.r4.b": "استرداد كامل. العامل ما طلع، فما في رحلة نعوّضها.",
+      "ref.r4.turn": "المدة: فوري",
+      "ref.r5.t": "السجاد رجع متأخّر",
+      "ref.r5.b": "متأخّر 24+ ساعة: استرداد تلقائي 25%. 48+ ساعة: 50%. 72+ ساعة: استرداد كامل — والسجاد يرجع لك كمان.",
+      "ref.r5.turn": "المدة: يطبّق تلقائيًا عند التسليم",
+      "ref.how.title": "كيف تطلب استرداد",
+      "ref.how.s1": "افتح الطلب في تطبيق كلين لي.",
+      "ref.how.s2": "اضغط «بلّغ عن مشكلة». اختر السيناريو المناسب.",
+      "ref.how.s3": "ارفع الصور لو التطبيق طلبها. أرسل.",
+      "ref.how.note": "ما تحتاج رقم هاتف. ولا موسيقى انتظار. هذا مقصود.",
+
+      "ins.kicker": "تأمين",
+      "ins.heading": "وش مغطّى، ووش مش مغطّى.",
+      "ins.intro": "تأمين منصة كلين لي مكمّل لبوليصة المسؤولية العامة عند كل شركة شريكة. لو صار شي غلط، نحن نوجّه المطالبة — أنت ما تتعامل لا مع الشركة ولا مع شركة التأمين.",
+      "ins.cov.title": "مغطّى",
+      "ins.cov.a": "أضرار عرضية لممتلكاتك أثناء الخدمة",
+      "ins.cov.b": "أضرار السجاد أثناء الاستلام، النقل، أو التنظيف",
+      "ins.cov.c": "إصابة العامل في ممتلكاتك (ما في مسؤولية عليك)",
+      "ins.cov.d": "فقد السجاد وهو في عهدة مغسلتنا",
+      "ins.not.title": "غير مغطّى",
+      "ins.not.a": "أضرار سابقة (قبل ما يوصل العامل)",
+      "ins.not.b": "أغراض «هشّة» ما تم ذكرها عند الحجز",
+      "ins.not.c": "ممتلكات مملوكة لشخص آخر (أثاث مشترك لصاحب البيت، مثلاً)",
+      "ins.not.d": "مقتنيات فوق AED 5,000 ما تم الإفصاح عنها قبل الوظيفة",
+      "ins.lim.l1": "سقف التغطية لكل حادث",
+      "ins.lim.s1": "تنطبق على وظيفة واحدة. الأغراض المعلنة عند الحجز ممكن يكون لها حدود أعلى.",
+      "ins.lim.l2": "السقف السنوي لكل عميل",
+      "ins.lim.s2": "عبر كل الوظائف في السنة الميلادية. يُعاد الضبط كل يناير.",
+      "ins.claims": "عملية المطالبة: خذ صور فورًا. افتح النزاع داخل التطبيق. احنا نتعامل مع المطالبة مع شركة التأمين — أنت ما تكلّم الشركة الشريكة، ولا شركة التأمين. القرار خلال 5 أيام عمل.",
+
+      "dis.kicker": "نزاعات",
+      "dis.heading": "كيف نقرّر مين على حق.",
+      "dis.intro": "النزاعات تُحسم بالأدلة، مش بالصوت العالي. صور العامل + اللي ترفعها أنت هي السجل. نقرأ الاثنين، نطبّق القواعد تحت، ونقرّر خلال 24 ساعة.",
+      "dis.col1": "اللي صار",
+      "dis.col2": "الأدلة المطلوبة",
+      "dis.col3": "النتيجة",
+      "dis.r1.t": "نزاع جودة الخدمة",
+      "dis.r1.e": "صور قبل/بعد + تفاصيلك في التذكرة",
+      "dis.r1.o": "استرداد جزئي أو كامل لو الصور تدعمك",
+      "dis.r2.t": "مطالبة ضرر",
+      "dis.r2.e": "صور قبل/بعد + صور الضرر + عرض سعر الإصلاح",
+      "dis.r2.o": "مطالبة تأمين تُوجّه (شوف قسم التأمين)",
+      "dis.r3.t": "العامل ما حضر",
+      "dis.r3.e": "تلقائي — التطبيق يعرف لما ما يبدأ الوظيفة",
+      "dis.r3.o": "استرداد كامل + رصيد حجز للإزعاج",
+      "dis.r4.t": "إلغاء في منتصف الوظيفة",
+      "dis.r4.e": "سجل التطبيق يظهر متى وليش انتهت",
+      "dis.r4.o": "استرداد يتناسب مع اللي اكتمل (حد أدنى 20%)",
+      "dis.faith": "ملاحظة صريحة: النزاعات المتكرّرة بسوء نية — اللي الصور تخالف المطالبة فيها بوضوح — ممكن تؤدي لقيود على حسابك. ما نتكلّم عن هذا كثير، لكن صحيح. رزق عمّالنا يعتمد على إن النظام يشتغل بأمانة للكل.",
+
+      "can.kicker": "إلغاء",
+      "can.heading": "متى تقدر تلغي، وكم يكلّف.",
+      "can.col1": "الخدمة",
+      "can.col2": "متى",
+      "can.col3": "الرسوم",
+      "can.free": "مجاني",
+      "can.fee": "رسوم",
+      "can.r1.t": "سيارات / كنب",
+      "can.r1.w1": "قبل الوصول بأكثر من ساعتين",
+      "can.r1.w2": "قبل الوصول بأقل من ساعتين",
+      "can.r1.w3": "بعد إرسال العامل",
+      "can.r2.t": "سجاد",
+      "can.r2.w1": "قبل الاستلام",
+      "can.r2.w2": "أثناء نافذة الاستلام",
+      "can.r2.w3": "بعد الاستلام (السجاد في المغسلة)",
+      "can.r2.o3": "استرداد 50% لو رفضت الإرجاع",
+      "can.why": "ليش الرسوم؟ الرسوم تغطّي وقت العامل اللي راح — تُدفع للعامل، مش لكلين لي. كل ما قرّبت الإلغاء من موعد الوظيفة، كل ما كان وقته أكثر مرهون.",
+      "can.how.title": "كيف تلغي",
+      "can.how.s1": "افتح الطلب في التطبيق.",
+      "can.how.s2": "اضغط «إلغاء».",
+      "can.how.s3": "أكّد الرسوم الظاهرة (لو في). خلاص.",
+      "can.how.note": "ما تحتاج تتصل أبدًا. لو الرسوم تبين غلط، افتح نزاع — راح نقرأ السجل.",
+
+      "priv.kicker": "خصوصية",
+      "priv.heading": "وش نجمع، ووش ما نجمع.",
+      "priv.intro": "باختصار: نجمع اللي الوظيفة تحتاجه. ما نجمع اللي ما تحتاجه. ما نبيع البيانات أبدًا. التفاصيل القانونية الكاملة في سياسة الخصوصية (الرابط تحت).",
+      "priv.collect.title": "نجمع",
+      "priv.collect.a": "رقم هاتفك (مشفّر في التخزين؛ مقنّع أمام العمّال)",
+      "priv.collect.b": "عنوان الخدمة لكل حجز (ما يُشارك غير مع العامل المعيّن)",
+      "priv.collect.c": "طريقة الدفع (محفوظة عند Stripe، مش عندنا)",
+      "priv.collect.d": "تقييمات الوظائف وسجل الشكاوى (عشان ندير السوق بإنصاف)",
+      "priv.skip.title": "ما نجمع",
+      "priv.skip.a": "موقعك لما ما تكون بصدد حجز",
+      "priv.skip.b": "جهات اتصالك",
+      "priv.skip.c": "صور من معرض هاتفك (غير اللي ترفعها)",
+      "priv.skip.d": "بيانات تصفحك من مواقع أو تطبيقات ثانية",
+      "priv.washer": "وش يشوف العامل: اسمك الأول، عنوان الخدمة، ملاحظات الوظيفة — فقط خلال نافذة الوظيفة. بعدها، فقط آخر 4 أرقام من عنوانك وتقييمك يضلّون ظاهرين له. ما يشوف أبدًا رقم هاتفك الكامل.",
+      "priv.full": "للتفاصيل القانونية، راجع ",
+      "priv.fullCta": "سياسة الخصوصية",
+      "priv.fullEnd": " الكاملة.",
+      "priv.export": "طلبات تصدير أو حذف البيانات (GDPR، PDPL، قانون حماية البيانات الاتحادي): راسل ",
+      "priv.exportEnd": ". نرد خلال 30 يومًا.",
+
+      "stuck.kicker": "لسّه ما لقيت جوابك؟",
+      "stuck.heading": "كلّم إنسان.",
+      "stuck.c1.t": "الدردشة داخل التطبيق",
+      "stuck.c1.b": "الأسرع. افتح أي طلب واضغط الدعم — تتكلّم معنا خلال ثواني.",
+      "stuck.c1.cta": "افتح التطبيق",
+      "stuck.c2.t": "واتساب",
+      "stuck.c2.b": "رد خلال ساعة في ساعات العمل. مناسب لمتابعة تذكرة قائمة.",
+      "stuck.c3.t": "البريد الإلكتروني",
+      "stuck.c3.b": "لأي شي ما يدخل في مسار الدردشة. رد خلال 12 ساعة.",
+      "stuck.hoursLabel": "ساعات الدعم: ",
+      "stuck.hoursTime": "08:00–24:00 بتوقيت الخليج",
+      "stuck.hoursDays": "، طوال أيام الأسبوع. تقارير الطوارئ / السلامة تُراجع 24/7.",
+
+      "footer.tag": "خدمة تنظيف عند الطلب في الخليج — موثوقة، شفافة، حتى باب بيتك.",
+      "footer.customers": "للعملاء",
+      "footer.how": "كيف نعمل",
+      "footer.pricing": "الأسعار",
+      "footer.coverage": "تغطية المدن",
+      "footer.faq": "الأسئلة الشائعة",
+      "footer.support": "الدعم",
+      "footer.companies": "للشركات",
+      "footer.partner": "كن شريكًا",
+      "footer.washerapp": "تطبيق العامل",
+      "footer.partnerterms": "شروط الشركاء",
+      "footer.company": "الشركة",
+      "footer.about": "من نحن",
+      "footer.careers": "الوظائف",
+      "footer.privacy": "الخصوصية",
+      "footer.terms": "الشروط",
+      "footer.copy": "© 2026 كلين لي · صُنع بعناية في الخليج"
+    }
+  };
+
+  window.addEventListener("DOMContentLoaded", () => {
+    Cleanly.init({
+      dict: I18N,
+      tabSelector: ".switcher__tab",
+      sectionIds: ["refunds", "insurance", "disputes", "cancellation", "privacy"]
+    });
+  });
+</script>
+
+</body>
+</html>

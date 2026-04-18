@@ -1,0 +1,1140 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-locale="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title data-i18n="meta.title">Cleanly — How it works</title>
+<meta name="description" data-i18n="meta.desc" content="Step-by-step: from opening the app to paying after a clean. Seven transparent steps that show exactly what happens at every handoff." />
+<meta name="theme-color" content="#1A2744" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="shared.css" />
+<script src="shared.js" defer></script>
+<style>
+  html { scroll-padding-top: 132px; }
+
+  /* Page-head radial glow + trust row */
+  .page-head { padding: 120px 0 56px; }
+  .page-head::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(700px 380px at 90% 0%, rgba(201,168,76,0.08), transparent 60%),
+      radial-gradient(520px 300px at 0% 100%, rgba(201,168,76,0.05), transparent 60%);
+    pointer-events: none;
+  }
+  .page-head__sub { margin-block-end: 20px; }
+  .page-head__trust {
+    display: flex; flex-wrap: wrap; gap: 6px 16px;
+    font-size: 13px;
+    color: rgba(248,247,244,0.72);
+  }
+  .page-head__trust span { display: inline-flex; align-items: center; gap: 6px; }
+  .page-head__trust svg { color: var(--gold); flex-shrink: 0; }
+
+  /* Tab chip sizing — smaller than the default 14px pills */
+  .switcher__tab { padding: 8px 16px; font-size: 13px; }
+
+  /* ───── Step sections ───── */
+  .step-sec {
+    padding: 56px 0;
+    scroll-margin-top: 132px;
+  }
+  .step-sec--sand { background: var(--sand); }
+
+  .step-grid {
+    display: grid; grid-template-columns: 1fr; gap: 32px;
+    align-items: center;
+  }
+  @media (min-width: 768px) {
+    .step-grid { grid-template-columns: 6fr 5fr; gap: 48px; }
+    .step-sec--reverse .step-grid { grid-template-columns: 5fr 6fr; }
+    .step-sec--reverse .step-copy { order: 2; }
+    .step-sec--reverse .step-media { order: 1; }
+  }
+
+  .step-num {
+    display: flex; align-items: baseline; gap: 12px;
+    margin-bottom: 16px;
+  }
+  .step-num__big {
+    font-size: 48px; font-weight: 600; line-height: 1;
+    color: var(--gold);
+    letter-spacing: -0.02em;
+  }
+  @media (min-width: 768px) { .step-num__big { font-size: 56px; } }
+  .step-num__label {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  .step-title {
+    font-size: 24px; font-weight: 600; line-height: 1.25;
+    color: var(--navy);
+    margin: 0 0 12px;
+  }
+  @media (min-width: 768px) { .step-title { font-size: 28px; } }
+  .step-desc {
+    font-size: 16px; color: var(--ink-muted);
+    margin: 0 0 20px; max-width: 520px;
+  }
+
+  .step-points {
+    list-style: none; padding: 0; margin: 0 0 24px;
+    display: flex; flex-direction: column; gap: 10px;
+    font-size: 14px; color: var(--navy);
+  }
+  .step-points li {
+    display: flex; align-items: flex-start; gap: 10px;
+    line-height: 1.5;
+  }
+  .step-points svg {
+    flex-shrink: 0;
+    color: var(--gold-deep);
+    margin-block-start: 3px;
+  }
+
+  /* callouts */
+  .callout {
+    padding: 14px 16px;
+    border-radius: var(--r-card);
+    border-inline-start: 3px solid var(--gold);
+    background: rgba(201,168,76,0.06);
+    font-size: 14px;
+    color: var(--navy);
+    max-width: 540px;
+  }
+  .callout--success { border-inline-start-color: var(--success); background: rgba(22,163,74,0.06); }
+  .callout--warn { border-inline-start-color: var(--warn); background: rgba(217,119,6,0.06); }
+  .callout--info { border-inline-start-color: #3b82f6; background: rgba(59,130,246,0.06); }
+  .callout strong { font-weight: 600; }
+
+  /* ───── Phone mockup ───── */
+  .phone {
+    width: 260px;
+    max-width: 100%;
+    margin: 0 auto;
+    aspect-ratio: 9 / 19;
+    background: var(--navy);
+    border-radius: 36px;
+    padding: 12px;
+    box-shadow: var(--shadow-lg), 0 0 0 1px rgba(26,39,68,0.04);
+    position: relative;
+  }
+  @media (min-width: 768px) { .phone { width: 280px; } }
+  .phone::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 14px; inset-inline-start: 50%;
+    transform: translateX(-50%);
+    width: 70px; height: 20px;
+    background: var(--navy);
+    border-radius: 0 0 14px 14px;
+    z-index: 2;
+  }
+  .phone__screen {
+    width: 100%; height: 100%;
+    border-radius: 26px;
+    background: linear-gradient(165deg, var(--surface) 0%, #eae6df 100%);
+    overflow: hidden;
+    position: relative;
+    display: flex; flex-direction: column;
+    padding: 28px 16px 16px;
+    gap: 10px;
+  }
+  .phone__status {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 10px; font-weight: 600;
+    color: var(--navy);
+    opacity: 0.6;
+    margin-block-end: 4px;
+  }
+  .phone__status::before {
+    content: "9:41";
+  }
+  .phone__status::after {
+    content: "●●●";
+    letter-spacing: 2px;
+    font-size: 8px;
+  }
+  .phone__block {
+    border-radius: 10px;
+    background: #fff;
+    padding: 10px 12px;
+    box-shadow: 0 1px 3px rgba(26,39,68,0.06);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .phone__block--primary {
+    background: var(--gold);
+    color: var(--navy);
+    font-weight: 600;
+    text-align: center;
+    font-size: 12px;
+    padding: 12px 10px;
+  }
+  .phone__row {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11px;
+    color: var(--navy);
+  }
+  .phone__row .dot {
+    width: 6px; height: 6px; border-radius: 999px; background: var(--gold);
+    flex-shrink: 0;
+  }
+  .phone__row .label { font-weight: 600; }
+  .phone__row .meta { color: var(--ink-muted); font-size: 10px; margin-inline-start: auto; }
+  .phone__bar {
+    height: 6px;
+    background: var(--sand);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .phone__bar > span {
+    display: block; height: 100%;
+    background: var(--gold);
+    border-radius: inherit;
+  }
+  .phone__heading {
+    font-size: 12px; font-weight: 600; color: var(--navy);
+  }
+  .phone__muted {
+    font-size: 10px; color: var(--ink-muted);
+  }
+  .phone__pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px;
+    font-size: 9px; font-weight: 600;
+    border-radius: 999px;
+    background: rgba(22,163,74,0.12);
+    color: var(--success);
+    align-self: flex-start;
+  }
+  .phone__stars { color: var(--gold); font-size: 14px; letter-spacing: 2px; }
+  .phone__map {
+    flex: 1;
+    background:
+      repeating-linear-gradient(45deg, rgba(26,39,68,0.04) 0 6px, transparent 6px 12px),
+      linear-gradient(180deg, #e7efe3 0%, #dae4d8 100%);
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    min-height: 100px;
+  }
+  .phone__map::after {
+    content: "";
+    position: absolute;
+    inset-inline-start: 28%; inset-block-start: 48%;
+    width: 14px; height: 14px;
+    background: var(--gold);
+    border: 2px solid var(--navy);
+    border-radius: 999px;
+    box-shadow: 0 0 0 8px rgba(201,168,76,0.18);
+  }
+  .phone__map::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 22%; inset-block-start: 32%;
+    width: 56%; height: 38%;
+    border: 2px dashed var(--navy);
+    border-radius: 40% 60% 50% 60%;
+    opacity: 0.25;
+  }
+
+  /* Delivery diagram — dashed light card with navy arrows */
+  .delivery {
+    margin-top: 8px;
+    padding: 16px;
+    border-radius: var(--r-card);
+    background: rgba(248,247,244,0.7);
+    border: 1px dashed rgba(26,39,68,0.15);
+  }
+  .delivery__title {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--gold-deep);
+    margin: 0 0 12px;
+  }
+  .delivery__diagram { color: var(--navy); font-weight: 600; }
+  .delivery__node svg { color: var(--gold); }
+  .delivery__arrow { background: var(--navy); opacity: 0.3; }
+  .delivery__arrow::after { opacity: 0.4; }
+
+  /* Tighter section rhythm + heading width cap for this page */
+  .section { padding: 56px 0; }
+  .section__heading { margin: 0 0 32px; }
+
+  .guarantees {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+  }
+  @media (min-width: 768px) { .guarantees { grid-template-columns: repeat(4, 1fr); gap: 20px; } }
+
+  .guarantee {
+    padding: 20px;
+    border-radius: var(--r-card);
+    border: 1px solid rgba(248,247,244,0.1);
+    background: rgba(248,247,244,0.02);
+    display: flex; flex-direction: column; gap: 10px;
+    transition: border-color 180ms ease;
+  }
+  .guarantee:hover { border-color: rgba(201,168,76,0.4); }
+  .guarantee__icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: rgba(201,168,76,0.14);
+    color: var(--gold);
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: transform 180ms ease;
+  }
+  .guarantee:hover .guarantee__icon { transform: scale(1.04); }
+  .guarantee__title { font-size: 14px; font-weight: 600; color: var(--on-navy); margin: 0; }
+  .guarantee__body { font-size: 13px; line-height: 1.5; color: rgba(248,247,244,0.72); margin: 0; }
+
+  /* Comparison overrides — tighter cell padding, gold "us" header col, hover tint, yes/no cells */
+  .compare th, .compare td { padding: 14px 18px; }
+  .compare thead th.th-us { color: var(--gold); }
+  .compare tbody th { min-width: 200px; }
+  .compare tbody tr:hover td,
+  .compare tbody tr:hover th { background: rgba(201,168,76,0.04); }
+  .cell-yes { color: var(--success); font-weight: 600; }
+  .cell-no  { color: var(--danger); font-weight: 600; }
+  .cell-yes svg, .cell-no svg { display: inline-block; vertical-align: -3px; margin-inline-end: 4px; }
+
+  /* Final CTA — smaller decorative glows than default */
+  .final-cta::before, .final-cta::after { width: 240px; height: 240px; }
+</style>
+</head>
+<body data-nav="solid">
+
+<!-- ───── Nav ───── -->
+<nav class="nav" aria-label="Primary">
+  <div class="container nav__inner">
+    <a href="index.html" class="logo" aria-label="Cleanly home">Cleanly</a>
+    <div class="nav__right">
+      <a class="nav__link--ghost" href="#" data-i18n="nav.washer">Become a washer</a>
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button class="lang-toggle__opt" data-lang="ar" aria-pressed="false">AR</button>
+        <button class="lang-toggle__opt" data-lang="en" aria-pressed="true">EN</button>
+      </div>
+      <a class="btn btn--outline" href="#" data-i18n="nav.signin">Sign in</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ───── Page head ───── -->
+<header class="page-head">
+  <div class="container page-head__inner">
+    <p class="page-head__kicker" data-i18n="head.kicker">How it works</p>
+    <h1 class="page-head__title" data-i18n="head.title">From booking to clean — in seven steps.</h1>
+    <p class="page-head__sub" data-i18n="head.sub">No mystery, no surprise fees. Everything on this page is what actually happens when you book — so you can decide if Cleanly is for you before you download anything.</p>
+    <div class="page-head__trust">
+      <span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5l2.5 2.5 5.5-6"/></svg><span data-i18n="head.t1">Works for all 3 services</span></span>
+      <span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5l2.5 2.5 5.5-6"/></svg><span data-i18n="head.t2">Transparent pricing</span></span>
+      <span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5l2.5 2.5 5.5-6"/></svg><span data-i18n="head.t3">No phone calls required</span></span>
+    </div>
+  </div>
+</header>
+
+<!-- ───── Sticky step tabs ───── -->
+<div class="switcher-wrap" role="navigation" aria-label="Steps">
+  <div class="container">
+    <div class="switcher" role="tablist">
+      <button class="switcher__tab" role="tab" aria-current="true"  data-target="pick"><span class="num-badge num">1</span><span data-i18n="tabs.pick">Pick</span></button>
+      <button class="switcher__tab" role="tab" aria-current="false" data-target="book"><span class="num-badge num">2</span><span data-i18n="tabs.book">Book</span></button>
+      <button class="switcher__tab" role="tab" aria-current="false" data-target="match"><span class="num-badge num">3</span><span data-i18n="tabs.match">Match</span></button>
+      <button class="switcher__tab" role="tab" aria-current="false" data-target="pay"><span class="num-badge num">4</span><span data-i18n="tabs.pay">Pay</span></button>
+      <button class="switcher__tab" role="tab" aria-current="false" data-target="track"><span class="num-badge num">5</span><span data-i18n="tabs.track">Track</span></button>
+      <button class="switcher__tab" role="tab" aria-current="false" data-target="service"><span class="num-badge num">6</span><span data-i18n="tabs.service">Service</span></button>
+      <button class="switcher__tab" role="tab" aria-current="false" data-target="review"><span class="num-badge num">7</span><span data-i18n="tabs.review">Review</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ───── Step 1: Pick ───── -->
+<section id="pick" class="step-sec">
+  <div class="container">
+    <div class="step-grid">
+      <div class="step-copy">
+        <div class="step-num">
+          <span class="step-num__big num fade-up">01</span>
+          <span class="step-num__label fade-up" data-i18n="step.of7">Step 1 of 7</span>
+        </div>
+        <h2 class="step-title fade-up" data-i18n="s1.title">You pick — we handle the rest</h2>
+        <p class="step-desc fade-up" data-i18n="s1.desc">Open Cleanly and choose one of three services. Your city is detected from GPS; if you deny permission, pick it from a dropdown. Done in under 10 seconds.</p>
+        <ul class="step-points fade-up">
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="s1.p1">GPS auto-detects your city across UAE, KSA, Egypt</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="s1.p2">Three service cards — car wash, sofa, carpet — with one-tap select</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="s1.p3">Browse anonymously — no signup to see prices</span></li>
+        </ul>
+        <div class="callout fade-up"><span data-i18n="s1.callout"><strong>Privacy note:</strong> we don't ask for your phone number until you book. Browsing stays anonymous.</span></div>
+      </div>
+      <div class="step-media fade-up">
+        <div class="phone" aria-hidden="true">
+          <div class="phone__screen">
+            <div class="phone__status"></div>
+            <div class="phone__heading" data-i18n="s1.phone.h">What do you need cleaned?</div>
+            <div class="phone__muted" data-i18n="s1.phone.sub">Dubai · Al Barsha</div>
+            <div class="phone__block" style="border: 1.5px solid var(--gold);">
+              <div class="phone__row"><span class="dot"></span><span class="label" data-i18n="s1.phone.a">Car wash</span><span class="meta" data-i18n="s1.phone.am">from AED 45</span></div>
+            </div>
+            <div class="phone__block">
+              <div class="phone__row"><span class="dot" style="background:var(--sand);"></span><span class="label" data-i18n="s1.phone.b">Sofa cleaning</span><span class="meta" data-i18n="s1.phone.bm">from AED 120</span></div>
+            </div>
+            <div class="phone__block">
+              <div class="phone__row"><span class="dot" style="background:var(--sand);"></span><span class="label" data-i18n="s1.phone.c">Carpet cleaning</span><span class="meta" data-i18n="s1.phone.cm">AED 18 / m²</span></div>
+            </div>
+            <div class="phone__block phone__block--primary" data-i18n="s1.phone.cta">Find washers →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Step 2: Book ───── -->
+<section id="book" class="step-sec step-sec--sand step-sec--reverse">
+  <div class="container">
+    <div class="step-grid">
+      <div class="step-copy">
+        <div class="step-num">
+          <span class="step-num__big num fade-up">02</span>
+          <span class="step-num__label fade-up" data-i18n="step.of7">Step 2 of 7</span>
+        </div>
+        <h2 class="step-title fade-up" data-i18n="s2.title">Set your address and time</h2>
+        <p class="step-desc fade-up" data-i18n="s2.desc">Pin-drop your exact spot, then pick a time slot. Same-day is usually available within 90 minutes. For carpet, you pick both the pickup window and the return day.</p>
+        <ul class="step-points fade-up">
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="s2.p1">Pin-drop for parking spot, apartment entrance, or villa gate</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="s2.p2">Same-day or scheduled up to 14 days ahead</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="s2.p3">Add notes (gate code, pet warning, allergy)</span></li>
+        </ul>
+        <div class="callout callout--info fade-up"><span data-i18n="s2.callout"><strong>No commitment yet:</strong> you still haven't paid. You can back out anytime.</span></div>
+      </div>
+      <div class="step-media fade-up">
+        <div class="phone" aria-hidden="true">
+          <div class="phone__screen">
+            <div class="phone__status"></div>
+            <div class="phone__heading" data-i18n="s2.phone.h">When &amp; where?</div>
+            <div class="phone__map"></div>
+            <div class="phone__block">
+              <div class="phone__muted" data-i18n="s2.phone.label">Pickup location</div>
+              <div class="phone__row"><span class="label" data-i18n="s2.phone.loc">Villa 12, Al Wasl Rd</span></div>
+            </div>
+            <div class="phone__block">
+              <div class="phone__muted" data-i18n="s2.phone.time">Arrival window</div>
+              <div class="phone__row"><span class="label num">Today · 4:00–5:00 PM</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Step 3: Match ───── -->
+<section id="match" class="step-sec">
+  <div class="container">
+    <div class="step-grid">
+      <div class="step-copy">
+        <div class="step-num">
+          <span class="step-num__big num fade-up">03</span>
+          <span class="step-num__label fade-up" data-i18n="step.of7">Step 3 of 7</span>
+        </div>
+        <h2 class="step-title fade-up" data-i18n="s3.title">Get matched with a verified company</h2>
+        <p class="step-desc fade-up" data-i18n="s3.desc">You see 3–5 companies near you, ranked by rating and distance. Every one has passed verification. You pick — no black-box auto-assignment.</p>
+        <ul class="step-points fade-up">
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="s3.p1">Trade license + insurance checked manually by our team</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="s3.p2">First 7 days are a supervised trial period</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="s3.p3">Companies that drop below 4.3★ are paused automatically</span></li>
+        </ul>
+        <div class="callout callout--warn fade-up"><span data-i18n="s3.callout"><strong>You decide:</strong> you can decline any match and pick a different company — this isn't a black box.</span></div>
+      </div>
+      <div class="step-media fade-up">
+        <div class="phone" aria-hidden="true">
+          <div class="phone__screen">
+            <div class="phone__status"></div>
+            <div class="phone__heading" data-i18n="s3.phone.h">Choose a company</div>
+            <div class="phone__block" style="border: 1.5px solid var(--gold);">
+              <div class="phone__row"><span class="label" data-i18n="s3.phone.a">Sparkle Motors</span><span class="meta num">AED 75</span></div>
+              <div class="phone__row"><span class="phone__stars">★★★★★</span><span class="phone__pill" data-i18n="s3.phone.badge">Verified</span></div>
+              <div class="phone__muted num">4.8 · 1.2 km · 380 orders</div>
+            </div>
+            <div class="phone__block">
+              <div class="phone__row"><span class="label" data-i18n="s3.phone.b">AutoCare Pro</span><span class="meta num">AED 70</span></div>
+              <div class="phone__row"><span class="phone__stars">★★★★★</span><span class="phone__pill" data-i18n="s3.phone.badge">Verified</span></div>
+              <div class="phone__muted num">4.7 · 2.4 km · 910 orders</div>
+            </div>
+            <div class="phone__block">
+              <div class="phone__row"><span class="label" data-i18n="s3.phone.c">Gleam Mobile</span><span class="meta num">AED 80</span></div>
+              <div class="phone__row"><span class="phone__stars">★★★★★</span><span class="phone__pill" data-i18n="s3.phone.badge">Verified</span></div>
+              <div class="phone__muted num">4.9 · 3.1 km · 210 orders</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Step 4: Pay ───── -->
+<section id="pay" class="step-sec step-sec--sand step-sec--reverse">
+  <div class="container">
+    <div class="step-grid">
+      <div class="step-copy">
+        <div class="step-num">
+          <span class="step-num__big num fade-up">04</span>
+          <span class="step-num__label fade-up" data-i18n="step.of7">Step 4 of 7</span>
+        </div>
+        <h2 class="step-title fade-up" data-i18n="s4.title">Pay securely in-app</h2>
+        <p class="step-desc fade-up" data-i18n="s4.desc">Card, Apple Pay, Google Pay, or Samsung Pay — all through Stripe. Your payment is authorized but <strong>held</strong> until the service completes. If you never confirm, you never pay.</p>
+        <ul class="step-points fade-up">
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="s4.p1">Cleanly handles payment, tax receipt, and refund</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="s4.p2">The company handles the clean itself, nothing else</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="s4.p3">No tipping screens — price is the price</span></li>
+        </ul>
+        <div class="callout callout--success fade-up"><span data-i18n="s4.callout"><strong>PCI-safe:</strong> your card never touches our servers. Stripe handles it end-to-end.</span></div>
+      </div>
+      <div class="step-media fade-up">
+        <div class="phone" aria-hidden="true">
+          <div class="phone__screen">
+            <div class="phone__status"></div>
+            <div class="phone__heading" data-i18n="s4.phone.h">Payment</div>
+            <div class="phone__block">
+              <div class="phone__muted" data-i18n="s4.phone.total">Total</div>
+              <div class="phone__row"><span class="label num" style="font-size: 16px;">AED 75</span></div>
+              <div class="phone__muted" data-i18n="s4.phone.held">Held until service completes</div>
+            </div>
+            <div class="phone__block">
+              <div class="phone__row"><span class="dot"></span><span class="label" data-i18n="s4.phone.apple">Apple Pay</span></div>
+              <div class="phone__row"><span class="dot" style="background:var(--sand);"></span><span class="label" data-i18n="s4.phone.google">Google Pay</span></div>
+              <div class="phone__row"><span class="dot" style="background:var(--sand);"></span><span class="label num">Visa ···· 4242</span></div>
+            </div>
+            <div class="phone__block phone__block--primary" data-i18n="s4.phone.cta">Confirm · AED 75</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Step 5: Track ───── -->
+<section id="track" class="step-sec">
+  <div class="container">
+    <div class="step-grid">
+      <div class="step-copy">
+        <div class="step-num">
+          <span class="step-num__big num fade-up">05</span>
+          <span class="step-num__label fade-up" data-i18n="step.of7">Step 5 of 7</span>
+        </div>
+        <h2 class="step-title fade-up" data-i18n="s5.title">Track your washer in real time</h2>
+        <p class="step-desc fade-up" data-i18n="s5.desc">Live GPS on the map. Status updates at every handoff. Push notification when they're 5 minutes out — no need to watch the screen.</p>
+        <ul class="step-points fade-up">
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="s5.p1">Status: <span class="num">Heading over → Arrived → In progress → Done</span></span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="s5.p2">Washer's name, photo, vehicle plate shown</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="s5.p3">In-app chat + masked phone number if you need them</span></li>
+        </ul>
+        <div class="callout callout--info fade-up"><span data-i18n="s5.callout"><strong>Hands-free:</strong> you get a push notification when they're 5 minutes out — go do something else.</span></div>
+      </div>
+      <div class="step-media fade-up">
+        <div class="phone" aria-hidden="true">
+          <div class="phone__screen">
+            <div class="phone__status"></div>
+            <div class="phone__heading" data-i18n="s5.phone.h">Your washer is on the way</div>
+            <div class="phone__map"></div>
+            <div class="phone__block">
+              <div class="phone__row"><span class="dot"></span><span class="label num">Ahmed · 5 min away</span></div>
+              <div class="phone__bar"><span style="width: 72%;"></span></div>
+              <div class="phone__muted" data-i18n="s5.phone.plate">Plate: DXB · A 4521</div>
+            </div>
+            <div class="phone__block phone__block--primary" style="background: var(--sand); color: var(--navy);" data-i18n="s5.phone.chat">Chat with Ahmed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Step 6: Service ───── -->
+<section id="service" class="step-sec step-sec--sand step-sec--reverse">
+  <div class="container">
+    <div class="step-grid">
+      <div class="step-copy">
+        <div class="step-num">
+          <span class="step-num__big num fade-up">06</span>
+          <span class="step-num__label fade-up" data-i18n="step.of7">Step 6 of 7</span>
+        </div>
+        <h2 class="step-title fade-up" data-i18n="s6.title">Service happens — with photo proof</h2>
+        <p class="step-desc fade-up" data-i18n="s6.desc">The washer takes before/after photos and uploads them to your order. Car wash and sofa happen at your place in 30–120 minutes. Carpet follows the pickup → clean → return flow.</p>
+        <div class="delivery fade-up" aria-hidden="true">
+          <p class="delivery__title" data-i18n="s6.flow">Carpet flow</p>
+          <div class="delivery__diagram">
+            <span class="delivery__node">
+              <svg class="rtl-flip" width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18V8h14v10"/><path d="M16 12h6l4 4v2h-10"/><circle cx="8" cy="20" r="2"/><circle cx="21" cy="20" r="2"/></svg>
+              <span data-i18n="s6.node1">Pick up</span>
+            </span>
+            <span class="delivery__arrow rtl-flip"></span>
+            <span class="delivery__node">
+              <svg width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24V10l6-4 6 4v14M20 24V14l4-2"/><path d="M10 18h2M14 14h2"/></svg>
+              <span data-i18n="s6.node2">Facility</span>
+            </span>
+            <span class="delivery__arrow rtl-flip"></span>
+            <span class="delivery__node">
+              <svg class="rtl-flip" width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18V8h14v10"/><path d="M16 12h6l4 4v2h-10"/><circle cx="8" cy="20" r="2"/><circle cx="21" cy="20" r="2"/></svg>
+              <span data-i18n="s6.node3">Return</span>
+            </span>
+          </div>
+        </div>
+        <ul class="step-points fade-up" style="margin-top: 20px;">
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="s6.p1">Before/after photos delivered to your order</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="s6.p2">Car wash + sofa: <span class="num">30–120</span> min total</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="s6.p3">Carpet: <span class="num">48–72 hr</span> turnaround, you pick return slot</span></li>
+        </ul>
+      </div>
+      <div class="step-media fade-up">
+        <div class="phone" aria-hidden="true">
+          <div class="phone__screen">
+            <div class="phone__status"></div>
+            <div class="phone__heading" data-i18n="s6.phone.h">In progress</div>
+            <div class="phone__bar"><span style="width: 55%;"></span></div>
+            <div class="phone__block">
+              <div class="phone__muted" data-i18n="s6.phone.before">Before photo</div>
+              <div style="height: 64px; border-radius: 8px; background: linear-gradient(135deg, #d8d3c9, #b9b1a2);"></div>
+            </div>
+            <div class="phone__block">
+              <div class="phone__muted" data-i18n="s6.phone.after">After photo</div>
+              <div style="height: 64px; border-radius: 8px; background: linear-gradient(135deg, #e8efe8, #b5c9b9);"></div>
+            </div>
+            <div class="phone__muted" data-i18n="s6.phone.eta">ETA 12 min</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Step 7: Review ───── -->
+<section id="review" class="step-sec">
+  <div class="container">
+    <div class="step-grid">
+      <div class="step-copy">
+        <div class="step-num">
+          <span class="step-num__big num fade-up">07</span>
+          <span class="step-num__label fade-up" data-i18n="step.of7">Step 7 of 7</span>
+        </div>
+        <h2 class="step-title fade-up" data-i18n="s7.title">Confirm — or dispute</h2>
+        <p class="step-desc fade-up" data-i18n="s7.desc">When the service ends, you get a "Confirm" notification. Tap confirm and leave a rating. Not happy? Tap dispute instead. You have 24 hours, and if we verify your complaint, the full payment is refunded.</p>
+        <ul class="step-points fade-up">
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="s7.p1">Tap confirm → washer is paid, you rate 1–5 stars</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="s7.p2">Tap dispute → upload a photo, we review within 24 hrs</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-8"/></svg><span data-i18n="s7.p3">Verified dispute = full refund, no back-and-forth with the company</span></li>
+        </ul>
+        <div class="callout callout--success fade-up"><span data-i18n="s7.callout"><strong>Why this matters:</strong> only when you tap <strong>Confirm</strong> is the washer actually paid. That's why they care about your rating.</span></div>
+      </div>
+      <div class="step-media fade-up">
+        <div class="phone" aria-hidden="true">
+          <div class="phone__screen">
+            <div class="phone__status"></div>
+            <div class="phone__heading" data-i18n="s7.phone.h">Service complete</div>
+            <div class="phone__muted" data-i18n="s7.phone.sub">Was Ahmed's work up to standard?</div>
+            <div class="phone__block" style="align-items: center; text-align: center;">
+              <div class="phone__stars">★★★★★</div>
+              <div class="phone__muted" data-i18n="s7.phone.rate">Tap to rate</div>
+            </div>
+            <div class="phone__block phone__block--primary" data-i18n="s7.phone.confirm">Confirm &amp; pay</div>
+            <div class="phone__block" style="background: rgba(220,38,38,0.06); color: var(--danger); text-align: center; font-weight: 600; font-size: 12px;" data-i18n="s7.phone.dispute">Something's wrong — open a dispute</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Guarantees (navy) ───── -->
+<section class="section section--navy">
+  <div class="container">
+    <p class="section__kicker fade-up" data-i18n="g.kicker">Behind the steps</p>
+    <h2 class="section__heading fade-up" data-i18n="g.heading">The guarantees you don't see in the steps</h2>
+
+    <div class="guarantees">
+      <article class="guarantee fade-up">
+        <div class="guarantee__icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="16" height="11" rx="2"/><path d="M2 9h16"/><path d="M6 13h2"/></svg>
+        </div>
+        <h3 class="guarantee__title" data-i18n="g1.title">Money</h3>
+        <p class="guarantee__body" data-i18n="g1.body">Full refund if a dispute is verified. Payment is held, not charged, until you confirm.</p>
+      </article>
+
+      <article class="guarantee fade-up">
+        <div class="guarantee__icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2l7 3v5c0 4-3 7.5-7 8.5-4-1-7-4.5-7-8.5V5z"/></svg>
+        </div>
+        <h3 class="guarantee__title" data-i18n="g2.title">Property</h3>
+        <p class="guarantee__body" data-i18n="g2.body">Insurance covers any damage during the service — carpet pickup included end-to-end.</p>
+      </article>
+
+      <article class="guarantee fade-up">
+        <div class="guarantee__icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="12" height="9" rx="2"/><path d="M7 8V6a3 3 0 0 1 6 0v2"/></svg>
+        </div>
+        <h3 class="guarantee__title" data-i18n="g3.title">Privacy</h3>
+        <p class="guarantee__body" data-i18n="g3.body">Your phone number is encrypted and masked — washers see a proxy number, not yours.</p>
+      </article>
+
+      <article class="guarantee fade-up">
+        <div class="guarantee__icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><path d="M10 5v5l3 2"/></svg>
+        </div>
+        <h3 class="guarantee__title" data-i18n="g4.title">Schedule</h3>
+        <p class="guarantee__body" data-i18n="g4.body">Free cancellation up to 2 hrs before arrival (carpet: until pickup starts).</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Comparison ───── -->
+<section class="section" style="background: var(--surface);">
+  <div class="container">
+    <p class="section__kicker fade-up" data-i18n="c.kicker">Why not just call?</p>
+    <h2 class="section__heading fade-up" data-i18n="c.heading">Why not just call a cleaning shop directly?</h2>
+
+    <div class="compare-wrap fade-up">
+      <table class="compare">
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col" class="th-us">Cleanly</th>
+            <th scope="col" data-i18n="c.col2">Direct shop</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row" data-i18n="c.r1">Verified workers</th>
+            <td class="cell-yes"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5 5.5-6"/></svg><span data-i18n="c.verified">Every company background-checked</span></td>
+            <td class="cell-no"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l8 8M11 3l-8 8"/></svg><span data-i18n="c.trust">You have to trust their word</span></td>
+          </tr>
+          <tr>
+            <th scope="row" data-i18n="c.r2">Insurance</th>
+            <td class="cell-yes"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5 5.5-6"/></svg><span data-i18n="c.ins1">Included on every job</span></td>
+            <td class="cell-no"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l8 8M11 3l-8 8"/></svg><span data-i18n="c.ins2">Sometimes, maybe, on paper</span></td>
+          </tr>
+          <tr>
+            <th scope="row" data-i18n="c.r3">Price transparency</th>
+            <td class="cell-yes"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5 5.5-6"/></svg><span data-i18n="c.price1">Fixed AED, shown up front</span></td>
+            <td class="cell-no"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l8 8M11 3l-8 8"/></svg><span data-i18n="c.price2">"We'll see when we arrive"</span></td>
+          </tr>
+          <tr>
+            <th scope="row" data-i18n="c.r4">Payment protection</th>
+            <td class="cell-yes"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5 5.5-6"/></svg><span data-i18n="c.pay1">Held via Stripe until complete</span></td>
+            <td class="cell-no"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l8 8M11 3l-8 8"/></svg><span data-i18n="c.pay2">Cash to whoever shows up</span></td>
+          </tr>
+          <tr>
+            <th scope="row" data-i18n="c.r5">Real-time tracking</th>
+            <td class="cell-yes"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5 5.5-6"/></svg><span data-i18n="c.track1">Live GPS + ETA notifications</span></td>
+            <td class="cell-no"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l8 8M11 3l-8 8"/></svg><span data-i18n="c.track2">Call the shop every 30 min</span></td>
+          </tr>
+          <tr>
+            <th scope="row" data-i18n="c.r6">Review system</th>
+            <td class="cell-yes"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5 5.5-6"/></svg><span data-i18n="c.rev1">Public ratings shape payouts</span></td>
+            <td class="cell-no"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l8 8M11 3l-8 8"/></svg><span data-i18n="c.rev2">A WhatsApp complaint, ignored</span></td>
+          </tr>
+          <tr>
+            <th scope="row" data-i18n="c.r7">Dispute process</th>
+            <td class="cell-yes"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5l2.5 2.5 5.5-6"/></svg><span data-i18n="c.dis1">Cleanly handles it, not you</span></td>
+            <td class="cell-no"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l8 8M11 3l-8 8"/></svg><span data-i18n="c.dis2">Argue with the owner directly</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Final CTA ───── -->
+<section class="final-cta">
+  <div class="container final-cta__inner">
+    <h2 class="final-cta__title fade-up" data-i18n="f.title">Ready to book?</h2>
+    <p class="final-cta__sub fade-up" data-i18n="f.sub">Back to the booking funnel — three taps from here.</p>
+    <div class="final-cta__actions fade-up">
+      <a href="index.html#top" class="btn btn--primary btn--primary-lg" data-i18n="f.book">Start booking</a>
+      <a href="services.html" class="btn btn--ghost-dark" data-i18n="f.pricing">See pricing</a>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Footer ───── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__cols">
+      <div class="footer__col footer__brand">
+        <div class="footer__logo">Cleanly</div>
+        <p class="footer__tag" data-i18n="footer.tag">On-demand cleaning across the Gulf — verified, transparent, right to your door.</p>
+        <div class="footer__social" aria-label="Social">
+          <a href="#" aria-label="Instagram">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="14" height="14" rx="4"/><circle cx="10" cy="10" r="3.2"/><circle cx="14.2" cy="5.8" r="0.6" fill="currentColor"/></svg>
+          </a>
+          <a href="#" aria-label="TikTok">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v10a3.5 3.5 0 1 1-3.5-3.5M12 3c.5 2.5 2 4 4.5 4.5"/></svg>
+          </a>
+          <a href="#" aria-label="WhatsApp">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l1.2-3.8A7.5 7.5 0 1 1 7 16z"/><path d="M7.5 8.5c.5 2 1.5 3 3.5 3.5l1.3-1 1.7.7-.4 1.7c-3.2.2-5.8-2.4-5.6-5.6l1.7-.4.7 1.7z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer__col">
+        <h4 data-i18n="footer.customers">For customers</h4>
+        <ul>
+          <li><a href="how-it-works.html" data-i18n="footer.how">How it works</a></li>
+          <li><a href="services.html" data-i18n="footer.pricing">Pricing</a></li>
+          <li><a href="city-coverage.html" data-i18n="footer.coverage">Coverage</a></li>
+          <li><a href="support.html" data-i18n="footer.faq">FAQ</a></li>
+          <li><a href="support.html#stuck" data-i18n="footer.support">Support</a></li>
+        </ul>
+      </div>
+
+      <div class="footer__col">
+        <h4 data-i18n="footer.companies">For companies</h4>
+        <ul>
+          <li><a href="become-a-partner.html" data-i18n="footer.partner">Become a partner</a></li>
+          <li><a href="become-a-washer.html" data-i18n="footer.washerapp">Washer app</a></li>
+          <li><a href="#" data-i18n="footer.partnerterms">Partner terms</a></li>
+        </ul>
+      </div>
+
+      <div class="footer__col">
+        <h4 data-i18n="footer.company">Company</h4>
+        <ul>
+          <li><a href="about.html" data-i18n="footer.about">About</a></li>
+          <li><a href="#" data-i18n="footer.careers">Careers</a></li>
+          <li><a href="#" data-i18n="footer.privacy">Privacy</a></li>
+          <li><a href="#" data-i18n="footer.terms">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span data-i18n="footer.copy">© 2026 Cleanly · Made with care in the Gulf</span>
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button class="lang-toggle__opt" data-lang="ar" aria-pressed="false">AR</button>
+        <button class="lang-toggle__opt" data-lang="en" aria-pressed="true">EN</button>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const I18N = {
+    en: {
+      "meta.title": "Cleanly — How it works",
+      "meta.desc": "Step-by-step: from opening the app to paying after a clean. Seven transparent steps that show exactly what happens at every handoff.",
+      "nav.washer": "Become a washer",
+      "nav.signin": "Sign in",
+      "head.kicker": "How it works",
+      "head.title": "From booking to clean — in seven steps.",
+      "head.sub": "No mystery, no surprise fees. Everything on this page is what actually happens when you book — so you can decide if Cleanly is for you before you download anything.",
+      "head.t1": "Works for all 3 services",
+      "head.t2": "Transparent pricing",
+      "head.t3": "No phone calls required",
+      "tabs.pick": "Pick", "tabs.book": "Book", "tabs.match": "Match", "tabs.pay": "Pay", "tabs.track": "Track", "tabs.service": "Service", "tabs.review": "Review",
+      "step.of7": "Step of 7",
+
+      "s1.title": "You pick — we handle the rest",
+      "s1.desc": "Open Cleanly and choose one of three services. Your city is detected from GPS; if you deny permission, pick it from a dropdown. Done in under 10 seconds.",
+      "s1.p1": "GPS auto-detects your city across UAE, KSA, Egypt",
+      "s1.p2": "Three service cards — car wash, sofa, carpet — with one-tap select",
+      "s1.p3": "Browse anonymously — no signup to see prices",
+      "s1.callout": "Privacy note: we don't ask for your phone number until you book. Browsing stays anonymous.",
+      "s1.phone.h": "What do you need cleaned?",
+      "s1.phone.sub": "Dubai · Al Barsha",
+      "s1.phone.a": "Car wash", "s1.phone.am": "from AED 45",
+      "s1.phone.b": "Sofa cleaning", "s1.phone.bm": "from AED 120",
+      "s1.phone.c": "Carpet cleaning", "s1.phone.cm": "AED 18 / m²",
+      "s1.phone.cta": "Find washers →",
+
+      "s2.title": "Set your address and time",
+      "s2.desc": "Pin-drop your exact spot, then pick a time slot. Same-day is usually available within 90 minutes. For carpet, you pick both the pickup window and the return day.",
+      "s2.p1": "Pin-drop for parking spot, apartment entrance, or villa gate",
+      "s2.p2": "Same-day or scheduled up to 14 days ahead",
+      "s2.p3": "Add notes (gate code, pet warning, allergy)",
+      "s2.callout": "No commitment yet: you still haven't paid. You can back out anytime.",
+      "s2.phone.h": "When & where?",
+      "s2.phone.label": "Pickup location",
+      "s2.phone.loc": "Villa 12, Al Wasl Rd",
+      "s2.phone.time": "Arrival window",
+
+      "s3.title": "Get matched with a verified company",
+      "s3.desc": "You see 3–5 companies near you, ranked by rating and distance. Every one has passed verification. You pick — no black-box auto-assignment.",
+      "s3.p1": "Trade license + insurance checked manually by our team",
+      "s3.p2": "First 7 days are a supervised trial period",
+      "s3.p3": "Companies that drop below 4.3★ are paused automatically",
+      "s3.callout": "You decide: you can decline any match and pick a different company — this isn't a black box.",
+      "s3.phone.h": "Choose a company",
+      "s3.phone.a": "Sparkle Motors",
+      "s3.phone.b": "AutoCare Pro",
+      "s3.phone.c": "Gleam Mobile",
+      "s3.phone.badge": "Verified",
+
+      "s4.title": "Pay securely in-app",
+      "s4.desc": "Card, Apple Pay, Google Pay, or Samsung Pay — all through Stripe. Your payment is authorized but held until the service completes. If you never confirm, you never pay.",
+      "s4.p1": "Cleanly handles payment, tax receipt, and refund",
+      "s4.p2": "The company handles the clean itself, nothing else",
+      "s4.p3": "No tipping screens — price is the price",
+      "s4.callout": "PCI-safe: your card never touches our servers. Stripe handles it end-to-end.",
+      "s4.phone.h": "Payment",
+      "s4.phone.total": "Total",
+      "s4.phone.held": "Held until service completes",
+      "s4.phone.apple": "Apple Pay",
+      "s4.phone.google": "Google Pay",
+      "s4.phone.cta": "Confirm · AED 75",
+
+      "s5.title": "Track your washer in real time",
+      "s5.desc": "Live GPS on the map. Status updates at every handoff. Push notification when they're 5 minutes out — no need to watch the screen.",
+      "s5.p1": "Status: Heading over → Arrived → In progress → Done",
+      "s5.p2": "Washer's name, photo, vehicle plate shown",
+      "s5.p3": "In-app chat + masked phone number if you need them",
+      "s5.callout": "Hands-free: you get a push notification when they're 5 minutes out — go do something else.",
+      "s5.phone.h": "Your washer is on the way",
+      "s5.phone.plate": "Plate: DXB · A 4521",
+      "s5.phone.chat": "Chat with Ahmed",
+
+      "s6.title": "Service happens — with photo proof",
+      "s6.desc": "The washer takes before/after photos and uploads them to your order. Car wash and sofa happen at your place in 30–120 minutes. Carpet follows the pickup → clean → return flow.",
+      "s6.flow": "Carpet flow",
+      "s6.node1": "Pick up", "s6.node2": "Facility", "s6.node3": "Return",
+      "s6.p1": "Before/after photos delivered to your order",
+      "s6.p2": "Car wash + sofa: 30–120 min total",
+      "s6.p3": "Carpet: 48–72 hr turnaround, you pick return slot",
+      "s6.phone.h": "In progress",
+      "s6.phone.before": "Before photo",
+      "s6.phone.after": "After photo",
+      "s6.phone.eta": "ETA 12 min",
+
+      "s7.title": "Confirm — or dispute",
+      "s7.desc": "When the service ends, you get a \"Confirm\" notification. Tap confirm and leave a rating. Not happy? Tap dispute instead. You have 24 hours, and if we verify your complaint, the full payment is refunded.",
+      "s7.p1": "Tap confirm → washer is paid, you rate 1–5 stars",
+      "s7.p2": "Tap dispute → upload a photo, we review within 24 hrs",
+      "s7.p3": "Verified dispute = full refund, no back-and-forth with the company",
+      "s7.callout": "Why this matters: only when you tap Confirm is the washer actually paid. That's why they care about your rating.",
+      "s7.phone.h": "Service complete",
+      "s7.phone.sub": "Was Ahmed's work up to standard?",
+      "s7.phone.rate": "Tap to rate",
+      "s7.phone.confirm": "Confirm & pay",
+      "s7.phone.dispute": "Something's wrong — open a dispute",
+
+      "g.kicker": "Behind the steps",
+      "g.heading": "The guarantees you don't see in the steps",
+      "g1.title": "Money",    "g1.body": "Full refund if a dispute is verified. Payment is held, not charged, until you confirm.",
+      "g2.title": "Property", "g2.body": "Insurance covers any damage during the service — carpet pickup included end-to-end.",
+      "g3.title": "Privacy",  "g3.body": "Your phone number is encrypted and masked — washers see a proxy number, not yours.",
+      "g4.title": "Schedule", "g4.body": "Free cancellation up to 2 hrs before arrival (carpet: until pickup starts).",
+
+      "c.kicker": "Why not just call?",
+      "c.heading": "Why not just call a cleaning shop directly?",
+      "c.col2": "Direct shop",
+      "c.r1": "Verified workers",
+      "c.verified": "Every company background-checked",
+      "c.trust": "You have to trust their word",
+      "c.r2": "Insurance",
+      "c.ins1": "Included on every job",
+      "c.ins2": "Sometimes, maybe, on paper",
+      "c.r3": "Price transparency",
+      "c.price1": "Fixed AED, shown up front",
+      "c.price2": "\"We'll see when we arrive\"",
+      "c.r4": "Payment protection",
+      "c.pay1": "Held via Stripe until complete",
+      "c.pay2": "Cash to whoever shows up",
+      "c.r5": "Real-time tracking",
+      "c.track1": "Live GPS + ETA notifications",
+      "c.track2": "Call the shop every 30 min",
+      "c.r6": "Review system",
+      "c.rev1": "Public ratings shape payouts",
+      "c.rev2": "A WhatsApp complaint, ignored",
+      "c.r7": "Dispute process",
+      "c.dis1": "Cleanly handles it, not you",
+      "c.dis2": "Argue with the owner directly",
+
+      "f.title": "Ready to book?",
+      "f.sub": "Back to the booking funnel — three taps from here.",
+      "f.book": "Start booking",
+      "f.pricing": "See pricing",
+
+      "footer.tag": "On-demand cleaning across the Gulf — verified, transparent, right to your door.",
+      "footer.customers": "For customers",
+      "footer.how": "How it works",
+      "footer.pricing": "Pricing",
+      "footer.coverage": "Coverage",
+      "footer.faq": "FAQ",
+      "footer.support": "Support",
+      "footer.companies": "For companies",
+      "footer.partner": "Become a partner",
+      "footer.washerapp": "Washer app",
+      "footer.partnerterms": "Partner terms",
+      "footer.company": "Company",
+      "footer.about": "About",
+      "footer.careers": "Careers",
+      "footer.privacy": "Privacy",
+      "footer.terms": "Terms",
+      "footer.copy": "© 2026 Cleanly · Made with care in the Gulf"
+    },
+    ar: {
+      "meta.title": "كلين لي — كيف نعمل",
+      "meta.desc": "خطوة بخطوة: من فتح التطبيق حتى الدفع بعد التنظيف. سبع خطوات شفافة توضح ما يحدث بالضبط في كل مرحلة.",
+      "nav.washer": "انضم كعامل",
+      "nav.signin": "تسجيل الدخول",
+      "head.kicker": "كيف نعمل",
+      "head.title": "من الحجز إلى النظافة — في سبع خطوات.",
+      "head.sub": "بدون غموض، بدون رسوم مفاجئة. كل ما في هذه الصفحة هو ما يحدث فعليًا حين تحجز — لتقرر إن كانت كلين لي تناسبك قبل أن تُنزِّل أي شيء.",
+      "head.t1": "تعمل لجميع الخدمات الثلاث",
+      "head.t2": "أسعار شفافة",
+      "head.t3": "بدون مكالمات هاتفية",
+      "tabs.pick": "اختر", "tabs.book": "احجز", "tabs.match": "طابِق", "tabs.pay": "ادفع", "tabs.track": "تتبّع", "tabs.service": "الخدمة", "tabs.review": "قيِّم",
+      "step.of7": "خطوة من ٧",
+
+      "s1.title": "أنت تختار — ونحن نتولى الباقي",
+      "s1.desc": "افتح كلين لي واختر إحدى الخدمات الثلاث. نكتشف مدينتك من GPS؛ وإذا رفضت الإذن، اخترها من القائمة. يتم ذلك في أقل من ١٠ ثوانٍ.",
+      "s1.p1": "GPS يكتشف مدينتك في الإمارات والسعودية ومصر",
+      "s1.p2": "ثلاث بطاقات خدمات — سيارات، كنب، سجاد — باختيار بلمسة واحدة",
+      "s1.p3": "تصفّح دون تسجيل — لست مضطرًا للاشتراك لرؤية الأسعار",
+      "s1.callout": "ملاحظة خصوصية: لا نطلب رقمك إلا عند الحجز. التصفّح يبقى مجهولاً.",
+      "s1.phone.h": "ماذا تحتاج أن ينظَّف؟",
+      "s1.phone.sub": "دبي · البرشاء",
+      "s1.phone.a": "غسيل سيارات", "s1.phone.am": "من AED 45",
+      "s1.phone.b": "تنظيف كنب", "s1.phone.bm": "من AED 120",
+      "s1.phone.c": "تنظيف سجاد", "s1.phone.cm": "AED 18 / م²",
+      "s1.phone.cta": "ابحث عن عمال ←",
+
+      "s2.title": "حدّد عنوانك والوقت",
+      "s2.desc": "ثبّت الموقع بدقة، ثم اختر وقتًا. نفس اليوم متاح عادة خلال ٩٠ دقيقة. للسجاد، تختار وقت الاستلام ويوم الإرجاع.",
+      "s2.p1": "تثبيت للموقف، أو مدخل الشقة، أو بوابة الفيلا",
+      "s2.p2": "نفس اليوم أو جدولة حتى ١٤ يومًا",
+      "s2.p3": "أضف ملاحظات (رمز بوابة، تنبيه حيوان، حساسية)",
+      "s2.callout": "لا التزام بعد: لم تدفع بعد. يمكنك الانسحاب في أي وقت.",
+      "s2.phone.h": "متى وأين؟",
+      "s2.phone.label": "موقع الاستلام",
+      "s2.phone.loc": "فيلا ١٢، شارع الوصل",
+      "s2.phone.time": "نافذة الوصول",
+
+      "s3.title": "طابقك مع شركة موثوقة",
+      "s3.desc": "ترى ٣-٥ شركات قريبة منك، مرتّبة حسب التقييم والمسافة. كلها اجتازت التحقق. أنت تختار — بدون تعيين تلقائي.",
+      "s3.p1": "الرخصة التجارية والتأمين يفحصهما فريقنا يدويًا",
+      "s3.p2": "أول ٧ أيام فترة تجريبية تحت إشراف",
+      "s3.p3": "الشركات التي يقل تقييمها عن ٤.٣★ تُوقَف تلقائيًا",
+      "s3.callout": "أنت تقرر: يمكنك رفض أي شركة واختيار غيرها — هذا ليس صندوقًا أسود.",
+      "s3.phone.h": "اختر شركة",
+      "s3.phone.a": "Sparkle Motors",
+      "s3.phone.b": "AutoCare Pro",
+      "s3.phone.c": "Gleam Mobile",
+      "s3.phone.badge": "موثوقة",
+
+      "s4.title": "ادفع بأمان داخل التطبيق",
+      "s4.desc": "بطاقة، أو Apple Pay، أو Google Pay، أو Samsung Pay — الكل عبر Stripe. الدفع يُحجَز ولا يُخصَم حتى تكتمل الخدمة. إن لم تؤكد، لن تدفع.",
+      "s4.p1": "كلين لي تتولى الدفع والفاتورة والاسترداد",
+      "s4.p2": "الشركة تتولى التنظيف فقط، لا شيء آخر",
+      "s4.p3": "لا إكراميات — السعر هو السعر",
+      "s4.callout": "آمن PCI: بطاقتك لا تمر على خوادمنا. Stripe يتولى كل شيء.",
+      "s4.phone.h": "الدفع",
+      "s4.phone.total": "الإجمالي",
+      "s4.phone.held": "محجوز حتى اكتمال الخدمة",
+      "s4.phone.apple": "Apple Pay",
+      "s4.phone.google": "Google Pay",
+      "s4.phone.cta": "تأكيد · AED 75",
+
+      "s5.title": "تتبّع عاملك مباشرة",
+      "s5.desc": "GPS مباشر على الخريطة. تحديثات الحالة في كل مرحلة. إشعار يصلك قبل وصوله بـ٥ دقائق — لا حاجة لمراقبة الشاشة.",
+      "s5.p1": "الحالات: في الطريق ← وصل ← جارٍ العمل ← انتهى",
+      "s5.p2": "اسم العامل وصورته ولوحة سيارته معروضة",
+      "s5.p3": "محادثة داخل التطبيق ورقم هاتف مقنّع عند الحاجة",
+      "s5.callout": "بدون عناء: يصلك إشعار قبل وصوله بـ٥ دقائق — تفرّغ لأي شيء آخر.",
+      "s5.phone.h": "عاملك في الطريق",
+      "s5.phone.plate": "اللوحة: DXB · A 4521",
+      "s5.phone.chat": "تحدّث مع أحمد",
+
+      "s6.title": "تُنفَّذ الخدمة — مع صور قبل وبعد",
+      "s6.desc": "العامل يلتقط صورًا قبل وبعد ويرفعها على طلبك. غسيل السيارات والكنب يتم في مكانك خلال ٣٠-١٢٠ دقيقة. السجاد يتبع مسار استلام ← تنظيف ← توصيل.",
+      "s6.flow": "مسار السجاد",
+      "s6.node1": "استلام", "s6.node2": "مغسلة", "s6.node3": "توصيل",
+      "s6.p1": "صور قبل وبعد تصل إلى طلبك",
+      "s6.p2": "السيارات والكنب: ٣٠-١٢٠ دقيقة",
+      "s6.p3": "السجاد: ٤٨-٧٢ ساعة، وأنت تختار موعد الإرجاع",
+      "s6.phone.h": "جارٍ العمل",
+      "s6.phone.before": "صورة قبل",
+      "s6.phone.after": "صورة بعد",
+      "s6.phone.eta": "الوصول ١٢ دقيقة",
+
+      "s7.title": "أكّد — أو اعترض",
+      "s7.desc": "عند انتهاء الخدمة يصلك إشعار «أكّد». اضغط أكّد وامنح تقييمًا. غير راضٍ؟ اضغط «اعتراض» بدلاً. لديك ٢٤ ساعة، وإذا تم التحقق من شكواك يُعاد المبلغ كاملاً.",
+      "s7.p1": "اضغط أكّد ← يُدفع للعامل، وتمنح تقييم ١-٥ نجوم",
+      "s7.p2": "اضغط اعتراض ← ارفع صورة، ونراجع خلال ٢٤ ساعة",
+      "s7.p3": "اعتراض موثّق = استرداد كامل، بدون جدال مع الشركة",
+      "s7.callout": "لماذا هذا مهم: فقط عند ضغطك زر «أكّد» يُدفع للعامل فعليًا. لذلك يهمّه تقييمك.",
+      "s7.phone.h": "اكتملت الخدمة",
+      "s7.phone.sub": "هل كان عمل أحمد جيدًا؟",
+      "s7.phone.rate": "اضغط للتقييم",
+      "s7.phone.confirm": "أكّد وادفع",
+      "s7.phone.dispute": "هناك خلل — افتح اعتراضًا",
+
+      "g.kicker": "خلف الكواليس",
+      "g.heading": "الضمانات التي لا تظهر في الخطوات",
+      "g1.title": "المال", "g1.body": "استرداد كامل إذا ثبت الاعتراض. الدفع محجوز ولا يُخصَم إلا عند التأكيد.",
+      "g2.title": "الممتلكات", "g2.body": "التأمين يغطي أي ضرر أثناء الخدمة — استلام السجاد مشمول من البداية للنهاية.",
+      "g3.title": "الخصوصية", "g3.body": "رقمك مشفّر ومقنّع — العامل يرى رقمًا وسيطًا، ليس رقمك.",
+      "g4.title": "المواعيد", "g4.body": "إلغاء مجاني حتى ساعتين قبل الوصول (السجاد: حتى بدء الاستلام).",
+
+      "c.kicker": "لماذا لا نتصل مباشرة؟",
+      "c.heading": "لماذا لا نتصل بمغسلة مباشرة؟",
+      "c.col2": "مغسلة مباشرة",
+      "c.r1": "عمال موثوقون",
+      "c.verified": "كل شركة تم التحقق منها",
+      "c.trust": "عليك الوثوق بكلامهم",
+      "c.r2": "التأمين",
+      "c.ins1": "مشمول في كل طلب",
+      "c.ins2": "أحيانًا، ربما، على الورق",
+      "c.r3": "شفافية الأسعار",
+      "c.price1": "سعر ثابت بالدرهم، معروض مسبقًا",
+      "c.price2": "«نشوف بعد ما نوصل»",
+      "c.r4": "حماية الدفع",
+      "c.pay1": "محجوز عبر Stripe حتى الاكتمال",
+      "c.pay2": "نقدًا لأول من يصل",
+      "c.r5": "تتبّع مباشر",
+      "c.track1": "GPS مباشر وإشعارات وصول",
+      "c.track2": "تتصل كل نصف ساعة",
+      "c.r6": "نظام التقييم",
+      "c.rev1": "التقييمات العامة تحدّد الدخل",
+      "c.rev2": "شكوى واتساب، مهمَلة",
+      "c.r7": "آلية الاعتراض",
+      "c.dis1": "كلين لي تتولى الأمر، ليس أنت",
+      "c.dis2": "تجادل صاحب المغسلة مباشرة",
+
+      "f.title": "جاهز تحجز؟",
+      "f.sub": "ارجع للحجز — ثلاث نقرات من هنا.",
+      "f.book": "ابدأ الحجز",
+      "f.pricing": "شاهد الأسعار",
+
+      "footer.tag": "خدمة تنظيف عند الطلب في الخليج — موثوقة، شفافة، حتى باب بيتك.",
+      "footer.customers": "للعملاء",
+      "footer.how": "كيف نعمل",
+      "footer.pricing": "الأسعار",
+      "footer.coverage": "تغطية المدن",
+      "footer.faq": "الأسئلة الشائعة",
+      "footer.support": "الدعم",
+      "footer.companies": "للشركات",
+      "footer.partner": "كن شريكًا",
+      "footer.washerapp": "تطبيق العامل",
+      "footer.partnerterms": "شروط الشركاء",
+      "footer.company": "الشركة",
+      "footer.about": "من نحن",
+      "footer.careers": "الوظائف",
+      "footer.privacy": "الخصوصية",
+      "footer.terms": "الشروط",
+      "footer.copy": "© 2026 كلين لي · صُنع بعناية في الخليج"
+    }
+  };
+
+  window.addEventListener("DOMContentLoaded", () => {
+    Cleanly.init({
+      dict: I18N,
+      tabSelector: ".switcher__tab",
+      sectionIds: ["pick", "book", "match", "pay", "track", "service", "review"]
+    });
+  });
+</script>
+
+</body>
+</html>

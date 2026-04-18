@@ -1,0 +1,847 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-locale="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title data-i18n="meta.title">Cleanly — About</title>
+<meta name="description" data-i18n="meta.desc" content="A Gulf company built for Gulf customers. The story, the team, and what Cleanly refuses to do." />
+<meta name="theme-color" content="#1A2744" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="shared.css" />
+<script src="shared.js" defer></script>
+<style>
+  html { scroll-padding-top: 80px; }
+
+  /* Page-head — no CTAs, just intro */
+  .page-head { padding: 120px 0 40px; }
+  .page-head::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(720px 400px at 85% 0%, rgba(201,168,76,0.08), transparent 60%),
+      radial-gradient(520px 300px at 0% 100%, rgba(201,168,76,0.05), transparent 60%);
+    pointer-events: none;
+  }
+  .page-head__back {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; color: rgba(248,247,244,0.6);
+    margin-top: 16px;
+    transition: color 150ms ease;
+  }
+  .page-head__back:hover { color: var(--gold); }
+
+  /* Tighter rhythm */
+  .section { padding: 56px 0; }
+  .section__heading { margin: 0 0 32px; }
+
+  /* ───── Founder letter ───── */
+  .letter {
+    max-width: 640px;
+    margin-inline: auto;
+  }
+  .letter__kicker {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--gold-deep);
+    margin: 0 0 14px;
+  }
+  .letter__body p {
+    font-size: 16px; line-height: 1.7;
+    color: var(--navy);
+    margin: 0 0 20px;
+  }
+  [dir="rtl"] .letter__body p { line-height: 1.8; }
+  .letter__body strong { font-weight: 600; }
+  .letter__sig {
+    margin-top: 28px;
+    font-size: 14px;
+    color: var(--ink-muted);
+    border-block-start: 1px solid var(--sand);
+    padding-block-start: 20px;
+  }
+  .letter__sig-name { font-weight: 600; color: var(--navy); }
+
+  /* ───── Values grid (reuses .benefit from shared.css) ───── */
+  .values {
+    display: grid; grid-template-columns: 1fr; gap: 16px;
+  }
+  @media (min-width: 640px) { .values { grid-template-columns: 1fr 1fr; gap: 20px; } }
+  @media (min-width: 1024px) { .values { grid-template-columns: repeat(4, 1fr); } }
+
+  /* ───── Stat strip (navy) ───── */
+  .stat-strip {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+    margin-bottom: 20px;
+  }
+  @media (min-width: 768px) { .stat-strip { grid-template-columns: repeat(4, 1fr); gap: 24px; } }
+  .about-stat {
+    text-align: start;
+    padding: 20px 16px;
+    border-inline-start: 2px solid rgba(201,168,76,0.4);
+  }
+  .about-stat__value {
+    font-size: 28px; font-weight: 600; line-height: 1.15;
+    color: var(--gold);
+    letter-spacing: -0.02em;
+    margin: 0 0 6px;
+  }
+  @media (min-width: 768px) { .about-stat__value { font-size: 32px; } }
+  .about-stat__label {
+    font-size: 13px; color: rgba(248,247,244,0.82);
+    line-height: 1.5;
+  }
+  .stat-strip-note {
+    font-size: 11px; letter-spacing: 0.04em;
+    color: rgba(248,247,244,0.48);
+    max-width: 680px;
+    margin: 0;
+  }
+
+  /* ───── Milestones timeline ───── */
+  .milestones {
+    position: relative;
+    display: flex; flex-direction: column; gap: 24px;
+    max-width: 840px;
+  }
+  .milestones::before {
+    content: "";
+    position: absolute;
+    inset-block: 8px 8px;
+    inset-inline-start: 11px;
+    width: 2px;
+    background: var(--sand);
+  }
+  @media (min-width: 900px) {
+    .milestones {
+      flex-direction: row;
+      max-width: none;
+      gap: 0;
+    }
+    .milestones::before {
+      inset-block-start: 14px;
+      inset-inline: 0;
+      inset-block-end: auto;
+      height: 2px; width: auto;
+    }
+  }
+  .milestone {
+    position: relative;
+    padding-inline-start: 36px;
+  }
+  @media (min-width: 900px) {
+    .milestone {
+      padding-inline-start: 0;
+      padding-block-start: 38px;
+      flex: 1;
+      padding-inline-end: 16px;
+    }
+  }
+  .milestone::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 4px;
+    inset-block-start: 4px;
+    width: 16px; height: 16px;
+    border-radius: 999px;
+    background: var(--gold);
+    border: 3px solid var(--surface);
+    box-shadow: 0 0 0 2px var(--gold);
+  }
+  @media (min-width: 900px) {
+    .milestone::before {
+      inset-inline-start: 0;
+      inset-block-start: 6px;
+    }
+  }
+  .milestone__date {
+    display: inline-block;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--gold-deep);
+    margin: 0 0 6px;
+    transition: border-block-end 150ms ease;
+    padding-block-end: 1px;
+    border-block-end: 1px solid transparent;
+  }
+  .milestone:hover .milestone__date { border-block-end-color: var(--gold); }
+  .milestone__title { font-size: 15px; font-weight: 600; color: var(--navy); margin: 0 0 6px; line-height: 1.3; }
+  .milestone__body { font-size: 13px; line-height: 1.55; color: var(--ink-muted); margin: 0; max-width: 280px; }
+
+  /* ───── Anti-positioning ("Who we are not") ───── */
+  .nots {
+    display: grid; grid-template-columns: 1fr; gap: 16px;
+  }
+  @media (min-width: 768px) { .nots { grid-template-columns: 1fr 1fr; gap: 20px; } }
+  .not-card {
+    padding: 22px;
+    background: #fff;
+    border-radius: var(--r-card);
+    border-inline-start: 3px solid var(--danger);
+    box-shadow: var(--shadow);
+    display: flex; gap: 14px;
+  }
+  .not-card__icon {
+    flex-shrink: 0;
+    width: 32px; height: 32px;
+    border-radius: 999px;
+    background: rgba(220,38,38,0.1);
+    color: var(--danger);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .not-card__title { font-size: 15px; font-weight: 600; color: var(--navy); margin: 0 0 6px; line-height: 1.3; }
+  .not-card__body { font-size: 13px; line-height: 1.55; color: var(--ink-muted); margin: 0; }
+
+  /* ───── Team ───── */
+  .team {
+    display: grid; grid-template-columns: 1fr; gap: 20px;
+  }
+  @media (min-width: 640px) { .team { grid-template-columns: 1fr 1fr; gap: 24px; } }
+  @media (min-width: 1024px) { .team { grid-template-columns: repeat(4, 1fr); } }
+
+  .member {
+    padding: 24px;
+    background: #fff;
+    border-radius: var(--r-card);
+    box-shadow: var(--shadow);
+    text-align: start;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .member__avatar {
+    width: 72px; height: 72px;
+    border-radius: 999px;
+    background: var(--navy);
+    color: var(--gold);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 26px;
+    letter-spacing: -0.01em;
+  }
+  .member__name { font-size: 15px; font-weight: 600; color: var(--navy); margin: 0; }
+  .member__role {
+    font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--gold-deep);
+    margin: -4px 0 4px;
+  }
+  .member__bio { font-size: 13px; line-height: 1.55; color: var(--ink-muted); margin: 0; }
+
+  .hiring-line {
+    margin-top: 28px;
+    font-size: 14px; color: var(--ink-muted);
+    text-align: center;
+  }
+  .hiring-line a { color: var(--gold-deep); font-weight: 600; }
+  .hiring-line a:hover { color: var(--gold); }
+
+  /* ───── Contact trio (navy) ───── */
+  .contact {
+    display: grid; grid-template-columns: 1fr; gap: 20px;
+  }
+  @media (min-width: 768px) { .contact { grid-template-columns: repeat(3, 1fr); gap: 32px; } }
+
+  .contact-col__kicker {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 12px;
+  }
+  .contact-col__line {
+    font-size: 14px; line-height: 1.6;
+    color: rgba(248,247,244,0.82);
+    margin: 0 0 6px;
+  }
+  .contact-col__line a { color: var(--gold); font-weight: 600; }
+  .contact-col__line a:hover { color: var(--on-navy); }
+  .contact-col__sub { font-size: 12px; color: rgba(248,247,244,0.6); margin: 6px 0 0; }
+</style>
+</head>
+<body data-nav="solid">
+
+<!-- ───── Nav ───── -->
+<nav class="nav" aria-label="Primary">
+  <div class="container nav__inner">
+    <a href="index.html" class="logo" aria-label="Cleanly home">Cleanly</a>
+    <div class="nav__right">
+      <a class="nav__link--ghost" href="become-a-partner.html" data-i18n="nav.partner">Become a partner</a>
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button class="lang-toggle__opt" data-lang="ar" aria-pressed="false">AR</button>
+        <button class="lang-toggle__opt" data-lang="en" aria-pressed="true">EN</button>
+      </div>
+      <a class="btn btn--outline" href="#" data-i18n="nav.signin">Sign in</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ───── Page head ───── -->
+<header class="page-head">
+  <div class="container page-head__inner">
+    <p class="page-head__kicker" data-i18n="head.kicker">About</p>
+    <h1 class="page-head__title" data-i18n="head.title">A Gulf company, built for Gulf customers.</h1>
+    <p class="page-head__sub" data-i18n="head.sub">We live here. We ran into the same problems you did. So we built the cleaning service we wished existed — transparent, verified, bilingual from day one.</p>
+    <a href="index.html#top" class="page-head__back rtl-flip" aria-label="Back to booking">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11L5 7l4-4"/></svg>
+      <span class="rtl-flip" data-i18n="head.back">Back to booking</span>
+    </a>
+  </div>
+</header>
+
+<!-- ───── Founder letter ───── -->
+<section class="section section--light">
+  <div class="container">
+    <div class="letter">
+      <p class="letter__kicker fade-up" data-i18n="letter.kicker">From the founders</p>
+      <div class="letter__body">
+        <p class="fade-up" data-i18n="letter.p1">Cleanly exists because we got tired of calling three car wash shops and getting three different prices — none of them written down, all of them negotiable once the washer showed up. Getting a trusted cleaning service in the Gulf was WhatsApp-roulette: you sent the address, they sent a number, you hoped for the best.</p>
+        <p class="fade-up" data-i18n="letter.p2">We decided a few things early and haven't changed our minds. Car wash and sofa cleaning happen where you are — no moving your car, no renting a wet-vac. Carpets get picked up, cleaned at a facility, returned on your schedule — because nobody has space to deep-clean a 3-meter rug in their apartment. Every price is shown before you book. And the washer doesn't get paid until you say the job is done.</p>
+        <p class="fade-up" data-i18n="letter.p3">There's a list of things we refuse to do. No tipping screens at checkout. No surge pricing at 3am. No commission above <span class="num">15%</span>. No hiding behind "final price quoted on arrival." It bothered us that "insurance" sometimes meant the company owner promising you something over WhatsApp. So every partner on Cleanly carries public liability coverage we verify ourselves.</p>
+        <p class="fade-up" data-i18n="letter.p4">We pay attention to Gulf details because we live them. Early-morning car washes in July before the sun makes the paint untouchable. Booking windows that respect Ramadan schedules. Compound gate codes in the notes field. Arabic from day one — not retrofitted, not machine-translated. If you notice the small things, it's because we did.</p>
+      </div>
+      <div class="letter__sig fade-up">
+        <span data-i18n="letter.sig.pre">— </span>
+        <span class="letter__sig-name" data-i18n="letter.sig.name">The Cleanly team</span>
+        <span data-i18n="letter.sig.cities"> · Dubai · Riyadh · Cairo</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Values ───── -->
+<section class="section" style="background: var(--sand);">
+  <div class="container">
+    <p class="section__kicker fade-up" data-i18n="val.kicker">What we believe</p>
+    <h2 class="section__heading fade-up" data-i18n="val.heading">What we believe about cleaning as a service.</h2>
+
+    <div class="values">
+      <article class="benefit fade-up">
+        <div class="benefit__icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="14" height="9" rx="1.5"/><path d="M10 9v3M7 12h6"/></svg>
+        </div>
+        <h3 class="benefit__title" data-i18n="val.v1.t">Price transparency is non-negotiable</h3>
+        <p class="benefit__body" data-i18n="val.v1.b">If you can't see the price before you book, you're the product.</p>
+      </article>
+
+      <article class="benefit fade-up">
+        <div class="benefit__icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2l7 3v5c0 4-3 7.5-7 8.5-4-1-7-4.5-7-8.5V5z"/><path d="M7 10l2 2 4-4.5"/></svg>
+        </div>
+        <h3 class="benefit__title" data-i18n="val.v2.t">Trust is earned per-job</h3>
+        <p class="benefit__body" data-i18n="val.v2.b">One bad clean breaks 50 good ones. We over-index on verification.</p>
+      </article>
+
+      <article class="benefit fade-up">
+        <div class="benefit__icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="8"/><path d="M6 10h8M10 6v8"/></svg>
+        </div>
+        <h3 class="benefit__title" data-i18n="val.v3.t">Cash is the enemy</h3>
+        <p class="benefit__body" data-i18n="val.v3.b">Stripe holds money so the washer gets paid and you get refunded if needed. No one argues in the lobby.</p>
+      </article>
+
+      <article class="benefit fade-up">
+        <div class="benefit__icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="8"/><path d="M2 10h16M10 2c2.5 2.5 4 5 4 8s-1.5 5.5-4 8c-2.5-2.5-4-5-4-8s1.5-5.5 4-8z"/></svg>
+        </div>
+        <h3 class="benefit__title" data-i18n="val.v4.t">The Gulf is the point</h3>
+        <p class="benefit__body" data-i18n="val.v4.b">We don't copy Deliveroo's playbook. Ramadan timing, compound access, bilingual from day one.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Stat strip ───── -->
+<section class="section section--navy" style="padding: 48px 0;">
+  <div class="container">
+    <p class="section__kicker fade-up" data-i18n="stats.kicker">By the numbers</p>
+    <h2 class="section__heading fade-up" data-i18n="stats.heading">Where we are today.</h2>
+
+    <div class="stat-strip">
+      <div class="about-stat fade-up">
+        <div class="about-stat__value"><span class="num">3</span></div>
+        <div class="about-stat__label" data-i18n="stats.s1">Countries · UAE · KSA · Egypt</div>
+      </div>
+      <div class="about-stat fade-up">
+        <div class="about-stat__value num">120+</div>
+        <div class="about-stat__label" data-i18n="stats.s2">Verified companies on the platform</div>
+      </div>
+      <div class="about-stat fade-up">
+        <div class="about-stat__value num">8,400+</div>
+        <div class="about-stat__label" data-i18n="stats.s3">Orders completed since launch</div>
+      </div>
+      <div class="about-stat fade-up">
+        <div class="about-stat__value num">4.8 ★</div>
+        <div class="about-stat__label" data-i18n="stats.s4">Average rating across all services</div>
+      </div>
+    </div>
+
+    <p class="stat-strip-note fade-up" data-i18n="stats.note">Numbers as of the launch cohort. We update them honestly, not retroactively.</p>
+  </div>
+</section>
+
+<!-- ───── Milestones ───── -->
+<section class="section section--light">
+  <div class="container">
+    <p class="section__kicker fade-up" data-i18n="ml.kicker">The year in plain text</p>
+    <h2 class="section__heading fade-up" data-i18n="ml.heading">Milestones, without the marketing adjectives.</h2>
+
+    <div class="milestones">
+      <article class="milestone fade-up">
+        <div class="milestone__date num">Q1 2025</div>
+        <h3 class="milestone__title" data-i18n="ml.m1.t">Founded</h3>
+        <p class="milestone__body" data-i18n="ml.m1.b">Built the first MVP with 3 car wash partners in Dubai.</p>
+      </article>
+      <article class="milestone fade-up">
+        <div class="milestone__date num">Q2 2025</div>
+        <h3 class="milestone__title" data-i18n="ml.m2.t">Customer apps shipped</h3>
+        <p class="milestone__body" data-i18n="ml.m2.b">iOS + Android with Arabic RTL from day one — not a retrofit.</p>
+      </article>
+      <article class="milestone fade-up">
+        <div class="milestone__date num">Q3 2025</div>
+        <h3 class="milestone__title" data-i18n="ml.m3.t">Riyadh + sofa cleaning</h3>
+        <p class="milestone__body" data-i18n="ml.m3.b">Expanded to KSA. Added Stripe Connect for T+2 payouts to partners.</p>
+      </article>
+      <article class="milestone fade-up">
+        <div class="milestone__date num">Q4 2025</div>
+        <h3 class="milestone__title" data-i18n="ml.m4.t">Cairo + carpet pickup</h3>
+        <p class="milestone__body" data-i18n="ml.m4.b">Added the pickup-clean-return model. Passed 50 partners across 3 countries.</p>
+      </article>
+      <article class="milestone fade-up">
+        <div class="milestone__date num">Q1 2026</div>
+        <h3 class="milestone__title" data-i18n="ml.m5.t">Real-time tracking</h3>
+        <p class="milestone__body" data-i18n="ml.m5.b">120 partners, 8,400 orders. Washer-app live map is the version you use today.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Who we are not ───── -->
+<section class="section" style="background: var(--sand);">
+  <div class="container">
+    <p class="section__kicker fade-up" data-i18n="nots.kicker">Honest distinctions</p>
+    <h2 class="section__heading fade-up" data-i18n="nots.heading">Things Cleanly is not.</h2>
+
+    <div class="nots">
+      <article class="not-card fade-up">
+        <div class="not-card__icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+        </div>
+        <div>
+          <h3 class="not-card__title" data-i18n="nots.n1.t">Not a tipping economy</h3>
+          <p class="not-card__body" data-i18n="nots.n1.b">Price is the price. No "if you liked the service…" pressure screens at checkout.</p>
+        </div>
+      </article>
+
+      <article class="not-card fade-up">
+        <div class="not-card__icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+        </div>
+        <div>
+          <h3 class="not-card__title" data-i18n="nots.n2.t">Not a surge-pricing platform</h3>
+          <p class="not-card__body" data-i18n="nots.n2.b">A 3am booking costs the same as a 3pm booking. Your price doesn't move with demand.</p>
+        </div>
+      </article>
+
+      <article class="not-card fade-up">
+        <div class="not-card__icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+        </div>
+        <div>
+          <h3 class="not-card__title" data-i18n="nots.n3.t">Not the cheapest option</h3>
+          <p class="not-card__body" data-i18n="nots.n3.b">We prioritize verified over cheap. Unverified cleaning has its own marketplaces; they're not us.</p>
+        </div>
+      </article>
+
+      <article class="not-card fade-up">
+        <div class="not-card__icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+        </div>
+        <div>
+          <h3 class="not-card__title" data-i18n="nots.n4.t">Not a gig app</h3>
+          <p class="not-card__body" data-i18n="nots.n4.b">We partner with registered companies, not individual contractors. A dedicated washer app is coming Q3.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Team ───── -->
+<section class="section section--light">
+  <div class="container">
+    <p class="section__kicker fade-up" data-i18n="team.kicker">The people</p>
+    <h2 class="section__heading fade-up" data-i18n="team.heading">Small team. High standards.</h2>
+
+    <div class="team">
+      <article class="member fade-up">
+        <span class="member__avatar" aria-hidden="true">R</span>
+        <h3 class="member__name">Rashid Al-Mahmoud</h3>
+        <p class="member__role" data-i18n="team.m1.role">Co-founder · Product · Dubai</p>
+        <p class="member__bio" data-i18n="team.m1.bio">Ex-Careem PM. Runs the customer app end-to-end. Argues for boring, predictable UX over clever animation.</p>
+      </article>
+
+      <article class="member fade-up">
+        <span class="member__avatar" aria-hidden="true">N</span>
+        <h3 class="member__name">Noura Al-Harbi</h3>
+        <p class="member__role" data-i18n="team.m2.role">Co-founder · Ops · Riyadh</p>
+        <p class="member__bio" data-i18n="team.m2.bio">Former regional ops lead at a logistics company. Handles partner onboarding, disputes, and the things that break at 2am.</p>
+      </article>
+
+      <article class="member fade-up">
+        <span class="member__avatar" aria-hidden="true">Y</span>
+        <h3 class="member__name">Youssef Hassan</h3>
+        <p class="member__role" data-i18n="team.m3.role">Engineering lead · Cairo</p>
+        <p class="member__bio" data-i18n="team.m3.bio">Full-stack. Obsessed with real-time GPS accuracy and the washer map. Bilingual infrastructure is his hill.</p>
+      </article>
+
+      <article class="member fade-up">
+        <span class="member__avatar" aria-hidden="true">L</span>
+        <h3 class="member__name">Leila Rizk</h3>
+        <p class="member__role" data-i18n="team.m4.role">Customer success · Remote</p>
+        <p class="member__bio" data-i18n="team.m4.bio">Handles every dispute personally. If you've opened a ticket, she's read it. Pushes back internally when policy is wrong.</p>
+      </article>
+    </div>
+
+    <p class="hiring-line fade-up">
+      <span data-i18n="team.hiring">We're hiring in Dubai, Riyadh, and remote.</span>
+      <a href="#" data-i18n="team.hiringCta">See open roles →</a>
+    </p>
+  </div>
+</section>
+
+<!-- ───── Contact ───── -->
+<section class="section section--navy">
+  <div class="container">
+    <p class="section__kicker fade-up" data-i18n="ct.kicker">Talk to us</p>
+    <h2 class="section__heading fade-up" data-i18n="ct.heading">Reach us.</h2>
+
+    <div class="contact">
+      <div class="contact-col fade-up">
+        <p class="contact-col__kicker" data-i18n="ct.c1.k">Customers</p>
+        <p class="contact-col__line">
+          <span data-i18n="ct.c1.wa">WhatsApp: </span>
+          <a href="https://wa.me/971500000000" class="num">+971 50 000 0000</a>
+        </p>
+        <p class="contact-col__line"><span data-i18n="ct.c1.email">Email: </span><a href="mailto:hello@cleanly.ae">hello@cleanly.ae</a></p>
+        <p class="contact-col__sub" data-i18n="ct.c1.sub">In-app support is fastest — open any order to chat.</p>
+      </div>
+
+      <div class="contact-col fade-up">
+        <p class="contact-col__kicker" data-i18n="ct.c2.k">Partners</p>
+        <p class="contact-col__line"><span data-i18n="ct.c2.email">Email: </span><a href="mailto:partners@cleanly.ae">partners@cleanly.ae</a></p>
+        <p class="contact-col__line"><a href="become-a-partner.html" data-i18n="ct.c2.apply">Apply to become a partner →</a></p>
+        <p class="contact-col__sub" data-i18n="ct.c2.sub">Reply within 48 hours. Include license + insurance to skip the first review round.</p>
+      </div>
+
+      <div class="contact-col fade-up">
+        <p class="contact-col__kicker" data-i18n="ct.c3.k">Press</p>
+        <p class="contact-col__line"><span data-i18n="ct.c3.email">Email: </span><a href="mailto:press@cleanly.ae">press@cleanly.ae</a></p>
+        <p class="contact-col__sub" data-i18n="ct.c3.sub">We reply to press inquiries within 24 hours with metrics, founder availability, and assets.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Final CTA ───── -->
+<section class="final-cta">
+  <div class="container final-cta__inner">
+    <h2 class="final-cta__title fade-up" data-i18n="f.title">Still here? Book a cleaning.</h2>
+    <p class="final-cta__sub fade-up" data-i18n="f.sub">That's the only thing this whole company is trying to do well.</p>
+    <div class="final-cta__actions fade-up">
+      <a href="index.html#top" class="btn btn--primary btn--primary-lg" data-i18n="f.book">Book a cleaning</a>
+      <a href="services.html" class="btn btn--ghost-dark" data-i18n="f.pricing">See pricing</a>
+    </div>
+  </div>
+</section>
+
+<!-- ───── Footer ───── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__cols">
+      <div class="footer__col footer__brand">
+        <div class="footer__logo">Cleanly</div>
+        <p class="footer__tag" data-i18n="footer.tag">On-demand cleaning across the Gulf — verified, transparent, right to your door.</p>
+        <div class="footer__social" aria-label="Social">
+          <a href="#" aria-label="Instagram">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="14" height="14" rx="4"/><circle cx="10" cy="10" r="3.2"/><circle cx="14.2" cy="5.8" r="0.6" fill="currentColor"/></svg>
+          </a>
+          <a href="#" aria-label="TikTok">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v10a3.5 3.5 0 1 1-3.5-3.5M12 3c.5 2.5 2 4 4.5 4.5"/></svg>
+          </a>
+          <a href="#" aria-label="WhatsApp">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l1.2-3.8A7.5 7.5 0 1 1 7 16z"/><path d="M7.5 8.5c.5 2 1.5 3 3.5 3.5l1.3-1 1.7.7-.4 1.7c-3.2.2-5.8-2.4-5.6-5.6l1.7-.4.7 1.7z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer__col">
+        <h4 data-i18n="footer.customers">For customers</h4>
+        <ul>
+          <li><a href="how-it-works.html" data-i18n="footer.how">How it works</a></li>
+          <li><a href="services.html" data-i18n="footer.pricing">Pricing</a></li>
+          <li><a href="city-coverage.html" data-i18n="footer.coverage">Coverage</a></li>
+          <li><a href="support.html" data-i18n="footer.faq">FAQ</a></li>
+          <li><a href="support.html#stuck" data-i18n="footer.support">Support</a></li>
+        </ul>
+      </div>
+
+      <div class="footer__col">
+        <h4 data-i18n="footer.companies">For companies</h4>
+        <ul>
+          <li><a href="become-a-partner.html" data-i18n="footer.partner">Become a partner</a></li>
+          <li><a href="become-a-washer.html" data-i18n="footer.washerapp">Washer app</a></li>
+          <li><a href="#" data-i18n="footer.partnerterms">Partner terms</a></li>
+        </ul>
+      </div>
+
+      <div class="footer__col">
+        <h4 data-i18n="footer.company">Company</h4>
+        <ul>
+          <li><a href="about.html" data-i18n="footer.about">About</a></li>
+          <li><a href="#" data-i18n="footer.careers">Careers</a></li>
+          <li><a href="#" data-i18n="footer.privacy">Privacy</a></li>
+          <li><a href="#" data-i18n="footer.terms">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span data-i18n="footer.copy">© 2026 Cleanly · Made with care in the Gulf</span>
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button class="lang-toggle__opt" data-lang="ar" aria-pressed="false">AR</button>
+        <button class="lang-toggle__opt" data-lang="en" aria-pressed="true">EN</button>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const I18N = {
+    en: {
+      "meta.title": "Cleanly — About",
+      "meta.desc": "A Gulf company built for Gulf customers. The story, the team, and what Cleanly refuses to do.",
+      "nav.partner": "Become a partner",
+      "nav.signin": "Sign in",
+
+      "head.kicker": "About",
+      "head.title": "A Gulf company, built for Gulf customers.",
+      "head.sub": "We live here. We ran into the same problems you did. So we built the cleaning service we wished existed — transparent, verified, bilingual from day one.",
+      "head.back": "Back to booking",
+
+      "letter.kicker": "From the founders",
+      "letter.p1": "Cleanly exists because we got tired of calling three car wash shops and getting three different prices — none of them written down, all of them negotiable once the washer showed up. Getting a trusted cleaning service in the Gulf was WhatsApp-roulette: you sent the address, they sent a number, you hoped for the best.",
+      "letter.p2": "We decided a few things early and haven't changed our minds. Car wash and sofa cleaning happen where you are — no moving your car, no renting a wet-vac. Carpets get picked up, cleaned at a facility, returned on your schedule — because nobody has space to deep-clean a 3-meter rug in their apartment. Every price is shown before you book. And the washer doesn't get paid until you say the job is done.",
+      "letter.p3": "There's a list of things we refuse to do. No tipping screens at checkout. No surge pricing at 3am. No commission above 15%. No hiding behind \"final price quoted on arrival.\" It bothered us that \"insurance\" sometimes meant the company owner promising you something over WhatsApp. So every partner on Cleanly carries public liability coverage we verify ourselves.",
+      "letter.p4": "We pay attention to Gulf details because we live them. Early-morning car washes in July before the sun makes the paint untouchable. Booking windows that respect Ramadan schedules. Compound gate codes in the notes field. Arabic from day one — not retrofitted, not machine-translated. If you notice the small things, it's because we did.",
+      "letter.sig.pre": "— ",
+      "letter.sig.name": "The Cleanly team",
+      "letter.sig.cities": " · Dubai · Riyadh · Cairo",
+
+      "val.kicker": "What we believe",
+      "val.heading": "What we believe about cleaning as a service.",
+      "val.v1.t": "Price transparency is non-negotiable",
+      "val.v1.b": "If you can't see the price before you book, you're the product.",
+      "val.v2.t": "Trust is earned per-job",
+      "val.v2.b": "One bad clean breaks 50 good ones. We over-index on verification.",
+      "val.v3.t": "Cash is the enemy",
+      "val.v3.b": "Stripe holds money so the washer gets paid and you get refunded if needed. No one argues in the lobby.",
+      "val.v4.t": "The Gulf is the point",
+      "val.v4.b": "We don't copy Deliveroo's playbook. Ramadan timing, compound access, bilingual from day one.",
+
+      "stats.kicker": "By the numbers",
+      "stats.heading": "Where we are today.",
+      "stats.s1": "Countries · UAE · KSA · Egypt",
+      "stats.s2": "Verified companies on the platform",
+      "stats.s3": "Orders completed since launch",
+      "stats.s4": "Average rating across all services",
+      "stats.note": "Numbers as of the launch cohort. We update them honestly, not retroactively.",
+
+      "ml.kicker": "The year in plain text",
+      "ml.heading": "Milestones, without the marketing adjectives.",
+      "ml.m1.t": "Founded",
+      "ml.m1.b": "Built the first MVP with 3 car wash partners in Dubai.",
+      "ml.m2.t": "Customer apps shipped",
+      "ml.m2.b": "iOS + Android with Arabic RTL from day one — not a retrofit.",
+      "ml.m3.t": "Riyadh + sofa cleaning",
+      "ml.m3.b": "Expanded to KSA. Added Stripe Connect for T+2 payouts to partners.",
+      "ml.m4.t": "Cairo + carpet pickup",
+      "ml.m4.b": "Added the pickup-clean-return model. Passed 50 partners across 3 countries.",
+      "ml.m5.t": "Real-time tracking",
+      "ml.m5.b": "120 partners, 8,400 orders. Washer-app live map is the version you use today.",
+
+      "nots.kicker": "Honest distinctions",
+      "nots.heading": "Things Cleanly is not.",
+      "nots.n1.t": "Not a tipping economy",
+      "nots.n1.b": "Price is the price. No \"if you liked the service…\" pressure screens at checkout.",
+      "nots.n2.t": "Not a surge-pricing platform",
+      "nots.n2.b": "A 3am booking costs the same as a 3pm booking. Your price doesn't move with demand.",
+      "nots.n3.t": "Not the cheapest option",
+      "nots.n3.b": "We prioritize verified over cheap. Unverified cleaning has its own marketplaces; they're not us.",
+      "nots.n4.t": "Not a gig app",
+      "nots.n4.b": "We partner with registered companies, not individual contractors. A dedicated washer app is coming Q3.",
+
+      "team.kicker": "The people",
+      "team.heading": "Small team. High standards.",
+      "team.m1.role": "Co-founder · Product · Dubai",
+      "team.m1.bio": "Ex-Careem PM. Runs the customer app end-to-end. Argues for boring, predictable UX over clever animation.",
+      "team.m2.role": "Co-founder · Ops · Riyadh",
+      "team.m2.bio": "Former regional ops lead at a logistics company. Handles partner onboarding, disputes, and the things that break at 2am.",
+      "team.m3.role": "Engineering lead · Cairo",
+      "team.m3.bio": "Full-stack. Obsessed with real-time GPS accuracy and the washer map. Bilingual infrastructure is his hill.",
+      "team.m4.role": "Customer success · Remote",
+      "team.m4.bio": "Handles every dispute personally. If you've opened a ticket, she's read it. Pushes back internally when policy is wrong.",
+      "team.hiring": "We're hiring in Dubai, Riyadh, and remote.",
+      "team.hiringCta": "See open roles →",
+
+      "ct.kicker": "Talk to us",
+      "ct.heading": "Reach us.",
+      "ct.c1.k": "Customers",
+      "ct.c1.wa": "WhatsApp: ",
+      "ct.c1.email": "Email: ",
+      "ct.c1.sub": "In-app support is fastest — open any order to chat.",
+      "ct.c2.k": "Partners",
+      "ct.c2.email": "Email: ",
+      "ct.c2.apply": "Apply to become a partner →",
+      "ct.c2.sub": "Reply within 48 hours. Include license + insurance to skip the first review round.",
+      "ct.c3.k": "Press",
+      "ct.c3.email": "Email: ",
+      "ct.c3.sub": "We reply to press inquiries within 24 hours with metrics, founder availability, and assets.",
+
+      "f.title": "Still here? Book a cleaning.",
+      "f.sub": "That's the only thing this whole company is trying to do well.",
+      "f.book": "Book a cleaning",
+      "f.pricing": "See pricing",
+
+      "footer.tag": "On-demand cleaning across the Gulf — verified, transparent, right to your door.",
+      "footer.customers": "For customers",
+      "footer.how": "How it works",
+      "footer.pricing": "Pricing",
+      "footer.coverage": "Coverage",
+      "footer.faq": "FAQ",
+      "footer.support": "Support",
+      "footer.companies": "For companies",
+      "footer.partner": "Become a partner",
+      "footer.washerapp": "Washer app",
+      "footer.partnerterms": "Partner terms",
+      "footer.company": "Company",
+      "footer.about": "About",
+      "footer.careers": "Careers",
+      "footer.privacy": "Privacy",
+      "footer.terms": "Terms",
+      "footer.copy": "© 2026 Cleanly · Made with care in the Gulf"
+    },
+    ar: {
+      "meta.title": "كلين لي — من نحن",
+      "meta.desc": "شركة خليجية مبنية لعملاء الخليج. القصة، الفريق، وما ترفضه كلين لي.",
+      "nav.partner": "كن شريكًا",
+      "nav.signin": "تسجيل الدخول",
+
+      "head.kicker": "من نحن",
+      "head.title": "شركة خليجية، مصمَّمة لعملاء الخليج.",
+      "head.sub": "نحن نعيش هنا. واجهنا نفس المشاكل التي واجهتها. لذلك بنينا خدمة التنظيف التي تمنّيناها — شفافة، موثوقة، وثنائية اللغة منذ اليوم الأول.",
+      "head.back": "ارجع للحجز",
+
+      "letter.kicker": "من المؤسّسين",
+      "letter.p1": "كلين لي موجودة لأننا مللنا من الاتصال بثلاث مغاسل والحصول على ثلاثة أسعار مختلفة — ولا واحد منها مكتوب، وكلها قابلة للتفاوض بعد وصول العامل. الحصول على خدمة تنظيف موثوقة في الخليج كان قرعة واتساب: ترسل العنوان، يرسلون رقمًا، وتأمل الأفضل.",
+      "letter.p2": "قرّرنا أشياء مبكرًا ولم نغيّر رأينا فيها. غسيل السيارات وتنظيف الكنب يتمّان في مكانك — دون تحريك السيارة ولا استئجار جهاز شفط رطب. السجاد يُستلم، ويُنظَّف في المغسلة، ويُعاد في موعدك — لأن لا أحد يملك مساحة لتنظيف سجادة ٣ أمتار في شقته. كل سعر معروض قبل الحجز. ولا يُدفع للعامل حتى تقول أن الخدمة اكتملت.",
+      "letter.p3": "هناك قائمة بأشياء نرفض فعلها. لا شاشات إكراميات في الدفع. لا أسعار مضاعفة الساعة ٣ فجرًا. لا عمولة فوق ١٥٪. لا اختباء خلف «السعر النهائي عند الوصول». أزعجنا أن «التأمين» أحيانًا يعني وعدًا من صاحب الشركة على واتساب. لذلك كل شريك في كلين لي لديه تأمين مسؤولية عامة نتحقق منه بأنفسنا.",
+      "letter.p4": "ننتبه لتفاصيل الخليج لأننا نعيشها. غسلات سيارات في الصباح الباكر قبل أن تجعل الشمس الطلاء لا يُلمس في يوليو. نوافذ حجز تحترم جداول رمضان. رموز بوابات المجمّعات في حقل الملاحظات. العربية من اليوم الأول — ليست مضافة لاحقًا، ليست ترجمة آلية. إذا لاحظت التفاصيل الصغيرة، فلأننا لاحظناها.",
+      "letter.sig.pre": "— ",
+      "letter.sig.name": "فريق كلين لي",
+      "letter.sig.cities": " · دبي · الرياض · القاهرة",
+
+      "val.kicker": "ما نؤمن به",
+      "val.heading": "ما نؤمن به في خدمة التنظيف.",
+      "val.v1.t": "شفافية الأسعار غير قابلة للتفاوض",
+      "val.v1.b": "إن لم ترَ السعر قبل الحجز، فأنت المنتج.",
+      "val.v2.t": "الثقة تُكسب كل عمل على حدة",
+      "val.v2.b": "خدمة سيئة واحدة تكسر ٥٠ خدمة ممتازة. نحن نبالغ في التحقق.",
+      "val.v3.t": "الكاش هو العدو",
+      "val.v3.b": "Stripe يحجز المال حتى يُدفع للعامل وتسترده إن لزم. لا مجادلات في المدخل.",
+      "val.v4.t": "الخليج هو الهدف",
+      "val.v4.b": "لا نقلّد دليفيرو. توقيت رمضان، الوصول للمجمّعات، ثنائية اللغة من اليوم الأول.",
+
+      "stats.kicker": "بالأرقام",
+      "stats.heading": "أين نحن اليوم.",
+      "stats.s1": "دول · الإمارات · السعودية · مصر",
+      "stats.s2": "شركات موثوقة على المنصة",
+      "stats.s3": "طلبات مكتملة منذ الإطلاق",
+      "stats.s4": "متوسط التقييم عبر الخدمات",
+      "stats.note": "الأرقام من دفعة الإطلاق. نحدّثها بأمانة، وليس بأثر رجعي.",
+
+      "ml.kicker": "السنة بكلمات واضحة",
+      "ml.heading": "محطات، بدون صفات تسويقية.",
+      "ml.m1.t": "التأسيس",
+      "ml.m1.b": "بنينا أول نسخة مع ٣ شركاء غسيل سيارات في دبي.",
+      "ml.m2.t": "إطلاق تطبيقات العملاء",
+      "ml.m2.b": "iOS + Android بالعربية RTL من اليوم الأول — ليس إضافة لاحقة.",
+      "ml.m3.t": "الرياض + تنظيف الكنب",
+      "ml.m3.b": "توسّعنا للسعودية. أضفنا Stripe Connect لدفعات T+2 للشركاء.",
+      "ml.m4.t": "القاهرة + استلام السجاد",
+      "ml.m4.b": "أضفنا نموذج الاستلام والتنظيف والتوصيل. تجاوزنا ٥٠ شريكًا عبر ٣ دول.",
+      "ml.m5.t": "تتبّع مباشر",
+      "ml.m5.b": "١٢٠ شريكًا، ٨٤٠٠ طلب. خريطة تطبيق العامل المباشرة هي النسخة التي تستخدمها اليوم.",
+
+      "nots.kicker": "تمييزات صريحة",
+      "nots.heading": "ما ليست كلين لي.",
+      "nots.n1.t": "ليست اقتصاد إكراميات",
+      "nots.n1.b": "السعر هو السعر. لا شاشات ضغط «لو أعجبتك الخدمة…» عند الدفع.",
+      "nots.n2.t": "ليست منصة أسعار متغيرة",
+      "nots.n2.b": "حجز الساعة ٣ فجرًا بنفس سعر ٣ عصرًا. سعرك لا يتحرك حسب الطلب.",
+      "nots.n3.t": "ليست الأرخص",
+      "nots.n3.b": "نفضّل الموثوق على الرخيص. التنظيف غير الموثوق له منصات أخرى؛ نحن لسنا هم.",
+      "nots.n4.t": "ليست تطبيق عمل حر",
+      "nots.n4.b": "نتعامل مع شركات مسجّلة، لا أفراد. تطبيق عمّال مخصّص سيأتي في الربع الثالث.",
+
+      "team.kicker": "الفريق",
+      "team.heading": "فريق صغير. معايير عالية.",
+      "team.m1.role": "شريك مؤسّس · المنتج · دبي",
+      "team.m1.bio": "مدير منتج سابق في كريم. يدير تطبيق العملاء من البداية للنهاية. يدافع عن UX متوقّع وممل بدل الرسوم المتحركة الذكية.",
+      "team.m2.role": "شريكة مؤسّسة · العمليات · الرياض",
+      "team.m2.bio": "قائدة عمليات إقليمية سابقة في شركة لوجستيات. تتولى انضمام الشركاء، النزاعات، والأشياء التي تنكسر الساعة الثانية فجرًا.",
+      "team.m3.role": "قائد الهندسة · القاهرة",
+      "team.m3.bio": "مطوّر شامل. مهووس بدقة GPS المباشر وخريطة العامل. البنية التحتية ثنائية اللغة قضيّته.",
+      "team.m4.role": "نجاح العملاء · عن بُعد",
+      "team.m4.bio": "تتولى كل نزاع بنفسها. إن فتحت تذكرة، فقد قرأتها. تعترض داخليًا حين تكون السياسة خاطئة.",
+      "team.hiring": "نحن نوظّف في دبي والرياض وعن بُعد.",
+      "team.hiringCta": "الوظائف المتاحة ←",
+
+      "ct.kicker": "تواصل معنا",
+      "ct.heading": "كيف تصل إلينا.",
+      "ct.c1.k": "للعملاء",
+      "ct.c1.wa": "واتساب: ",
+      "ct.c1.email": "البريد: ",
+      "ct.c1.sub": "الدعم داخل التطبيق هو الأسرع — افتح أي طلب للمحادثة.",
+      "ct.c2.k": "للشركاء",
+      "ct.c2.email": "البريد: ",
+      "ct.c2.apply": "قدِّم كشريك ←",
+      "ct.c2.sub": "نرد خلال ٤٨ ساعة. أرفق الرخصة والتأمين لتتخطى أول جولة مراجعة.",
+      "ct.c3.k": "للصحافة",
+      "ct.c3.email": "البريد: ",
+      "ct.c3.sub": "نرد على طلبات الصحافة خلال ٢٤ ساعة مع الأرقام، وتوفّر المؤسّسين، والموارد.",
+
+      "f.title": "ما زلت هنا؟ احجز خدمة تنظيف.",
+      "f.sub": "هذا الشيء الوحيد الذي نحاول كشركة أن نُتقنه.",
+      "f.book": "احجز خدمة",
+      "f.pricing": "شاهد الأسعار",
+
+      "footer.tag": "خدمة تنظيف عند الطلب في الخليج — موثوقة، شفافة، حتى باب بيتك.",
+      "footer.customers": "للعملاء",
+      "footer.how": "كيف نعمل",
+      "footer.pricing": "الأسعار",
+      "footer.coverage": "تغطية المدن",
+      "footer.faq": "الأسئلة الشائعة",
+      "footer.support": "الدعم",
+      "footer.companies": "للشركات",
+      "footer.partner": "كن شريكًا",
+      "footer.washerapp": "تطبيق العامل",
+      "footer.partnerterms": "شروط الشركاء",
+      "footer.company": "الشركة",
+      "footer.about": "من نحن",
+      "footer.careers": "الوظائف",
+      "footer.privacy": "الخصوصية",
+      "footer.terms": "الشروط",
+      "footer.copy": "© 2026 كلين لي · صُنع بعناية في الخليج"
+    }
+  };
+
+  window.addEventListener("DOMContentLoaded", () => {
+    Cleanly.init({ dict: I18N });
+  });
+</script>
+
+</body>
+</html>
